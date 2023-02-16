@@ -1,0 +1,22 @@
+# jupyter notebook temp files
+.ipynb_checkpoints/
+
+# Byte-compiled
+__pycache__/
+
+# venv environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# data folder
+aruba/
+kasterenDataset/
+layout_data/
+output/
+test_data/
+test_data_month/
