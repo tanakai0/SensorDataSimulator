@@ -1,2 +1,2 @@
 # Simulator
-Sensor data simulator of the elderly person living alone in a smart home.
+Sensor data simulator of a virtual elderly person living alone in a virtual smart home.
