@@ -14,9 +14,9 @@ env.bak/
 venv.bak/
 
 # data folder
-aruba/
-kasterenDataset/
+# aruba/
+# kasterenDataset/
+# output/
+# test_data/
+# test_data_month/
 layout_data/
-output/
-test_data/
-test_data_month/
