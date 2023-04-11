@@ -18,6 +18,7 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
 all_furniture = [[1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1]]
+
     
 class FloorPlan:
     # Class of a floor plan.
