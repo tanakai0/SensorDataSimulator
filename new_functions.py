@@ -14,6 +14,7 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import scipy.stats as stats
 
 # self-made
 import activity_model
@@ -131,7 +132,7 @@ def generate_activity_sequence(start_day, end_day, path, original_act_model = ac
     start_day : int
         Day when this function starts to sample.
     end_day : int
-        Day when this function finishes sampling.
+        The day when this function finishes sampling. This simulator generates from `0:00 in start_day day` to `0:00 in end_day day (= 24:00 in (end_day - 1) day)`.
     path : pathlib.Path
         Path to the layout data.
     original_act_model : dict
@@ -165,7 +166,7 @@ def generate_activity_sequence(start_day, end_day, path, original_act_model = ac
     if is_changed == True:
         print('The original_act_model was modified to activity_model.determine_activity_set(path, original_act_model), so that it can be applied in the layout.')
         
-    temp_sequence = list(activity_generator(start_day, end_day, act_model, 
+    temp_sequence = list(activity_generator(start_day, end_day - 1, act_model, 
                                             state_anomaly_labels = state_anomaly_labels, anomaly_parameters = anomaly_parameters))
     
     # connect adjacent same activities in the schedule, in particular for sleep activity over 2 days
@@ -1218,7 +1219,7 @@ def generate_walking_trajectories(layout_path, AS, stride, step_speed, prefer_fo
 
     
 def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, lims, stride, 
-                                step_speed, prefer_foot, edge, g_L, g_W, fall_w_parameters = dict(), fall_s_parameters = dict(), distance_threshold = 30, max_try = 100):
+                                step_speed, prefer_foot, edge, g_L, g_W, fall_w_parameters = dict(), fall_s_parameters = dict(), distance_threshold = 30, max_try = 1000):
     """
     This generates walking trajectories between adjacent activites.
     For now, the resident walks by a constant speed except for anomalous falls.
@@ -1293,7 +1294,9 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
         fall_s_indexes = anomaly.determine_fall_indexes(AS, fall_s_parameters, 's')
     
     last_position = None
-    while i < len(AS) - 1:
+    limit = len(AS) - 1
+    while i < limit:
+        print_progress_bar(limit - 1, i, 'Making walking trajectories.')
         start_place = AS[i].place
         start_position_indexes = None
         if last_position == None:
@@ -1429,7 +1432,7 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
         timestamp.reverse()
         start_time = end_time - timedelta(seconds = (len(temp_centers) - 1) * step_speed)
 
-        if i in fall_w_indexes:  # when falls occur
+        if (i in fall_w_indexes) and (len(centers) != 0):  # when falls occur
             fall_w = True
             fall_w_sec = np.random.normal(loc = fall_w_parameters['mean_lie_down_seconds'], scale = fall_w_parameters['mean_lie_down_seconds'] / 5)
             lie_down_duration_w = timedelta(seconds = fall_w_sec)
@@ -1446,7 +1449,7 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
             timestamp = [x if fall_point_w <= i else x - lie_down_duration_w for i, x in enumerate(timestamp)]
             timestamp.insert(fall_point_w, timestamp[fall_point_w] - lie_down_duration_w)
 
-        if i in fall_s_indexes:  # sometimes, a fall while walking and a fall while standing are both happended in one walking trajectory. 
+        if (i in fall_s_indexes) and (len(centers) != 0):  # sometimes, a fall while walking and a fall while standing are both happended in one walking trajectory. 
             fall_s = True
             fall_s_sec = np.random.normal(loc = fall_s_parameters['mean_lie_down_seconds'], scale = fall_s_parameters['mean_lie_down_seconds'] / 5)
             lie_down_duration_s = timedelta(seconds = fall_s_sec)
@@ -1466,7 +1469,8 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
             timestamp = [x if fall_point_s <= i else x - lie_down_duration_s for i, x in enumerate(timestamp)]
             timestamp.insert(fall_point_s, timestamp[fall_point_s] - lie_down_duration_s)
 
-        
+        if len(centers) == 0:
+            walking_type = NOT_WALKING
         WT.append(WalkingTrajectory(walking_type, start_place, end_place, start_time, end_time, centers, angles, timestamp, left_steps, right_steps,
                                     intermediate_places = intermediate_places,
                                     fall_w = fall_w, fall_w_index = fall_point_w, lie_down_seconds_w = fall_w_sec,
@@ -1476,6 +1480,24 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
         i += 1
     return WT
 
+
+def print_progress_bar(n, i, text):
+    """
+    This prints a message text for progress bar.
+    
+    Parameters
+    ----------
+    n : int
+        Max index.
+    i : int
+        Current index.
+    text : str
+        Header text.
+    """
+    if i == n:
+        return print("{} {} / {}.".format(text, i, n) + 'Completed!')
+    else:
+        return print("{} {} / {}.\r".format(text, i, n), end = '')
 
 def sample_path(start_position_indexes, end_place, distances, discom, max_diss, lims, stride, prefer_foot, distance_threshold, edge, g_L, g_W):
     """
@@ -1521,10 +1543,15 @@ def sample_path(start_position_indexes, end_place, distances, discom, max_diss, 
         2D coordinates of the left foot of the resident in the walking trajectory.
     right_steps : list of tuple of float
         2D coordinates of the right foot of the resident in the walking trajectory.
+        
+    If the start_position is contained in the target area, return ([], [], []) (not walking).
     """
     HPath, Angles = direct_path(start_position_indexes, stride, discom, distances[end_place], max_diss[end_place], edge, g_L, g_W, distance_threshold = distance_threshold)
-    centers, left_steps, right_steps = normal_bcfp(HPath, Angles, stride, lims, prefer_foot, edge, g_L, g_W)
-    return (centers, left_steps, right_steps)
+    if (len(HPath) == 1) and (len(Angles) == 0):
+        return ([], [], [])
+    else:
+        centers, left_steps, right_steps = normal_bcfp(HPath, Angles, stride, lims, prefer_foot, edge, g_L, g_W)
+        return (centers, left_steps, right_steps)
 
 def index2coordinate(I, J, edge, g_L, g_W, lims):
     """
@@ -1856,7 +1883,8 @@ def generate_motion_sensor_data(sensors, WT, sampling_seconds = 0.1, sync_refere
             sensor_states[s.index] = None
         
     # update states of motion sensors for each walking trajectory
-    for wt in WT:
+    for (i, wt) in enumerate(WT):
+        print_progress_bar(len(WT), i, 'Making motion sensor data')
         if wt.centers != []:
             update_states_of_motion_sensors(sensors, sensor_data, sensor_states, wt, sampling_seconds, sync_reference_point, body_radius)
     return sensor_data
@@ -2187,6 +2215,7 @@ def generate_cost_sensor_data(sensors, AS, WT, sampling_seconds = 1, sync_refere
             forgetting_act[i].append(x[2])
     
     for t in date_generator(sampling_start, sampling_end, sampling_step):
+        print_progress_bar(sampling_end, t, 'Making cost sensor data')
         while act.end < t:
             act_index += 1
             act = AS[act_index]
@@ -2293,11 +2322,134 @@ def save_layout(output_path, layout_path, sensors = [], WT = [], show = False, c
     plt.close()
     
         
+def generate_six_anomalies(path, save_path, days, show = True):
+    """
+    This generates anomaly labels under the test settings.
+    
+    Parameters
+    ----------
+    path : pathlib.Path
+        Path which have the layout json file.
+        Output figure is saved in this folder.
         
+    save_path : pathlib.Path
+        Path to save the images.
         
+    days : int
+        Period to simulate anomalies.
         
+    show : bool
+        Whether to show an image.
         
+    Returns
+    -------
+    ret_dict : dict
+        Dictionary of anomaly labels.
+    """
+
+    # MMSE score
+    start, end, step = timedelta(days = 0), timedelta(days = days), timedelta(days = 30)
+    MMSE = anomaly.simulate_MMSE(start, end, step, error_e = 0)
+
+    # Housebound
+    # housebound_labels[i] = (start_time, end_time) of i-th being housebound
+    housebound_labels = anomaly.simulate_state_anomaly_periods(MMSE, 1/10, 14, 14/5)
+
+    # Semi-bedridden
+    # semi_bedridden_labels[i] = (start_time, end_time) of i-th being semi-bedridden
+    semi_bedridden_labels = anomaly.simulate_state_anomaly_periods(MMSE, 1/20, 30, 30/5)
+
+    # Wandering
+    def calculate_wandering_mean_num(mmse):
+        # decide the mean frequency of wandering [times/month]
+        if mmse < 0 or 30 < mmse:
+            raise ValueError('mmse must be 0 <= mmse <= 30')
+        return - 1.86 * mmse + 56
+    def calculate_wandering_mean_minutes(mmse):
+        # decide the mean duration time [minutes] of wandering
+        if mmse < 0 or 30 < mmse:
+            raise ValueError('mmse must be 0 <= mmse <= 30')
+        return - 0.31 * mmse + 9.8
+    wandering_mean_num = anomaly.simulate_values_from_MMSE(MMSE, start, end, step, calculate_wandering_mean_num)
+    wandering_num = [(x[0], x[1], stats.poisson.rvs(x[2])) for x in wandering_mean_num]
+    wandering_mean_minutes = anomaly.simulate_values_from_MMSE(MMSE, start, end, step, calculate_wandering_mean_minutes)
+
+    # Falls
+    def calculate_falling_mean_num(mmse):
+        # decide the mean number [times/month] of falling
+        if mmse < 0 or 30 < mmse:
+            raise ValueError('mmse must be 0 <= mmse <= 30')
+        return - mmse / 15 + 2
+    # falling while walking (fall_w)
+    fall_w_mean_num = anomaly.simulate_values_from_MMSE(MMSE, start, end, step, calculate_falling_mean_num)
+    fall_w_num = [(x[0], x[1], stats.poisson.rvs(x[2])) for x in fall_w_mean_num]
+    # fall while standing (fall_s)
+    fall_s_mean_num = anomaly.simulate_values_from_MMSE(MMSE, start, end, step, calculate_falling_mean_num)
+    fall_s_num = [(x[0], x[1], stats.poisson.rvs(x[2])) for x in fall_s_mean_num]
+
+    # Forgetting
+    def calculate_forgetting_mean_num(mmse):
+        # This returns the mean number of forgetting [times/month] by MMSE
+        return - mmse + 30
+
+    forgetting_mean_num = anomaly.simulate_values_from_MMSE(MMSE, start, end, step, calculate_forgetting_mean_num)
+    forgetting_num = [(x[0], x[1], stats.poisson.rvs(x[2])) for x in forgetting_mean_num]
+
+
+    # Figures of anomalies
+    fig, ax = plt.subplots(6, 1, sharex = 'all', facecolor = 'w',  figsize = (6, 12))
+    graph_list = [MMSE, fall_w_mean_num, wandering_mean_num, wandering_mean_minutes, forgetting_mean_num]
+    samples_list = [[], fall_w_num, wandering_num, [], forgetting_num]
+    label_ylabel_list = ['MMSE.', 'Frequency of fall\n[times/month].', 'Frequency of wandering\n[times/month].',
+                         'Mean duration [min.]\nof wandering\n.', 'Frequency of forgetting\n[times/month].']
+    graph_time_step = timedelta(days = 360)
+    for (i, data) in enumerate(zip(graph_list, samples_list, label_ylabel_list)):
+        x, samples, label = data[0], data[1], data[2]
+        ax[i].plot([xx[0] / graph_time_step for xx in x], [xx[2] for xx in x], 'k-', label = 'expected')
+        if i == 1 or i == 2 or i == 4:
+            ax[i].plot([xx[0] / graph_time_step for xx in samples], [xx[2] for xx in samples], 'k--', label = 'sample')
+        ax[i].set_ylabel(label)
+    ax[1].legend(loc = 'best', frameon = False)
+    ax[2].legend(loc = 'best', frameon = False)
+    ax[4].legend(loc = 'best', frameon = False)
+    # ax[4].set_xlabel('Year.')
+
+    point_0, point_last = (timedelta(days = 0), timedelta(days = 0)), (timedelta(days = MMSE[-1][1].days), timedelta(days =  MMSE[-1][1].days))
+    graph_housebound = deepcopy(housebound_labels)
+    graph_semi_bedridden = deepcopy(semi_bedridden_labels)
+    for p in [point_0, point_last]:
+        graph_housebound.append(p)
+        graph_semi_bedridden.append(p)
+    ax[5].set_xlabel('Year.')
+    ax[5].set_ylabel('States of housebound ($y = 1$)\nand semi-bedridden ($y = 2$).')
+    ax[5].set_ylim(0, 3)
+    for interval in graph_housebound:
+        ax[5].hlines(1, interval[0]/graph_time_step, interval[1]/graph_time_step, color = 'black', linewidth = 10.0)
+    for interval in graph_semi_bedridden:
+        ax[5].hlines(2, interval[0]/graph_time_step, interval[1]/graph_time_step, color = 'black', linewidth = 10.0)
+
+    plt.tight_layout()
+    plt.savefig(str(save_path) + '/anomaly_parameter_transitions.png', dpi = 500)
+    if show:
+        plt.show()
+    plt.close()
+
+    anomaly.save_MMSE(save_path, MMSE)
+    anomaly.save_MMSE(save_path, wandering_num, 'wandering_num')
+    anomaly.save_MMSE(save_path, wandering_mean_minutes, 'wandering_mean_minutes')
+    anomaly.save_MMSE(save_path, forgetting_num, 'forgetting_num')
+    anomaly.save_housebound_labels(save_path, housebound_labels)
+    anomaly.save_housebound_labels(save_path, semi_bedridden_labels, 'semi_bedridden_labels')
+    ret_dict = {'MMSE': MMSE, 
+                'housebound_labels': housebound_labels,
+                 'semi_bedridden_labels': semi_bedridden_labels, 
+                 'wandering_num': wandering_num,
+                 'wandering_mean_minutes': wandering_mean_minutes,
+                 'fall_w_num': fall_w_num,
+                 'fall_s_num': fall_s_num,
+                 'forgetting_num': forgetting_num}
         
+    return ret_dict
         
         
         

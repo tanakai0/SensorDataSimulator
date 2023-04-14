@@ -28,7 +28,7 @@ class Activity:
         name : string
             Name of the activity.
         duration_mean : float
-            Mean of the duration time of the activity, [minute].
+            Mean of the duration time of the activity, [minute]. We recommend that this value contain the walking time from former activities, e.g., maximum walking time between points in the house.
         duration_sd : float
             Standard deviation of the duration time of the activity, [minute].
         place : list of string
