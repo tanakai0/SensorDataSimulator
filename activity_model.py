@@ -1094,7 +1094,7 @@ defecation = NecessaryActivity('Defecation', 1, 10, 3, ['Toilet_Door'], '#4b0082
 urination = NecessaryActivity('Urination', 5, 3, 0.5, ['Toilet_Door'], '#6a5acd', {})
 take_a_bath = NecessaryActivity('Take a bath', 1, 30, 10, ['Bathroom_Door'], '#00ffff', {sensor_model.FLOW_BATHROOM: 1})
 change_clothes = NecessaryActivity('Change clothes', 2, 5, 1, ['Wardrobe', 'Bed'], '#008000', {})
-brush_teeth = NecessaryActivity('Brush teeth', 2, 1.5, 0.5, ['Bathroom_Door'], '#2f4f4f', {sensor_model.FLOW_BATHROOM:1})
+brush_teeth = NecessaryActivity('Brush teeth', 2, 1.5 + 0.5, 0.5, ['Bathroom_Door'], '#2f4f4f', {sensor_model.FLOW_BATHROOM:1})
 
 rest = RandomActivity('Rest', 30, 10, ['Sofa', 'Desk_Chair', 'Bed'], '#d3d3d3', {})
 go_out = RandomActivity('Go out', 40, 20, ['Entrance'], '#ffe4c4', {})

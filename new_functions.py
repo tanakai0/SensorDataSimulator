@@ -1287,7 +1287,7 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
     WT = []
     i = 0
     
-    fall_w_indexes, fall_s_indexes = [], []
+    fall_w_indexes, fall_s_indexes = [], []  # candidates of falls, some indexes may be excluded when the erronerous walking trajectoires occur
     if fall_w_parameters != dict():
         fall_w_indexes = anomaly.determine_fall_indexes(AS, fall_w_parameters, 'w')
     if fall_s_parameters != dict():
@@ -1438,16 +1438,20 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
             lie_down_duration_w = timedelta(seconds = fall_w_sec)
             start_time -= lie_down_duration_w
             if start_time <= AS[i].start:
-                raise ValueError("The duration time of the {}-th activity is less than the duration time of {}-th walking to move between places and fall for {} seconds. Try to increase duration time of short activities.".format(fall_w_sec))
-            if len(centers) < 2:
-                raise ValueError("{}- walking trajectory is too short to fall down.".format(i))
-            fall_point_w = random.choice(range(1, len(centers)))
+                print("The duration time of the {}-th activity is less than the duration time of {}-th walking to move between places and fall for {} seconds. Try to increase duration time of short activities.".format(i, i, fall_w_sec))
+                fall_w = False
+                fall_w_sec = 0
+                fall_point_w = 0
+            # elif len(centers) < 2:
+            #     raise ValueError("{}- walking trajectory is too short to fall down.".format(i))
+            else:
+                fall_point_w = random.choice(range(1, len(centers)))
 
-            # Insertion of the fall point in the walking trajectory.
-            centers.insert(fall_point_w, centers[fall_point_w])
-            angles.insert(fall_point_w, angles[fall_point_w])
-            timestamp = [x if fall_point_w <= i else x - lie_down_duration_w for i, x in enumerate(timestamp)]
-            timestamp.insert(fall_point_w, timestamp[fall_point_w] - lie_down_duration_w)
+                # Insertion of the fall point in the walking trajectory.
+                centers.insert(fall_point_w, centers[fall_point_w])
+                angles.insert(fall_point_w, angles[fall_point_w])
+                timestamp = [x if fall_point_w <= i else x - lie_down_duration_w for i, x in enumerate(timestamp)]
+                timestamp.insert(fall_point_w, timestamp[fall_point_w] - lie_down_duration_w)
 
         if (i in fall_s_indexes) and (len(centers) != 0):  # sometimes, a fall while walking and a fall while standing are both happended in one walking trajectory. 
             fall_s = True
@@ -1455,12 +1459,15 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
             lie_down_duration_s = timedelta(seconds = fall_s_sec)
             start_time -= lie_down_duration_s
             if start_time <= AS[i].start:
-                raise ValueError("The duration time of the {}-th activity is less than the duration time of {}-th walking to move between places and fall for {} seconds. Try to increase duration time of short activities.".format(fall_s_sec))
-            fall_point_s = 0
-            if fall_w == True:
-                if fall_point_w == fall_point_s:  # The index of fall_point_w is shifted when the fall while standing occurs.
-                    raise ValueError('Fall while walking and fall while standing are occurred at the same time!')
-                if fall_point_s < fall_point_w:
+                print("The duration time of the {}-th activity is less than the duration time of {}-th walking to move between places and fall for {} seconds. Try to increase duration time of short activities.".format(i, i, fall_s_sec))
+                fall_s = False
+                fall_s_sec = 0
+            # elif fall_w and (fall_point_w == fall_point_s):  # The index of fall_point_w is shifted when the fall while standing occurs.
+            #     print('Fall while walking and fall while standing are occurred at the same time! Fall while standing is exclueded.')
+            #     fall_s = False
+            #     fall_s_sec = 0
+            else:
+                if fall_w and (fall_point_s < fall_point_w):
                     fall_point_w += 1
 
             # Insertion of the fall point in the walking trajectory.
@@ -1475,7 +1482,8 @@ def sample_walking_trajectories(AS, distances, discom, destinations, max_diss, l
                                     intermediate_places = intermediate_places,
                                     fall_w = fall_w, fall_w_index = fall_point_w, lie_down_seconds_w = fall_w_sec,
                                     fall_s = fall_s, fall_s_index = fall_point_s, lie_down_seconds_s = fall_s_sec))
-        last_position = WT[-1].centers[-1]
+        if len(centers) != 0:
+            last_position = WT[-1].centers[-1]
             
         i += 1
     return WT
