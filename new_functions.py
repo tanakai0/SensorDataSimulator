@@ -2222,8 +2222,12 @@ def generate_cost_sensor_data(sensors, AS, WT, sampling_seconds = 1, sync_refere
         for i in range(x[0], x[1]):
             forgetting_act[i].append(x[2])
     
+    progress_bar_step = 10000 * sampling_step
+    temp_t = sampling_start
     for t in date_generator(sampling_start, sampling_end, sampling_step):
-        print_progress_bar(sampling_end, t, 'Making cost sensor data')
+        if (t - temp_t) > progress_bar_step:
+            temp_t = t
+            print_progress_bar(sampling_end, t, 'Making cost sensor data')
         while act.end < t:
             act_index += 1
             act = AS[act_index]

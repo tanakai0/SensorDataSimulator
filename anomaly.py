@@ -268,7 +268,27 @@ def forgetting_labels(AS, WT, forgetting_num):
     error_periods = []  # the ranges will be added into this if the number of candidates at each period is smaller than the number of forgetting at the period.
     indexes = []  # indexes of activities that occurs forgetting after the activity finish
     act_start, act_end = AS[0].start, AS[-1].end
-    for x in forgetting_num:
+
+    
+    # forgetting_index = 0
+    # x = forgetting_num[forgetting_index]
+    # candidates = []
+    # for (i, act) in enumerate(AS):
+    #     if x[0] <= act.start <= x[1]:
+    #         if act.activity.name in forgetting_activities:
+    #             candidates.append(i)
+    #     else:
+    #         if len(candidates) < x[2]:
+    #             error_periods.append((x[0], x[1]))
+    #         else:
+    #             indexes += random.sample(candidates, x[2])
+    #             candidates = []
+    #             forgetting_index += 1
+    #             x = forgetting_num[forgetting_index]
+            
+            
+    for (j, x) in enumerate(forgetting_num):
+        new_functions.print_progress_bar(len(forgetting_num), j, 'Making forgetting labels')
         if act_start <= x[1] and x[0] <= act_end:
             candidates = []
             for (i, act) in enumerate(AS):
