@@ -2012,6 +2012,7 @@ def date_generator(start, stop, step = timedelta(days = 1)):
         End time.
     step : datetime.timedelta, default 1 day
         Interval time between outputs.
+        
     Yields
     -------
     date : datetime.timedelta
@@ -2487,7 +2488,7 @@ def pickle_dump(path, name, data):
     with open(path / "{}.pickle".format(name), 'wb') as p:
         pickle.dump(data, p)
         
-def pickle_load(path, name, data):
+def pickle_load(path, name):
     """
     This loadsathe data saved as pickle.
     File extension is '.pickle'.
@@ -2498,8 +2499,6 @@ def pickle_load(path, name, data):
         Path to the file.
     name : str
         File name.
-    data : 
-        Data to load.
         
     Returns
     -------
@@ -2607,7 +2606,7 @@ class TimeInterval:
         is_included : boolean
             whether time t is included in this time interval
         """
-        if not isinstance(target_interval, timedelta):
+        if not isinstance(t, timedelta):
             raise ValueError('t must be a instance of timedelta.')
         return self.start <= t <= self.end
     

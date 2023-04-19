@@ -1,9 +1,14 @@
+import math
+import sys
 from datetime import datetime
+from PIL import Image
 from datetime import timedelta
+
 
 import numpy as np
 
 # self-made
+import anomaly
 import new_functions
 
 def generate_block_time_histogram_of_activities(AS, activities, step, start = None, end = None, target = ''):
@@ -421,6 +426,127 @@ def estimate_walking_speed(sensor_data, sensor_indexes, radius):
     return (speed_array.mean(), np.sqrt(speed_array.var()))
 
 
+def window_matrix(SD, time, duration, rate, indexes):
+    """
+    This generates sensor data matrix with fixed window length before a end_time (= time as input).
+    Zero padding is done if the time - duration is before the start time of SD.
+    
+    Parameters
+    ----------
+    SD : list of tuple
+        Raw sensor data.
+        (time, index, state).
+    time : datetime.timedelta
+        End time of sampling. End time is not included in matrix!
+        If you set `time = t_0`, the time t < t_0 is target.   
+    duration : datetime.timedelta
+        Sampling duration.
+    rate : datetime.timedelta
+        Sampling rate.
+    indexes : list of int
+        Sensor indexes.
+        
+    Returns
+    -------
+    mat : numpy.ndarray
+        Sensor data matrix. mat.shape = (len(indexes), sampling times).
+    """
+    initial_time = SD[0][0]
+    start_time = time - duration
+    if start_time < initial_time:
+        raise ValueError('Start time of sampling is before the start time of sensor data.')
+
+    ON_periods = {}  # record ON period of i-th sensor
+    for ind in indexes:
+        ON_periods[ind] = []
+    sensor_states = {i: False for i in indexes}
+    left_time = {i: None for i in indexes}
+    in_window = False
+    for (i, d) in enumerate(SD):
+        if not(start_time <= d[0] <= time) and in_window:
+            for x in indexes:
+                if sensor_states[x]:
+                    ON_periods[x].append((left_time[x], time))
+            break
+        if start_time <= d[0] <= time:
+            in_window = True
+            if d[2]:
+                sensor_states[d[1]] = True
+                left_time[d[1]] = d[0]
+            else:
+                if not(sensor_states[d[1]]):
+                    ON_periods[d[1]].append((start_time, d[0]))
+                else:
+                    ON_periods[d[1]].append((left_time[d[1]], d[0]))
+                    sensor_states[d[1]] = False
+        
+    mat = []
+    for t in new_functions.date_generator(start_time, time, step = rate):
+        vec = [any([start <= t <= end for (start, end) in ON_periods[x]]) for x in indexes]
+        mat.append(vec)
+    return np.array(mat).T
+
+
+def label_vector(AL_periods, time):
+    """
+    This generates a matrix of anomaly labels at a period.
+    
+    Parameters
+    ----------
+    AL_periods : dict of list of tuple of datetime.timedelta
+        Each periods of anomalies.
+        For example, AL_period[anomaly.HOUSEBOUND] = [(timedelta(days = 10), timedelta(days = 20)),
+                                                      (timedelta(days = 100), timedelta(days = 107))]
+    time : datetime.timedelta
+        End time of sampling. End time is not included in matrix!
+        If you set `time = t_0`, the time t < t_0 is target.
+        
+    Returns
+    -------
+    vec : numpy.ndarray
+        Label vector. mat.shape = (number of types of anomalies).
+        label_vec = [semi-bedridden,
+                     hosuebound,
+                     forgetting,
+                     wandering,
+                     fall while walking,
+                     fall while standing]
+    """
+    keys = [anomaly.BEING_SEMI_BEDRIDDEN,
+            anomaly.BEING_HOUSEBOUND,
+            anomaly.FORGETTING,
+            anomaly.WANDERING,
+            anomaly.FALL_WHILE_WALKING,
+            anomaly.FALL_WHILE_STANDING]
+    vec = np.array([any([s <= time <= e for (s, e) in AL_periods[k]]) for k in keys])
+    return vec
+
+
+def matrix2image(path, name, mat):
+    """
+    This saves the image of matrix whose elements take a value between [0, 1].
+    The closer the number is to 1, the darker the pixel is. 
+    
+    Parameters
+    ----------
+    path : pathlib.Path
+        Path to save the image file.
+    name : str
+        Filename of the image
+    mat : numpy.ndarray
+        Matrix.
+    """
+    mat = 1 - mat
+    img = Image.fromarray(np.uint8(mat * 255), mode = 'L')
+    img.save(path / (name + '.png'))
+
+
+def memory_size(obj):
+    size = sys.getsizeof(obj)
+    units = ('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB')
+    i = math.floor(math.log(size, 1024)) if size > 0 else 0
+    size = round(size / 1024 ** i, 2)
+    return f"{size} {units[i]}"
 
 
 
@@ -449,10 +575,26 @@ def estimate_walking_speed(sensor_data, sensor_indexes, radius):
 
 
 
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
 

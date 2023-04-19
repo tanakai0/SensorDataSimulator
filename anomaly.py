@@ -10,12 +10,12 @@ import activity_model
 import new_functions
 
 MMSE = 'MMSE'
+BEING_SEMI_BEDRIDDEN = 'being semi-bedridden'
 BEING_HOUSEBOUND = 'being housebound'
-BEING_SEMI_BEDRIDDEN = 'being bedridden'
+FORGETTING = 'forgetting'
+WANDERING = 'wandering'
 FALL_WHILE_WALKING = 'fall while walking'
 FALL_WHILE_STANDING = 'fall while standing'
-WANDERING = 'wandering'
-FORGETTING = 'forgetting'
 
 def simulate_MMSE(start, end, step, init_v = 29.5, g = -((29.0-19.5) / 9.0), error_s = None, error_e = 0):
     """
@@ -296,10 +296,16 @@ def forgetting_labels(AS, WT, forgetting_num):
         new_functions.print_progress_bar(len(forgetting_num), j, 'Making forgetting labels')
         if act_start <= x[1] and x[0] <= act_end:
             candidates = []
+            already_checked = False
             for (i, act) in enumerate(AS):
-                if act.activity.name in forgetting_activities and x[0] <= act.start and act.end <= x[1]:
-                    candidates.append(i)
-            # If the number of candidates at each period is smaller than the number of forgetting at the period, stop to assign forgetting during the period and print it's warning.
+                if (x[0] <= act.start) and (act.end <= x[1]):
+                    already_checked = True
+                    if act.activity.name in forgetting_activities:
+                        candidates.append(i)
+                else:
+                    if already_checked:
+                        break
+            # If the number of candidates is smaller than the number of forgetting at the period, stop to assign forgetting during the period and print it's warning.
             if len(candidates) < x[2]:
                 error_periods.append((x[0], x[1]))
             else:
