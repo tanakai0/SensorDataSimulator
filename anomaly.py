@@ -9,8 +9,13 @@ import matplotlib.pyplot as plt
 import activity_model
 import new_functions
 
+MMSE = 'MMSE'
 BEING_HOUSEBOUND = 'being housebound'
 BEING_SEMI_BEDRIDDEN = 'being bedridden'
+FALL_WHILE_WALKING = 'fall while walking'
+FALL_WHILE_STANDING = 'fall while standing'
+WANDERING = 'wandering'
+FORGETTING = 'forgetting'
 
 def simulate_MMSE(start, end, step, init_v = 29.5, g = -((29.0-19.5) / 9.0), error_s = None, error_e = 0):
     """
@@ -378,7 +383,7 @@ def determine_fall_indexes(AS, fall_parameters, fall_type):
     But a fall while walking and a fall while standing may be occurred if those indexes are overlapped.
     """
 
-    # chack values
+    # check values
     keys = fall_parameters.keys()
     if fall_type == 'w':
         if ('num' not in keys) or ('mean_lie_down_seconds' not in keys):

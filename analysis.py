@@ -245,10 +245,13 @@ def load_sensor_data(path):
             Sensor state.
     """
     sensor_data = []
+    flag = False
     with open(path, 'r') as f:
         for (i, line) in enumerate(f):
-            if 'day' in line:
+            if flag and (len(line) > 1):
                 sensor_data.append(line2sensor_data(line))
+            if 'day' in line:
+                flag = True
     return sensor_data
    
     
@@ -259,7 +262,7 @@ def line2sensor_data(line):
     Parameters
     ----------
     line : str
-        For example, line = '0000 [day] 05 [h] 59 [m] 39 [s] 200000 [ms] Sensor #22 ON'.
+        For example, line = '0000 05 59 39 200000 #22 ON'.
         
     Returns
     -------
@@ -271,14 +274,11 @@ def line2sensor_data(line):
         sensor_state : boolean
             Sensor state.
     """
-    
-    day_pos, h_pos, m_pos = line.find('day'), line.find('h'), line.find('m')
-    s_pos, ms_pos = line.find('s'), line.find('ms')
-    day = int(line[:day_pos - 1])
-    h = int(line[day_pos + 4: h_pos - 1])
-    m = int(line[h_pos + 2: m_pos - 1])
-    s = int(line[m_pos + 2: s_pos - 1])
-    ms = int(line[s_pos + 2: ms_pos - 1])
+    day = int(line[:4])
+    h = int(line[5:7] )
+    m = int(line[8:10])
+    s = int(line[11:13])
+    ms = int(line[14:20])
     state_pos = 0
     state = None
     ON_state_pos = line.find('ON')
@@ -314,7 +314,8 @@ def load_activity_sequence(path):
     activity_data = []
     with open(path, 'r') as f:
         for (i, line) in enumerate(f):
-            activity_data.append(line2activity_data(line))
+            if (i != 0) and (len(line) > 1):
+                activity_data.append(line2activity_data(line))
     return activity_data
 
 
@@ -325,7 +326,7 @@ def line2activity_data(line):
     Parameters
     ----------
     line : str
-        For example, line = '0000 [day] 00 [h] 00 [m] 00 [s] 000000 [ms] Sleep'.
+        For example, line = '0000 00 00 00 000000 Sleep'.
         
     Returns
     -------
@@ -335,15 +336,13 @@ def line2activity_data(line):
         activity name : str
             Name of the activity.
     """
-    day_pos, h_pos, m_pos = line.find('day'), line.find('h'), line.find('m')
-    s_pos, ms_pos = line.find('s'), line.find('ms')
-    day = int(line[:day_pos - 1])
-    h = int(line[day_pos + 4: h_pos - 1])
-    m = int(line[h_pos + 2: m_pos - 1])
-    s = int(line[m_pos + 2: s_pos - 1])
-    ms = int(line[s_pos + 2: ms_pos - 1])
+    day = int(line[:4])
+    h = int(line[5:7] )
+    m = int(line[8:10])
+    s = int(line[11:13])
+    ms = int(line[14:20])
     t = timedelta(days = day, hours = h, minutes = m, seconds = s, microseconds = ms)
-    act_name = line[ms_pos + 4:]
+    act_name = line[21:]
     return (t, act_name)
 
 

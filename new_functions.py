@@ -4,6 +4,7 @@ import itertools
 import json
 import math
 import os
+import pickle
 import random
 import sys
 from mpl_toolkits.mplot3d import Axes3D
@@ -717,18 +718,17 @@ def save_activity_sequence(path, AS, file_name = 'activity_sequence'):
          
     Examples
     --------
-    0000 [day] 00 [h] 00 [m] 00 [s] 000000 [ms] Sleep
-    0000 [day] 06 [h] 34 [m] 10 [s] 812474 [ms] Go out
-    0000 [day] 06 [h] 41 [m] 33 [s] 026441 [ms] Urination
+    day hour minute second millisecond activity
+    0000 00 00 00 000000 Sleep
+    0000 05 51 39 857257 Clean
+    0000 06 25 20 719550 Defecation
+    0000 06 34 52 679614 Take a snack
     ...
-    0007 [day] 21 [h] 23 [m] 05 [s] 211270 [ms] Urination
-    0007 [day] 21 [h] 26 [m] 14 [s] 307355 [ms] Clean
-    0007 [day] 21 [h] 32 [m] 07 [s] 931410 [ms] Sleep
     """
     
-    text = ''
+    text = 'day hour minute second millisecond activity\n'
     for act in AS:
-        text += "{:04} [day] {:02} [h] {:02} [m] {:02} [s] {:06} [ms] {}\n".format(*get_d_h_m_s_ms(act.start), act.activity.name)
+        text += "{:04} {:02} {:02} {:02} {:06} {}\n".format(*get_d_h_m_s_ms(act.start), act.activity.name)
     if not os.path.exists(path):
         os.makedirs(path)
     file_path = path / "{}.txt".format(file_name)
@@ -2137,12 +2137,13 @@ def save_binary_sensor_data(path, sensors, sensor_data, filename = ''):
     for i in sorted(index2sensor.keys()):
         Text += "Sensor #{:02}: {}\n".format(i, index2sensor[i].save_text())
     Text += '\n'
+    Text += 'day hour minute second millisecond index state\n'
     for d in data:
         if d[2] == True:
             on_off = 'ON'
         else:
             on_off = 'OFF'
-        Text += "{:04} [day] {:02} [h] {:02} [m] {:02} [s] {:06} [ms] Sensor #{:02} {}\n".format(*get_d_h_m_s_ms(d[0]), d[1], on_off)
+        Text += "{:04} {:02} {:02} {:02} {:06} #{:02} {}\n".format(*get_d_h_m_s_ms(d[0]), d[1], on_off)
     Text += '\n'
     file_path = path / "{}.txt".format(filename)
     with open(file_path, "w") as f:
@@ -2446,12 +2447,12 @@ def generate_six_anomalies(path, save_path, days, show = True):
         plt.show()
     plt.close()
 
-    anomaly.save_MMSE(save_path, MMSE)
-    anomaly.save_MMSE(save_path, wandering_num, 'wandering_num')
-    anomaly.save_MMSE(save_path, wandering_mean_minutes, 'wandering_mean_minutes')
-    anomaly.save_MMSE(save_path, forgetting_num, 'forgetting_num')
-    anomaly.save_housebound_labels(save_path, housebound_labels)
-    anomaly.save_housebound_labels(save_path, semi_bedridden_labels, 'semi_bedridden_labels')
+    # anomaly.save_MMSE(save_path, MMSE)
+    # anomaly.save_MMSE(save_path, wandering_num, 'wandering_num')
+    # anomaly.save_MMSE(save_path, wandering_mean_minutes, 'wandering_mean_minutes')
+    # anomaly.save_MMSE(save_path, forgetting_num, 'forgetting_num')
+    # anomaly.save_housebound_labels(save_path, housebound_labels)
+    # anomaly.save_housebound_labels(save_path, semi_bedridden_labels, 'semi_bedridden_labels')
     ret_dict = {'MMSE': MMSE, 
                 'housebound_labels': housebound_labels,
                  'semi_bedridden_labels': semi_bedridden_labels, 
@@ -2464,6 +2465,50 @@ def generate_six_anomalies(path, save_path, days, show = True):
     return ret_dict
         
         
+def pickle_dump(path, name, data):
+    """
+    This saves the data as pickle object at path.
+    File extension is '.pickle'.
+    
+    Parameter
+    ---------
+    path : pathlib.Path
+        Path to the file.
+    name : str
+        File name.
+    data : 
+        Data to save.
+        
+    Returns
+    -------
+    None
+    """
+    
+    with open(path / "{}.pickle".format(name), 'wb') as p:
+        pickle.dump(data, p)
+        
+def pickle_load(path, name, data):
+    """
+    This loadsathe data saved as pickle.
+    File extension is '.pickle'.
+    
+    Parameter
+    ---------
+    path : pathlib.Path
+        Path to the file.
+    name : str
+        File name.
+    data : 
+        Data to load.
+        
+    Returns
+    -------
+    loaded_object : 
+    """
+    loaded_object = None
+    with open(path / "{}.pickle".format(name), 'rb') as f:
+        loaded_object = pickle.load(f)
+    return loaded_object
         
         
         
