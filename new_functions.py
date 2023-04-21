@@ -27,6 +27,40 @@ DIRECT_WALKING = 'Direct'
 WANDERING_WALKING = 'Wander'
 NOT_WALKING = 'stop'
 
+
+def date_generator(start, stop, step = timedelta(days = 1)):
+    """
+    Generator for specific intervals of dates.
+    
+    Parameters
+    ----------
+    start : datetime.timedelta
+        Start time.
+    stop : datetime.timedelta
+        End time.
+    step : datetime.timedelta, default 1 day
+        Interval time between outputs.
+        
+    Yields
+    -------
+    date : datetime.timedelta
+        Dates
+         
+    Examples
+    --------
+    start = timedelta(days = 24)
+    end = timedelta(days = 25, minutes = 30)
+    step = timedelta(hours = 1)
+    yield : timedelta(days = 24) -> timedelta(days = 24, hours = 1) -> timedelta(days = 24, hours = 2)
+            ... -> timedelta(days = 24, hours = 23) -> timedelta(days = 25) -> stop
+
+    """
+    current = start
+    while current < stop:
+        yield current
+        current += step
+        
+
 def generate_data_folder(path, folder_name):
     """
     This class generates a path of a 'folder_name' folder in 'path'.
@@ -1998,39 +2032,6 @@ def update_states_of_motion_sensors(sensors, sensor_data, sensor_states, wt, sam
             update_state_of_binary_sensor(sensor_data, sensor_states, s, state, t)
         else:
             continue
-            
-             
-def date_generator(start, stop, step = timedelta(days = 1)):
-    """
-    Generator for specific intervals of dates.
-    
-    Parameters
-    ----------
-    start : datetime.timedelta
-        Start time.
-    stop : datetime.timedelta
-        End time.
-    step : datetime.timedelta, default 1 day
-        Interval time between outputs.
-        
-    Yields
-    -------
-    date : datetime.timedelta
-        Dates
-         
-    Examples
-    --------
-    start = timedelta(days = 24)
-    end = timedelta(days = 25, minutes = 30)
-    step = timedelta(hours = 1)
-    yield : timedelta(days = 24) -> timedelta(days = 24, hours = 1) -> timedelta(days = 24, hours = 2)
-            ... -> timedelta(days = 24, hours = 23) -> timedelta(days = 25) -> stop
-
-    """
-    current = start
-    while current < stop:
-        yield current
-        current += step
         
         
 def define_synchronous_sampling_point(reference_point, start_time, sampling_seconds):

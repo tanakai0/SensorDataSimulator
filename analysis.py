@@ -549,3 +549,168 @@ def memory_size(obj):
     return f"{size} {units[i]}"
 
 
+def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 'raw'):
+    """
+    This divided the time into fixed time intervals.
+    The SD and AL_periods are discretized similary.
+    Some feature representations of sensor data [1] can be used, such as 'raw', 'change point', 'last-fired'.
+    [1] TLM van Kasteren, G. Englebienne, and B. J. Krose,
+        "Human activity recognition from wireless sensor network data: Benchmark and software."
+        Proc of Activity recognition in pervasive intelligent environments, 2011, 165–186.
+    
+    Parameters
+    ----------
+    SD : list of tuple
+        Raw sensor data.
+        (time, index, state).
+    AL : list of tuple
+        Anomaly labels.
+        For example, AL[anomaly.HOUSEBOUND] = [(timedelta(days = 10), timedelta(days = 20)),
+                                               (timedelta(days = 100), timedelta(days = 107))]
+    start : datetime.timedelta
+        Start time of discretization.
+    end : datetime.timedelta
+        End time of discretization.
+    duration : datetime.timedelta
+        Length of time interval.
+    _type : str, default 'raw'
+        Data representation as cited in [1].
+        'raw': original, so take 1 if a sensor ON in the time interval
+        'change point': take 1 if a sensor changes its value in the time interval, else 0
+        'last-fired' : take 1 if the state of the sensor was changed lastly among all sensors, else 0
+
+    Returns
+    -------
+    (SD_mat, SD_indexes, AL_mat, AL_indexes) : tuple of matrix
+         SD_mat : numpy.ndarray
+             SD_mat.shape = (number of sensors, number of time intervals)
+             SD_mat[i][j] = 1 if the i-th sensor takes 1 in the j-th time intervals, else 0.
+         SD_names : list
+             Raw header of SD_mat.
+         AL_mat : numpy.ndarray
+             AL_mat.shape = (number of anomalies, number of time intervals)
+             AL_mat[i][j] = 1 if the i-th anomaly occurs in the j-th time intervals, else 0.
+         AL_names : list
+             Raw header of AL_mat.
+    """
+    
+    def transformation4change_point(SD):
+        """
+        This transform the raw sensor data to be able to calculate change point features in matrix_with_discretized_time_interval.
+
+        Parameters
+        ----------
+        SD : list of tuple
+            Raw sensor data.
+            (time, index, state).
+
+        Returns
+        -------
+        CP : list of tuple
+            (time, index, state).
+        """
+        CP = []
+        epsilon = timedelta(milliseconds = 1)    # small value to represent small time interval as a change point
+        for x in SD:
+            if x[2]:
+                CP.append((x[0], x[1], True))
+                CP.append((x[0] + epsilon, x[1], False))
+            else:
+                CP.append((x[0] - epsilon, x[1], True))
+                CP.append((x[0], x[1], False))
+        return CP
+    
+    def transformation4last_fired(SD):
+        """
+        This transform the raw sensor data to be able to calculate last-fired features in matrix_with_discretized_time_interval.
+
+        Parameters
+        ----------
+        SD : list of tuple
+            Raw sensor data.
+            (time, index, state).
+
+        Returns
+        -------
+        LF : list of tuple
+            (time, index, state).
+        """
+        LF = [(SD[0][0], SD[0][1], SD[0][2])]
+        last_sensor = SD[0][1]
+        for x in SD[1:]:
+            LF.append((x[0], last_sensor, False))
+            LF.append((x[0], x[1], True))
+            last_sensor = x[1]
+        return LF
+
+        
+    if _type not in ['raw', 'change point', 'last-fired']:
+        raise ValueError('undefined type of _type option in matrix_with_discretized_time_interval')
+    if _type == 'change point':
+        SD = transformation4change_point(SD)
+    if _type == 'last-fired':
+        SD = transformation4last_fired(SD)
+    
+    # check the names of sensors
+    SD_names = []
+    for sd in SD:
+        if sd[1] not in SD_names:
+            SD_names.append(sd[1])
+    SD_names.sort()
+    AL_names = list(AL.keys())
+    
+    SD_name2index = {name: i for (i, name) in enumerate(SD_names)}
+    AL_name2index = {name: i for (i, name) in enumerate(AL_names)}
+    
+    AD = []  # convert AL into sensor-like representation, anomaly data (AD)
+    for anomaly in AL_names:
+        for x in AL[anomaly]:
+            AD.append((x[0], anomaly, True))
+            AD.append((x[1], anomaly, False))
+    AD.sort(key = lambda x: x[0])
+    
+    mat_len = len(list(new_functions.date_generator(start, end, duration)))
+    SD_mat = np.zeros((len(SD_names), mat_len), dtype = bool)
+    AL_mat = np.zeros((len(AL_names), mat_len), dtype = bool)
+    
+    SD_states = {v: False for v in SD_names}
+    AL_states = {v: False for v in AL_names}
+    SD_i, AL_i = 0, 0
+    
+    while SD[SD_i][0] < start:
+        SD_i += 1
+    while AD[AL_i][0] < start:
+        AL_i += 1
+        
+    len_SD = len(SD)
+    len_AL = len(AL)
+    reach_last_SD, reach_last_AL = False, False  # whether to reach the last indexes
+    
+    for (i, t) in enumerate(new_functions.date_generator(start, end, duration)):
+        tt = t + duration
+        if not(reach_last_SD):
+            while t <= SD[SD_i][0] < tt:
+                SD_states[SD[SD_i][1]] = SD[SD_i][2]
+                SD_mat[SD_name2index[SD[SD_i][1]]][i] = True
+                SD_i += 1
+                if SD_i >= len_SD:
+                    reach_last_SD = True
+                    break
+        if not(reach_last_AL):
+            while t <= AD[AL_i][0] < tt:
+                AL_states[AD[AL_i][1]] = AD[AL_i][2]
+                AL_mat[AL_name2index[AD[AL_i][1]]][i] = True
+                AL_i += 1
+                if AL_i >= len_AL:
+                    reach_last_AL = True
+                    break
+        for x in SD_names:
+            if SD_states[x]:
+                SD_mat[SD_name2index[x]][i] = True
+        for x in AL_names:
+            if AL_states[x]:
+                AL_mat[AL_name2index[x]][i] = True
+        
+    return (SD_mat, SD_names, AL_mat, AL_names)
+
+
