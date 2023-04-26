@@ -583,13 +583,13 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
     -------
     (SD_mat, SD_indexes, AL_mat, AL_indexes) : tuple of matrix
          SD_mat : numpy.ndarray
-             SD_mat.shape = (number of sensors, number of time intervals)
-             SD_mat[i][j] = 1 if the i-th sensor takes 1 in the j-th time intervals, else 0.
+             SD_mat.shape = (number of time intervals, number of sensors)
+             SD_mat[i][j] = 1 if the j-th sensor takes 1 in the i-th time intervals, else 0.
          SD_names : list
              Raw header of SD_mat.
          AL_mat : numpy.ndarray
-             AL_mat.shape = (number of anomalies, number of time intervals)
-             AL_mat[i][j] = 1 if the i-th anomaly occurs in the j-th time intervals, else 0.
+             AL_mat.shape = (number of time intervals, number of anomalies)
+             AL_mat[i][j] = 1 if the j-th anomaly occurs in the i-th time intervals, else 0.
          AL_names : list
              Raw header of AL_mat.
     """
@@ -620,7 +620,7 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
                 CP.append((x[0], x[1], False))
         return CP
     
-    def transformation4last_fired(SD):
+    def transformation4last_fired(SD, start, end, duration):
         """
         This transform the raw sensor data to be able to calculate last-fired features in matrix_with_discretized_time_interval.
 
@@ -629,18 +629,47 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
         SD : list of tuple
             Raw sensor data.
             (time, index, state).
+        start : datetime.timedelta
+            Start time of discretization.
+        end : datetime.timedelta
+            End time of discretization.
+        duration : datetime.timedelta
+            Length of time interval.
 
         Returns
         -------
         LF : list of tuple
             (time, index, state).
         """
-        LF = [(SD[0][0], SD[0][1], SD[0][2])]
-        last_sensor = SD[0][1]
-        for x in SD[1:]:
-            LF.append((x[0], last_sensor, False))
-            LF.append((x[0], x[1], True))
-            last_sensor = x[1]
+        # LF = [(SD[0][0], SD[0][1], True)]
+        # last_sensor = SD[0][1]
+        # for x in SD[1:]:
+        #     LF.append((x[0], last_sensor, False))
+        #     LF.append((x[0], x[1], True))
+        #     last_sensor = x[1]
+        
+        LF = []
+        epsilon = timedelta(milliseconds = 1)    # small value to represent small time interval
+        SD_i = 0
+        len_SD = len(SD)
+        reach_last_SD = False
+        last_sensor = None
+        for t in new_functions.date_generator(start, end, duration):
+            tt = t + duration
+            index_list = []
+            if not(reach_last_SD):
+                while t <= SD[SD_i][0] < tt:
+                    index_list.append(SD[SD_i][1])
+                    SD_i += 1
+                    if SD_i >= len_SD:
+                        reach_last_SD = True
+                        break
+            if (last_sensor == None) and (len(index_list) == 0):
+                continue
+            if len(index_list) != 0:
+                last_sensor = index_list[-1]
+            LF.append((t, last_sensor, True))
+            LF.append((t + epsilon, last_sensor, False))
         return LF
 
         
@@ -649,7 +678,7 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
     if _type == 'change point':
         SD = transformation4change_point(SD)
     if _type == 'last-fired':
-        SD = transformation4last_fired(SD)
+        SD = transformation4last_fired(SD, start, end, duration)
     
     # check the names of sensors
     SD_names = []
@@ -662,16 +691,16 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
     SD_name2index = {name: i for (i, name) in enumerate(SD_names)}
     AL_name2index = {name: i for (i, name) in enumerate(AL_names)}
     
-    AD = []  # convert AL into sensor-like representation, anomaly data (AD)
-    for anomaly in AL_names:
-        for x in AL[anomaly]:
-            AD.append((x[0], anomaly, True))
-            AD.append((x[1], anomaly, False))
-    AD.sort(key = lambda x: x[0])
+    AD = []  # convert AL into sensor-like representation
+    for a in AL_names:
+        for x in AL[a]:
+            AD.append((x[0], a, True))
+            AD.append((x[1], a, False))
+    AL = sorted(AD, key = lambda x: x[0])
     
     mat_len = len(list(new_functions.date_generator(start, end, duration)))
-    SD_mat = np.zeros((len(SD_names), mat_len), dtype = bool)
-    AL_mat = np.zeros((len(AL_names), mat_len), dtype = bool)
+    SD_mat = np.zeros((mat_len, len(SD_names)), dtype = bool)
+    AL_mat = np.zeros((mat_len, len(AL_names)), dtype = bool)
     
     SD_states = {v: False for v in SD_names}
     AL_states = {v: False for v in AL_names}
@@ -679,38 +708,38 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
     
     while SD[SD_i][0] < start:
         SD_i += 1
-    while AD[AL_i][0] < start:
+    while AL[AL_i][0] < start:
         AL_i += 1
         
     len_SD = len(SD)
     len_AL = len(AL)
     reach_last_SD, reach_last_AL = False, False  # whether to reach the last indexes
-    
+
     for (i, t) in enumerate(new_functions.date_generator(start, end, duration)):
         tt = t + duration
         if not(reach_last_SD):
             while t <= SD[SD_i][0] < tt:
                 SD_states[SD[SD_i][1]] = SD[SD_i][2]
-                SD_mat[SD_name2index[SD[SD_i][1]]][i] = True
+                SD_mat[i][SD_name2index[SD[SD_i][1]]] = True
                 SD_i += 1
                 if SD_i >= len_SD:
                     reach_last_SD = True
                     break
         if not(reach_last_AL):
-            while t <= AD[AL_i][0] < tt:
-                AL_states[AD[AL_i][1]] = AD[AL_i][2]
-                AL_mat[AL_name2index[AD[AL_i][1]]][i] = True
+            while t <= AL[AL_i][0] < tt:
+                AL_states[AL[AL_i][1]] = AL[AL_i][2]
+                AL_mat[i][AL_name2index[AL[AL_i][1]]] = True
                 AL_i += 1
                 if AL_i >= len_AL:
                     reach_last_AL = True
                     break
         for x in SD_names:
             if SD_states[x]:
-                SD_mat[SD_name2index[x]][i] = True
+                SD_mat[i][SD_name2index[x]] = True
         for x in AL_names:
             if AL_states[x]:
-                AL_mat[AL_name2index[x]][i] = True
-        
+                AL_mat[i][AL_name2index[x]] = True
+
     return (SD_mat, SD_names, AL_mat, AL_names)
 
 
