@@ -668,8 +668,15 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
                 continue
             if len(index_list) != 0:
                 last_sensor = index_list[-1]
-            LF.append((t, last_sensor, True))
-            LF.append((t + epsilon, last_sensor, False))
+                if len(LF) == 0:
+                    LF.append((t, last_sensor, True))
+                else:
+                    if LF[-1][1] == last_sensor:
+                        continue
+                    else:
+                        LF.append((t - epsilon, LF[-1][1], False))
+                        LF.append((t, last_sensor, True))
+            
         return LF
 
         
