@@ -586,12 +586,36 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
              SD_mat.shape = (number of time intervals, number of sensors)
              SD_mat[i][j] = 1 if the j-th sensor takes 1 in the i-th time intervals, else 0.
          SD_names : list
-             Raw header of SD_mat.
+             Raw header of SD_mat. sorted.
          AL_mat : numpy.ndarray
              AL_mat.shape = (number of time intervals, number of anomalies)
              AL_mat[i][j] = 1 if the j-th anomaly occurs in the i-th time intervals, else 0.
          AL_names : list
              Raw header of AL_mat.
+             
+    Test code
+    ---------
+    # Test for analysis.matrix_with_discretized_time_interval
+    test_SD = [(timedelta(seconds = 10), 0, True), (timedelta(seconds = 50), 0, False),
+               (timedelta(seconds = 80), 0, True), (timedelta(seconds = 100), 0, False),
+               (timedelta(seconds = 20), 1, True), (timedelta(seconds = 40), 1, False),
+               (timedelta(seconds = 60), 1, True), (timedelta(seconds = 90), 1, False),
+               (timedelta(seconds = 30), 2, True), (timedelta(seconds = 70), 2, False)]
+
+    test_AL = {'A': [(timedelta(seconds = 20), timedelta(seconds = 60)), (timedelta(seconds = 80), timedelta(seconds = 90))], 
+               'B': [(timedelta(seconds = 40), timedelta(seconds = 50)), (timedelta(seconds = 70), timedelta(seconds = 100))]}
+
+    test_SD.sort(key = lambda x: x[0])
+    start = timedelta(seconds = -20)
+    end = timedelta(seconds = 180)
+    step = timedelta(seconds = 5)
+    (SD_mat, SD_names, AL_mat, AL_names) = analysis.matrix_with_discretized_time_interval(test_SD, test_AL, start, end, step, _type = 'last-fired')
+    print(SD_mat)
+    print(SD_names)
+    for (i, sd) in enumerate(SD_mat):
+        print(f"{timedelta(seconds = i*step.seconds) + start} {sd}")   
+    for (i, x) in enumerate(AL_mat):
+        print(f"{timedelta(seconds = i*step.seconds) + start} {x}")
     """
     
     def transformation4change_point(SD):
@@ -750,6 +774,32 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
     return (SD_mat, SD_names, AL_mat, AL_names)
 
 
+class naive_bayes():
+    """
+    Naive Bayes especially for binary sensors.
+    Time slices are independent with each other.
+    Output of binary sensors are independent with each other.
+    """
+    
+    def fit(self, data, label):
+        """
+        This learn parameters of Naive Bayes by maximum likelihood estimation.
+        
+        Parameters
+        ----------
+        data : numpy.ndarray
+            data.shape = (number of times, number of sensors)
+            data[i] can only be False (0) or True (1). 
+            
+        label : numpy.ndarray
+            Label of the data.
+            label.shape = (number of times, )
+            label[i] can only be in {0, 1, ..., (number of label types) - 1}.
+        """
+        
+        
+
+
 class HMM4binary_sensors():
     """
     Hidden Markov model (HMM) especially for binary sensors.
@@ -782,6 +832,12 @@ class HMM4binary_sensors():
     ----------
     [1] L. R. Rabiner, "A tutorial on hidden Markov models and selected applications in speech recognition."
         Proc. of the IEEE, 77-2(1989), 257-286.
+    [2] TL van Kasteren, G. Englebienne, and B. J. Kröse, "Human activity recognition from wireless sensor
+        network data: Benchmark and software." Proc. of the Activity recognition in pervasive 
+        intelligent environments, Paris, Atlantis Press, 2011, 165-186.
+    [3] H. H. Avilés-Arriaga et al. "A comparison of dynamic naive bayesian classifiers and 
+        hidden markov models for gesture recognition."
+        Journal of applied research and technology, 9-1(2011), 81-102.
     """
     
     
@@ -808,19 +864,22 @@ class HMM4binary_sensors():
         """
         self.n = state_num
         self.m = sensor_num
-        self.C = np.zeros(n)
-        self.A = np.zeros((n, n))
-        self.P = np.zeros((n, m))
+        self.C = np.zeros(self.n)
+        self.A = np.zeros((self.n, self.n))
+        self.P = np.zeros((self.n, self.m))
+        if type(observations) != list:
+            observations = [observations]
+            states = [states]
         for (seq, s) in zip(observations, states):
             self.C[s[0]] += 1
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
             # pairs[i] = (s_{t}, s_{t+1}), 1<= t <= T-1, T: total length of the obsevation
             pairs = [(s[t-1], s[t]) for t in range(1, len(s))]
-            for i in range(n):
-                for j in range(n):
+            for i in range(self.n):
+                for j in range(self.n):
                     self.A[i][j] = pairs.count((i, j)) / (counts[i] - (s[-1] == i))
-                for j in range(m):
+                for j in range(self.m):
                     self.P[i][j] = sum([(s[t] == i) * seq[t][j] for t in range(len(s))]) / counts[i]
         len_o = len(observations)
         self.C /= len_o
@@ -865,21 +924,21 @@ class HMM4binary_sensors():
         # Viterbi algorithm
         
         # Initialization
-        ones_vec = np.ones(self.n)
+        ones_vec = np.ones(self.m)
         for i in range(self.n):
-            delta[0][i] = self.C[i] * np.abs((ones_vec - observation[0]) - self.P[i])
+            delta[0][i] = self.C[i] * np.prod(np.abs((ones_vec - observation[0]) - self.P[i]))
             psi[0][i] = 0
             
         # Recursion
         for t in range(1, len_o):
             for j in range(self.n):
                 score_vec = delta[t-1] * self.A[:, j]
-                delta[t][j] = np.max(score_vec) * np.abs((ones_vec - observation[t]) - self.P[j])
+                delta[t][j] = np.max(score_vec) * np.prod(np.abs((ones_vec - observation[t]) - self.P[j]))
                 psi[t][j] = np.argmax(score_vec)
                 
         # Termination
         prob = np.max(delta[-1])
-        state = np.zeros(len_o)
+        state = np.zeros(len_o, dtype = int)
         state[-1] = np.argmax(delta[-1])
         
         # Path backtracking
