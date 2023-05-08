@@ -750,3 +750,140 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
     return (SD_mat, SD_names, AL_mat, AL_names)
 
 
+class HMM4binary_sensors():
+    """
+    Hidden Markov model (HMM) especially for binary sensors.
+    Output of binary sensors are independent with each other.
+    Output of binary sensors (0 or 1) is modeled as a bernoulli distribution.
+    
+    Abbreviations
+    n : Number of the hidden states.
+    m : Number of the binary sensors.
+    s_t : Random variables of hidden states at time t.
+    c_i : Initial probability at state i, P(s_1 = i) = c_i.
+    a_i_j : Transition probability from state i to state j, P(s_t = j | s_{t-1} = i) = a_i_j.
+    p_i_j : Parameter of bernoulli dstribution of j-th value at state i.
+    x_t : Output symbol vector at time t, for now,
+          P(x_t = b | s_t = i) = (p_i_1^b * (1-p_i_1)^{1-b}) * ... * (p_i_m^b * (1-p_i_m)^{1-b}).
+    
+    n : int
+        Number of hidden states.
+    C : numpy.ndarray
+        Initial probabilities of states.
+        C.shape = (n, ).
+    A : numpy.ndarray
+        Transition matrix.
+        A.shape = (n, n).
+    P : numpy.ndarray
+        Parameters of bernoulli dstributions.
+        P.shaoe = (n, m).
+        
+    References
+    ----------
+    [1] L. R. Rabiner, "A tutorial on hidden Markov models and selected applications in speech recognition."
+        Proc. of the IEEE, 77-2(1989), 257-286.
+    """
+    
+    
+    def fit_with_true_hidden_states(self, state_num, sensor_num, observations, states):
+        """
+        This learn parameters of HMM from the observations with true hidden states.
+        Maximum likelihood estimator.
+        
+        Parameters
+        ----------
+        state_num : int
+            Number of hidden states.
+        sensor_num : int
+            Number of binary sensors.
+        observations : list of numpy.ndarray
+            observations[i].shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+            If len(observations) > 1, the output parameters are the average of the estimated parameters for each data.
+        states : list of numpy.ndarray
+            states[i].shape = (number of times,)
+            states[i] are hidden states of observations[i].
+            The length of states[i] equals to the one of observations[i].
+            The values can only be {0, 1, 2, ..., state_num - 1}.
+        """
+        self.n = state_num
+        self.m = sensor_num
+        self.C = np.zeros(n)
+        self.A = np.zeros((n, n))
+        self.P = np.zeros((n, m))
+        for (seq, s) in zip(observations, states):
+            self.C[s[0]] += 1
+            # counts[i] = the total number of occurrences of state i in the sequence
+            counts = np.bincount(s)
+            # pairs[i] = (s_{t}, s_{t+1}), 1<= t <= T-1, T: total length of the obsevation
+            pairs = [(s[t-1], s[t]) for t in range(1, len(s))]
+            for i in range(n):
+                for j in range(n):
+                    self.A[i][j] = pairs.count((i, j)) / (counts[i] - (s[-1] == i))
+                for j in range(m):
+                    self.P[i][j] = sum([(s[t] == i) * seq[t][j] for t in range(len(s))]) / counts[i]
+        len_o = len(observations)
+        self.C /= len_o
+        self.A /= len_o
+        self.P /= len_o
+        return
+    
+    def predict_states(self, observation):
+        """
+        This predicts states from observed sequences.
+        P(state | observations, parameters) are maximized by Viterbi algorithm.
+        
+        Parameters
+        ----------
+        observation : numpy.ndarray
+            observation.shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+        
+        Returns
+        -------
+        (state, prob) : tuple
+        
+        state : numpy.ndarray
+            states.shape = (number of times,)
+            The length equals to one of observations.
+        prob : float
+            Probability of the 'state'.
+            max P(s_1, ..., s_n, O_1, ..., O_n | parameters). 
+        """
+        
+        len_o = len(observation)
+        
+        # delta records the quantity.
+        # Let O_t be the observed value at time t.
+        # delta[t][i] = max_{s_0, ... s_{t-1}}{P(s_1, ..., s_{t-1}, s_t = i, O_1, ..., O_t | parameters)}.
+        # delta[t+1][j] = max_{i}{delta[t][i] * a_i_j} * P(x_{t+1} = O_{t+1} | s_t = j)
+        delta = np.zeros((len_o, self.n))
+        
+        # psi records the argument which maximized delta[t+1][j]
+        psi = np.zeros((len_o, self.n))
+        
+        # Viterbi algorithm
+        
+        # Initialization
+        ones_vec = np.ones(self.n)
+        for i in range(self.n):
+            delta[0][i] = self.C[i] * np.abs((ones_vec - observation[0]) - self.P[i])
+            psi[0][i] = 0
+            
+        # Recursion
+        for t in range(1, len_o):
+            for j in range(self.n):
+                score_vec = delta[t-1] * self.A[:, j]
+                delta[t][j] = np.max(score_vec) * np.abs((ones_vec - observation[t]) - self.P[j])
+                psi[t][j] = np.argmax(score_vec)
+                
+        # Termination
+        prob = np.max(delta[-1])
+        state = np.zeros(len_o)
+        state[-1] = np.argmax(delta[-1])
+        
+        # Path backtracking
+        for t in reversed(range(len_o - 1)):
+            state[t] = psi[t+1][state[t+1]]
+            
+        return (state, prob)
