@@ -3,6 +3,7 @@ import sys
 from datetime import datetime
 from PIL import Image
 from datetime import timedelta
+from hmmlearn import hmm
 
 
 import numpy as np
@@ -1243,22 +1244,22 @@ class HMM_likelihood_classifier():
     def fit(self, n_components, SD, AL):
         self.n_components = n_components
         self.n_features = SD.shape[1] + 1
-        (normal_ranges, anomaly_ranges) = analysis.normal_anomaly_ranges(AL)
+        (normal_ranges, anomaly_ranges) = normal_anomaly_ranges(AL)
         self.normal_model = hmm.CategoricalHMM(n_components = self.n_components, n_features = self.n_features)
         self.anomaly_model = hmm.CategoricalHMM(n_components = self.n_components, n_features = self.n_features)
-        LF_vec = analysis.LF_mat2vec(SD_mat)
+        LF_vec = LF_mat2vec(SD)
         
-        normal_data = [SD[s:e] for (s, e) in normal_ranges]
+        normal_data = [LF_vec[s:e] for (s, e) in normal_ranges]
         normal_train = np.concatenate(normal_data, axis = 0)
-        normal_LF_vec = analysis.LF_mat2vec(normal_train)
+        normal_train = normal_train.reshape((len(normal_train), 1))
         normal_lengths = np.array([len(d) for d in normal_data])
-        self.normal_model.fit(normal_LF_vec.reshape((len(normal_LF_vec), 1)), normal_lengths)
+        self.normal_model.fit(normal_train, normal_lengths)
 
-        anomaly_data = [SD[s:e] for (s, e) in anomaly_ranges]
+        anomaly_data = [LF_vec[s:e] for (s, e) in anomaly_ranges]
         anomaly_train = np.concatenate(anomaly_data, axis = 0)
-        anomaly_LF_vec = analysis.LF_mat2vec(anomaly_train)
+        anomaly_train = anomaly_train.reshape((len(anomaly_train), 1))
         anomaly_lengths = np.array([len(d) for d in anomaly_data])
-        self.anomaly_model.fit(anomaly_LF_vec.reshape((len(anomaly_LF_vec), 1)), anomaly_lengths)
+        self.anomaly_model.fit(anomaly_train, anomaly_lengths)
         
     def convergence_info(self):
         print("normal model")
@@ -1306,7 +1307,7 @@ class HMM_likelihood_classifier():
         labels : numpy.ndarray
             labels.shape = (n_t - w + 1, ), n_t = (number of times in data)
         """
-        data = analysis.LF_mat2vec(SD)
+        data = LF_mat2vec(SD)
         half_w = int((w-1) / 2)
         labels = []
         total_len = int(data.shape[0] - w + 1)
