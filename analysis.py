@@ -774,6 +774,129 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type = 
     return (SD_mat, SD_names, AL_mat, AL_names)
 
 
+
+    
+    
+def make_AL_periods(path):
+    """
+    This generates dictionary AL_periods.
+    
+    Parameters
+    ----------
+    path : pathlib.Path
+        Path that includes the folder.
+    """
+    AL = new_functions.pickle_load(path, 'AL')
+    AL_periods = {}
+    AL_periods[anomaly.BEING_SEMI_BEDRIDDEN] = AL[anomaly.BEING_SEMI_BEDRIDDEN]
+    AL_periods[anomaly.BEING_HOUSEBOUND] = AL[anomaly.BEING_HOUSEBOUND]
+    AL_periods[anomaly.FORGETTING] = [(x[4], x[5]) for x in AL[anomaly.FORGETTING]]
+    AL_periods[anomaly.WANDERING] = [(x[1], x[2]) for x in AL[anomaly.WANDERING]]
+    AL_periods[anomaly.FALL_WHILE_WALKING] = [(x[0], x[0] + timedelta(seconds = x[1])) for x in AL[anomaly.FALL_WHILE_WALKING]]
+    AL_periods[anomaly.FALL_WHILE_STANDING] = [(x[0], x[0] + timedelta(seconds = x[1])) for x in AL[anomaly.FALL_WHILE_STANDING]]
+    return AL_periods
+
+
+def normal_anomaly_ranges(AL_mat):
+    """
+    This divides time into normal range and anomaly range.
+    Normal ranges are consecutive 0 sequence in AL_mat.
+    Anomaly ranges are consecutive 1 sequence in AL_mat.
+    For example, 
+    AL_mat = [1, 1, 0, 1, 1, 0, 0, 0, 0, 0].
+    Normal ranges are [(2, 3), (5, 10)].
+    Anomaly ranges are [(0, 2), (3, 5)].
+    
+    Parameters
+    ----------
+    AL_mat : numpy.ndarray
+         AL_mat.shape = (number of time intervals,)
+         AL_mat[i] = 1 if the anomaly occurs in the i-th time intervals, else 0.
+         
+    Returns
+    -------
+    (normal_range, anomaly_range) : tuple of list
+    """
+    normal = []
+    anomaly = []
+    in_range = False
+    start = None
+    for (i, x) in enumerate(AL_mat):
+        if not(in_range) and x:
+            start = i
+            in_range = True
+        if in_range and not(x):
+            in_range = False
+            anomaly.append((start, i))
+    if AL_mat[-1] == 1:
+        anomaly.append((start, len(AL_mat)))
+    
+    if len(anomaly) == 0:
+        return ([0, len(AL_mat)], [])
+    if anomaly[0][0] != 0:
+        normal.append((0, anomaly[0][0]))
+    start = anomaly[0][1]
+    for i in range(1, len(anomaly)):
+        (s, e) = anomaly[i]
+        normal.append((start, s))
+        start = e
+    if anomaly[-1][1] != len(AL_mat):
+        normal.append((start, len(AL_mat)))
+    
+    return (normal, anomaly)
+
+
+def LF_mat2vec(LF):
+    """
+    This converts a data matrix into a vector under the last-fired representation [1].
+    For example or 4 sensors and 7 times, 
+    LF = 
+    [[0, 0, 0, 0],
+     [0, 0, 0, 0],
+     [0, 0, 0, 1],
+     [0, 0, 0, 1],
+     [0, 0, 0, 1],
+     [1, 0, 0, 0],
+     [0, 1, 0, 0]]
+    This exapmle is converted into below ones;
+    LF = [4, 4, 3, 3, 3, 0, 1], the index of activated sensors.
+    4 (number of sensors) represents the state which no sensors is activated.
+    
+    Parameters
+    ----------
+    LF : numpy.ndarray
+        Sensor activation matrix under the last-fired representation [1].
+        LF.shape = (number of times, number of sensors)
+        LF[t][k] can only be in {0, 1}
+        
+    References
+    ----------
+    [1] TLM van Kasteren, G. Englebienne, and B. J. Krose,
+    "Human activity recognition from wireless sensor network data: Benchmark and software."
+    Proc of Activity recognition in pervasive intelligent environments, 2011, 165–186.
+        
+    Returns
+    -------
+    LF_vec : numpy.ndarray
+        LF_vec.shape = (number of times, )
+        LF_vec[t] can only be in {0, 1, ..., number of sensors}
+        LF_vec[t] represents the activated sensors.
+        The number of sensors represents the state which no sensors is activated.
+    """
+    LF_vec = []
+    no_activated = LF.shape[1]
+    for (i, sd) in enumerate(LF):
+        True_pos = np.where(np.array(sd == True))[0]
+        if len(True_pos) == 1:
+            LF_vec.append(True_pos[0])
+        elif len(True_pos) == 0:  # No sensor is activated
+            LF_vec.append(no_activated)
+        else:
+            raise ValueError('More than two data are activated.')
+    return np.array(LF_vec)
+
+
+
 class naive_bayes():
     """
     Naive Bayes especially for binary sensors.
@@ -796,15 +919,15 @@ class naive_bayes():
             label.shape = (number of times, )
             label[i] can only be in {0, 1, ..., (number of label types) - 1}.
         """
-        
+        pass
         
 
 
 class HMM4binary_sensors():
     """
     Hidden Markov model (HMM) especially for binary sensors.
-    Output of binary sensors are independent with each other.
-    Output of binary sensors (0 or 1) is modeled as a bernoulli distribution.
+    Outputs of binary sensors are independent with each other.
+    Outputs of binary sensors (0 or 1) are modeled as a bernoulli distribution.
     
     Abbreviations
     n : Number of the hidden states.
@@ -826,7 +949,7 @@ class HMM4binary_sensors():
         A.shape = (n, n).
     P : numpy.ndarray
         Parameters of bernoulli dstributions.
-        P.shaoe = (n, m).
+        P.shape = (n, m).
         
     References
     ----------
@@ -841,17 +964,13 @@ class HMM4binary_sensors():
     """
     
     
-    def fit_with_true_hidden_states(self, state_num, sensor_num, observations, states):
+    def fit_with_true_hidden_states(self, observations, states):
         """
         This learn parameters of HMM from the observations with true hidden states.
         Maximum likelihood estimator.
         
         Parameters
         ----------
-        state_num : int
-            Number of hidden states.
-        sensor_num : int
-            Number of binary sensors.
         observations : list of numpy.ndarray
             observations[i].shape = (number of times, number of sensors)
             The values can only be False (0) or True (1).
@@ -862,15 +981,23 @@ class HMM4binary_sensors():
             The length of states[i] equals to the one of observations[i].
             The values can only be {0, 1, 2, ..., state_num - 1}.
         """
+        if type(observations) != list:
+            observations = [observations]
+            states = [states]
+        state_set = set()
+        for s in states:
+            state_set |= set(np.unique(s))
+        state_num = len(state_set)
+        sensor_num = observations[0].shape[1]
         self.n = state_num
         self.m = sensor_num
         self.C = np.zeros(self.n)
         self.A = np.zeros((self.n, self.n))
         self.P = np.zeros((self.n, self.m))
-        if type(observations) != list:
-            observations = [observations]
-            states = [states]
+
         for (seq, s) in zip(observations, states):
+            seq = seq.astype(int)
+            s = s.astype(int)
             self.C[s[0]] += 1
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
@@ -880,7 +1007,7 @@ class HMM4binary_sensors():
                 for j in range(self.n):
                     self.A[i][j] = pairs.count((i, j)) / (counts[i] - (s[-1] == i))
                 for j in range(self.m):
-                    self.P[i][j] = sum([(s[t] == i) * seq[t][j] for t in range(len(s))]) / counts[i]
+                    self.P[i][j] = (s == i)@seq[:, j] / counts[i]
         len_o = len(observations)
         self.C /= len_o
         self.A /= len_o
@@ -907,10 +1034,11 @@ class HMM4binary_sensors():
             The length equals to one of observations.
         prob : float
             Probability of the 'state'.
-            max P(s_1, ..., s_n, O_1, ..., O_n | parameters). 
+            max log P(s_1, ..., s_n, O_1, ..., O_n | parameters). 
         """
         
         len_o = len(observation)
+        observation = observation.astype(int)
         
         # delta records the quantity.
         # Let O_t be the observed value at time t.
@@ -930,7 +1058,10 @@ class HMM4binary_sensors():
             psi[0][i] = 0
             
         # Recursion
+        diff = 100000
         for t in range(1, len_o):
+            if t % diff == 0:
+                new_functions.print_progress_bar(len_o, t, 'Recursion prediction in HMM.')
             for j in range(self.n):
                 score_vec = delta[t-1] * self.A[:, j]
                 delta[t][j] = np.max(score_vec) * np.prod(np.abs((ones_vec - observation[t]) - self.P[j]))
@@ -946,3 +1077,245 @@ class HMM4binary_sensors():
             state[t] = psi[t+1][state[t+1]]
             
         return (state, prob)
+    
+    
+class HMM4categorical():
+    """
+    Hidden Markov model (HMM) especially for binary sensors.
+    Outputs are categorical distribution.
+    
+    Abbreviations
+    n : Number of the hidden states.
+    M : Number of the outputs.
+    s_t : Random variables of hidden states at time t.
+    c_i : Initial probability at state i, P(s_1 = i) = c_i.
+    a_i_j : Transition probability from state i to state j, P(s_t = j | s_{t-1} = i) = a_i_j.
+    p_i_j : Parameter of a categorical distribution of j-th value at state i.
+    x_t : Output symbol vector at time t, for now,
+          P(x_t = k | s_t = i) = p_i_k.
+    
+    n : int
+        Number of hidden states.
+    C : numpy.ndarray
+        Initial probabilities of states.
+        C.shape = (n, ).
+    A : numpy.ndarray
+        Transition matrix.
+        A.shape = (n, n).
+    P : numpy.ndarray
+        Parameters of a categorical dstributions.
+        P.shape = (n, M).
+        
+    References
+    ----------
+    [1] L. R. Rabiner, "A tutorial on hidden Markov models and selected applications in speech recognition."
+        Proc. of the IEEE, 77-2(1989), 257-286.
+    """
+    
+    
+    def fit_with_true_hidden_states(self, observations, states):
+        """
+        This learn parameters of HMM from the observations with true hidden states.
+        Maximum likelihood estimator.
+        
+        Parameters
+        ----------
+        observations : list of numpy.ndarray
+            observations[i].shape = (number of times, )
+            The values can only be {0, 1, 2, ..., M - 1}.
+            If len(observations) > 1, the output parameters are the average of the estimated parameters for each data.
+        states : list of numpy.ndarray
+            states[i].shape = (number of times,)
+            states[i] are hidden states of observations[i].
+            The length of states[i] equals to the one of observations[i].
+            The values can only be {0, 1, 2, ..., n - 1}.
+        """
+        if type(observations) != list:
+            observations = [observations]
+            states = [states]
+        state_set = set()
+        for s in states:
+            state_set |= set(np.unique(s))
+        state_num = len(state_set)
+        output_kinds = len(np.unique(observations[0]))
+        self.n = state_num
+        self.M = output_kinds
+        self.C = np.zeros(self.n)
+        self.A = np.zeros((self.n, self.n))
+        self.P = np.zeros((self.n, self.M))
+
+        for (seq, s) in zip(observations, states):
+            seq = seq.astype(int)
+            s = s.astype(int)
+            self.C[s[0]] += 1
+            # counts[i] = the total number of occurrences of state i in the sequence
+            counts = np.bincount(s)
+            # pairs[i] = (s_{t}, s_{t+1}), 1<= t <= T-1, T: total length of the obsevation
+            pairs = [(s[t-1], s[t]) for t in range(1, len(s))]
+            for i in range(self.n):
+                for j in range(self.n):
+                    self.A[i][j] = pairs.count((i, j)) / (counts[i] - (s[-1] == i))
+                for k in range(self.M):
+                    self.P[i][k] = np.sum((s == i)*(seq == k)) / counts[i]
+        len_o = len(observations)
+        self.C /= len_o
+        self.A /= len_o
+        self.P /= len_o
+        return
+    
+    def predict_states(self, observation):
+        """
+        This predicts states from observed sequences.
+        P(state | observations, parameters) are maximized by Viterbi algorithm.
+        
+        Parameters
+        ----------
+        observation : numpy.ndarray
+            observation.shape = (number of times,)
+            The values can only be {0, 1, 2, ..., M - 1}.
+        
+        Returns
+        -------
+        (state, prob) : tuple
+        
+        state : numpy.ndarray
+            states.shape = (number of times,)
+            The length equals to one of observations.
+        prob : float
+            Probability of the 'state'.
+            max log P(s_1, ..., s_n, O_1, ..., O_n | parameters). 
+        """
+        
+        len_o = len(observation)
+        observation = observation.astype(int)
+        
+        # delta records the quantity.
+        # Let O_t be the observed value at time t.
+        # delta[t][i] = max_{s_0, ... s_{t-1}}{P(s_1, ..., s_{t-1}, s_t = i, O_1, ..., O_t | parameters)}.
+        # delta[t+1][j] = max_{i}{delta[t][i] * a_i_j} * P(x_{t+1} = O_{t+1} | s_t = j)
+        delta = np.zeros((len_o, self.n))
+        
+        # psi records the argument which maximized delta[t+1][j]
+        psi = np.zeros((len_o, self.n))
+        
+        # Viterbi algorithm
+        
+        # Initialization
+        for i in range(self.n):
+            delta[0][i] = self.C[i] * self.P[i][observation[0]]
+            psi[0][i] = 0
+            
+        # Recursion
+        diff = 100000
+        for t in range(1, len_o):
+            if t % diff == 0:
+                new_functions.print_progress_bar(len_o, t, 'Recursion prediction in HMM.')
+            for j in range(self.n):
+                score_vec = delta[t-1] * self.A[:, j]
+                delta[t][j] = np.max(score_vec) * self.P[i][observation[t]]
+                psi[t][j] = np.argmax(score_vec)
+                
+        # Termination
+        prob = np.max(delta[-1])
+        state = np.zeros(len_o, dtype = int)
+        state[-1] = np.argmax(delta[-1])
+        
+        # Path backtracking
+        for t in reversed(range(len_o - 1)):
+            state[t] = psi[t+1][state[t+1]]
+            
+        return (state, prob)
+
+    
+class HMM_likelihood_classifier():
+    """
+    This classifies data by comparing likelihood between two Hidden Markov models (HMM): normal and anomaly.
+    If P(observation | anomaly) > P(observation), then classifies anomaly.
+    
+    Memo
+    ----
+    logprob, states = HMM.decode(data)
+    logprob = HMM.decode(data)
+    print(HMM.transmat_)
+    print(HMM.emissionprob_)
+    """
+    
+    def fit(self, n_components, SD, AL):
+        self.n_components = n_components
+        self.n_features = SD.shape[1] + 1
+        (normal_ranges, anomaly_ranges) = analysis.normal_anomaly_ranges(AL)
+        self.normal_model = hmm.CategoricalHMM(n_components = self.n_components, n_features = self.n_features)
+        self.anomaly_model = hmm.CategoricalHMM(n_components = self.n_components, n_features = self.n_features)
+        LF_vec = analysis.LF_mat2vec(SD_mat)
+        
+        normal_data = [SD[s:e] for (s, e) in normal_ranges]
+        normal_train = np.concatenate(normal_data, axis = 0)
+        normal_LF_vec = analysis.LF_mat2vec(normal_train)
+        normal_lengths = np.array([len(d) for d in normal_data])
+        self.normal_model.fit(normal_LF_vec.reshape((len(normal_LF_vec), 1)), normal_lengths)
+
+        anomaly_data = [SD[s:e] for (s, e) in anomaly_ranges]
+        anomaly_train = np.concatenate(anomaly_data, axis = 0)
+        anomaly_LF_vec = analysis.LF_mat2vec(anomaly_train)
+        anomaly_lengths = np.array([len(d) for d in anomaly_data])
+        self.anomaly_model.fit(anomaly_LF_vec.reshape((len(anomaly_LF_vec), 1)), anomaly_lengths)
+        
+    def convergence_info(self):
+        print("normal model")
+        print(self.normal_model.monitor_)
+        print(self.normal_model.monitor_.converged)
+        print("anomaly model")
+        print(self.anomaly_model.monitor_)
+        print(self.anomaly_model.monitor_.converged)
+
+    def predict(self, data):
+        """
+        This classifies a sequence into one label.
+        
+        Parameters
+        ----------
+        data : numpy.ndarray
+            data.shape = (number of times, )
+        
+        Returns
+        -------
+        label : bool
+            Whether the data is "anomaly".
+        """
+        return (anomaly_model.score(data) > normal_model.score(data))
+    
+    def sequential_labeling(self, SD, w):
+        """
+        This predicts a sequence into a label sequence.
+        The classification at time t is done by a window that is centered at t.
+        
+                       window length
+                  |<------------------>|
+        --------------------t--------------------------
+                    
+        Parameters
+        ----------
+        SD : numpy.ndarray
+            data.shape = (number of times, )
+        w : int
+            Length of windows.
+            This can only be an odd number.
+            
+        Returns
+        -------
+        labels : numpy.ndarray
+            labels.shape = (n_t - w + 1, ), n_t = (number of times in data)
+        """
+        data = analysis.LF_mat2vec(SD)
+        half_w = int((w-1) / 2)
+        labels = []
+        total_len = int(data.shape[0] - w + 1)
+        diff = 100000
+        for i in range(half_w , int(data.shape[0] - half_w)):
+            if i % diff == 0:
+                print(f"{i / total_len}")
+            d = data[i - half_w: i + half_w + 1]
+            d = d.reshape((len(d), 1))
+            labels.append(self.anomaly_model.score(d) > self.normal_model.score(d))
+        return np.array(labels)
+    
