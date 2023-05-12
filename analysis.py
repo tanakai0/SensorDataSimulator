@@ -1314,7 +1314,7 @@ class HMM_likelihood_classifier():
         diff = 100000
         for i in range(half_w , int(data.shape[0] - half_w)):
             if i % diff == 0:
-                print(f"{i / total_len}")
+                new_functions.print_progress_bar(total_len, i, 'Sequential labeling.')
             d = data[i - half_w: i + half_w + 1]
             d = d.reshape((len(d), 1))
             labels.append(self.anomaly_model.score(d) > self.normal_model.score(d))
