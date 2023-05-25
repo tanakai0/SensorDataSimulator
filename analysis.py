@@ -903,24 +903,102 @@ class naive_bayes():
     Naive Bayes especially for binary sensors.
     Time slices are independent with each other.
     Output of binary sensors are independent with each other.
+          
+    Abbreviations
+    n : int
+        Number of the states (labels).
+    m : int
+        Number of the binary sensors.
+    C : numpy.ndarray
+        State's probabilities.
+        C.shape = (n, ).
+    P : numpy.ndarray
+        Parameters of bernoulli dstributions for each state.
+        P.shape = (n, m).
+        
+    s_t : Random variables of the state at time t.
+    c_i : State's probability, P(s_t = i) = c_i.
+    p_i_j : Parameter of bernoulli dstribution of j-th value at state i.
+    x_t : Output symbol vector (length m) at time t, for now,
+          P(x_t = b | s_t = i) = (p_i_1^b * (1-p_i_1)^{1-b}) * ... * (p_i_m^b * (1-p_i_m)^{1-b}).
     """
     
-    def fit(self, data, label):
+    def fit(self, observations, states):
         """
         This learn parameters of Naive Bayes by maximum likelihood estimation.
         
         Parameters
         ----------
-        data : numpy.ndarray
-            data.shape = (number of times, number of sensors)
-            data[i] can only be False (0) or True (1). 
-            
-        label : numpy.ndarray
-            Label of the data.
-            label.shape = (number of times, )
-            label[i] can only be in {0, 1, ..., (number of label types) - 1}.
+        observations : list of numpy.ndarray
+            observations[i].shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+            If len(observations) > 1, the output parameters are the average of the estimated parameters for each data.
+        states : list of numpy.ndarray
+            states[i].shape = (number of times,)
+            states[i] are states (labels) of observations[i].
+            The length of states[i] equals to the one of observations[i].
+            The values can only be {0, 1, 2, ..., state_num - 1}.
         """
-        pass
+        if type(observations) != list:
+            observations = [observations]
+            states = [states]
+        state_set = set()
+        for s in states:
+            state_set |= set(np.unique(s))
+        self.n = len(state_set)
+        self.m = observations[0].shape[1]
+        self.C = np.zeros(self.n)
+        self.P = np.zeros((self.n, self.m))
+        len_o = len(observations)
+        for (seq, s) in zip(observations, states):
+            seq = seq.astype(int)
+            s = s.astype(int)
+            # counts[i] = the total number of occurrences of state i in the sequence
+            counts = np.bincount(s)
+            self.C += counts / seq.shape[0]
+            for i in range(self.n):
+                for j in range(self.m):
+                    self.P[i][j] += (s == i)@seq[:, j] / counts[i]
+        self.C /= len_o
+        self.P /= len_o
+        return
+    
+
+    def predict_states(self, observation):
+        """
+        This predicts states from observed sequences.
+        P(state | observations, parameters) are maximized.
+        
+        Parameters
+        ----------
+        observation : numpy.ndarray
+            observation.shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+        
+        Returns
+        -------
+        (state, prob) : tuple
+        
+        state : numpy.ndarray
+            states.shape = (number of times,)
+            The length equals to the one of observations.
+        prob : float
+            Probability of the 'state'.
+            prob.shape = (number of times,), because the output is independent with time.
+            max log P(s_1, ..., s_T, O_1, ..., O_T | parameters). 
+        """
+        
+        len_o = len(observation)
+        observation = observation.astype(int)
+        ret = np.zeros(len_o)
+        prob = np.zeros(len_o)
+        ones_vec = np.ones(self.m)
+        for t in range(len_o):
+            o_t = observation[t].astype(int)
+            p = [self.C[i] * np.prod(self.P[i]*o_t + (ones_vec - self.P[i])*np.abs((ones_vec - o_t))) for i in range(self.n)]
+            ret[t] = np.argmax(p)
+            prob[t] = np.max(p)
+        return ret, prob
         
 
 
@@ -937,7 +1015,7 @@ class HMM4binary_sensors():
     c_i : Initial probability at state i, P(s_1 = i) = c_i.
     a_i_j : Transition probability from state i to state j, P(s_t = j | s_{t-1} = i) = a_i_j.
     p_i_j : Parameter of bernoulli dstribution of j-th value at state i.
-    x_t : Output symbol vector at time t, for now,
+    x_t : Output symbol vector (length m) at time t, for now,
           P(x_t = b | s_t = i) = (p_i_1^b * (1-p_i_1)^{1-b}) * ... * (p_i_m^b * (1-p_i_m)^{1-b}).
     
     n : int
@@ -1035,7 +1113,7 @@ class HMM4binary_sensors():
             The length equals to one of observations.
         prob : float
             Probability of the 'state'.
-            max log P(s_1, ..., s_n, O_1, ..., O_n | parameters). 
+            max log P(s_1, ..., s_T, O_1, ..., O_T | parameters). 
         """
         
         len_o = len(observation)
@@ -1092,7 +1170,7 @@ class HMM4categorical():
     c_i : Initial probability at state i, P(s_1 = i) = c_i.
     a_i_j : Transition probability from state i to state j, P(s_t = j | s_{t-1} = i) = a_i_j.
     p_i_j : Parameter of a categorical distribution of j-th value at state i.
-    x_t : Output symbol vector at time t, for now,
+    x_t : Output symbol at time t, for now,
           P(x_t = k | s_t = i) = p_i_k.
     
     n : int
@@ -1184,7 +1262,7 @@ class HMM4categorical():
             The length equals to one of observations.
         prob : float
             Probability of the 'state'.
-            max log P(s_1, ..., s_n, O_1, ..., O_n | parameters). 
+            max log P(s_1, ..., s_T, O_1, ..., O_T | parameters). 
         """
         
         len_o = len(observation)
