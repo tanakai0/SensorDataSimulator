@@ -1398,3 +1398,17 @@ class HMM_likelihood_classifier():
             labels.append(self.anomaly_model.score(d) > self.normal_model.score(d))
         return np.array(labels)
     
+
+def linear_chain_CRF():
+    """
+    Linear chain conditional random field (CRF).
+    
+    https://towardsdatascience.com/implementing-a-linear-chain-conditional-random-field-crf-in-pytorch-16b0b9c4b4ea
+    https://qiita.com/research-PORT-INC/items/518b960e6d0d0475e1df
+    https://pytorch-crf.readthedocs.io/en/stable/
+    https://github.com/severinsimmler/chaine/tree/master
+    https://pytorch-crf.readthedocs.io/en/stable/_modules/torchcrf.html#CRF.forward
+    """
+    
+    def fit(self, observations, labels, functions):
+        pass
