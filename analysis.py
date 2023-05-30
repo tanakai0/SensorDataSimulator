@@ -1375,7 +1375,7 @@ class HMM_likelihood_classifier():
         Parameters
         ----------
         SD : numpy.ndarray
-            data.shape = (number of times, )
+            SD.shape = (number of times, )
         w : int
             Length of windows.
             This can only be an odd number.
@@ -1410,5 +1410,16 @@ def linear_chain_CRF():
     https://pytorch-crf.readthedocs.io/en/stable/_modules/torchcrf.html#CRF.forward
     """
     
-    def fit(self, observations, labels, functions):
-        pass
+    def fit(self, data, labels, ):
+        """
+        This learns parameters.
+                    
+        Parameters
+        ----------
+        data : numpy.ndarray
+            D.shape = (number of times, number of features).
+        labels : numpy.ndarray
+            labels.shape = (number of times, ).
+        """
+        
+        
