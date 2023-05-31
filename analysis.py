@@ -1417,9 +1417,10 @@ def linear_chain_CRF():
         Parameters
         ----------
         data : numpy.ndarray
-            D.shape = (number of times, number of features).
+            data.shape = (number of times, number of features).
         labels : numpy.ndarray
             labels.shape = (number of times, ).
         """
-        
-        
+        pass
+    
+    
