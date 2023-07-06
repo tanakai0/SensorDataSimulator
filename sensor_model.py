@@ -335,6 +335,7 @@ class SquarePressureSensor(Sensor):
     angle : float
         Angle[deg] of the sensor.
         This takes a positive value in clockwise direction.
+        The center of rotation is (x, y).
     type_name : str
         Name of this class.
     """
@@ -472,7 +473,7 @@ class SquarePressureSensor(Sensor):
         xy : tuple of float
             2d coordinate of the target point.
         vertex : list of tuple of float
-            List of yjr vertex of the rectangle, the order must be one-way (the rectangle can be drawn by connecting each vertex in order and connecting the last point and the first point).
+            List of the vertex of the rectangle, the order must be one-way (the rectangle can be drawn by connecting each vertex in order and connecting the last point and the first point).
 
         Returns
         -------
@@ -544,9 +545,16 @@ class SquarePressureSensor(Sensor):
         _id : int
             The id of the drawn object. 
         """
-        top_left = point2canvas((self.x, self.y + self.vertical))
-        bottom_right = point2canvas((self.x + self.horizontal, self.y))
-        return canvas.create_rectangle(top_left[0], top_left[1], bottom_right[0], bottom_right[1], outline = self.color)   
+        center = (self.x, self.y)
+        top_left = point2canvas(self.rotate((self.x, self.y + self.vertical), center, self.angle))
+        top_right = point2canvas(self.rotate((self.x + self.horizontal, self.y + self.vertical), center, self.angle))
+        bottom_left = point2canvas((self.x, self.y))
+        bottom_right = point2canvas(self.rotate((self.x + self.horizontal, self.y), center, self.angle))
+        return canvas.create_polygon(top_left[0], top_left[1], top_right[0], top_right[1],
+                                     bottom_right[0], bottom_right[1],
+                                     bottom_left[0], bottom_left[1],
+                                     fill = '',
+                                     outline = self.color)   
         
     def save_text(self):
         """
