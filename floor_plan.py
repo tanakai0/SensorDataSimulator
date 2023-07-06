@@ -2562,6 +2562,7 @@ class FloorPlan:
         if show: plt.show()
         if close: plt.close()
         return ax
+    
         
     def save_height_figure(self, folder_path, file_name = 'Height_Function', show = False):
         """
