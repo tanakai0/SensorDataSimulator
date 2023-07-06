@@ -34,7 +34,15 @@ class FloorPlan:
         topology : str
             Candidate topology of this floor plan.
             
-        #
+        # coordinates
+           y
+           ^            -------------
+           |         W |             |
+           |           |             |
+           |      (x1, y1)-----------
+           |                   L
+        (0, 0) ----------------> x
+        
         topo : list of int
             For example, topo = [0, 1, 0, 0, 1].
             This represents whether the topology is a candidate.
@@ -42,7 +50,7 @@ class FloorPlan:
         Toil_Bath = [Toilet, Bathroom]
         Furnitures = [Bedroom furniture, Kitchen furniture, Living furniture]
         Doors = [[x, y, L, W, label], ], label in {Entrance, Toilet_Door, Bathroom_Door}
-        Walls = [[[x,y], [x + g, y]], ]
+        Walls = [[[x, y], [x + g, y]], ]
         T_con : str
             T_con is selected from {'Bedroom', 'Kitchen', 'Livingroom'}.
         B_con : str
@@ -3181,6 +3189,51 @@ class FloorPlan:
             raise ValueError('The filename extensions is not appropriate.')
         return ret
         
+        
+    def canvas(self, canvas, point2canvas):
+        """
+        This draws the figure of this sensor on the tkinter.Canvas.
+        
+        Parameters
+        ----------
+        canvas : tkinter.Canvas
+        point2canvas : function
+            This converts a coordinate in the layout into the coordinate on the canvas.
+            Parameters
+            ----------
+            xy : tuple of float
+                xy = (x, y) is the target point in the layout.
+            Returns
+            -------
+            ret : tuple of float
+                ret = (xx, yy) is the calculated coordinate on the canvas.
+        Returns
+        -------
+        None
+        """
+        for room in self.Toil_Bath:
+            [x, y, L, W, name] = room
+            top_left = point2canvas((x, y + W))
+            bottom_right = point2canvas((x + L, y))
+            text_pos = point2canvas((x + L / 2, y + W / 2))
+            canvas.create_rectangle(top_left[0], top_left[1], bottom_right[0], bottom_right[1], width = 3)
+            canvas.create_text(text_pos[0], text_pos[1], text = self.Code[name])
+        for room in self.Furnitures:
+            for furniture in room:
+                [x, y, L, W, name] = furniture
+                top_left = point2canvas((x, y + W))
+                bottom_right = point2canvas((x + L, y))
+                text_pos = point2canvas((x + L / 2, y + W / 2))
+                canvas.create_rectangle(top_left[0], top_left[1], bottom_right[0], bottom_right[1], width = 1)
+                canvas.create_text(text_pos[0], text_pos[1], text = self.Code[name])
+        for wall in self.Walls:
+            s = point2canvas((wall[0][0], wall[0][1]))
+            e = point2canvas((wall[1][0], wall[1][1]))
+            canvas.create_line(s[0], s[1], e[0], e[1], width = 3)
+        for door in self.Doors:
+            s = point2canvas((door[0], door[1]))
+            e = point2canvas((door[0] + door[2], door[1] + door[3]))
+            canvas.create_line(s[0], s[1], e[0], e[1], fill = 'white')
         
 
 class Zone:

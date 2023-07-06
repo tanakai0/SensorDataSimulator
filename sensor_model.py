@@ -1,5 +1,6 @@
 import random
 import sys
+import tkinter
 from collections import namedtuple
 from pathlib import Path
 
@@ -271,6 +272,32 @@ class CircularPIRSensor(Sensor):
         ax.add_patch(circle)
         ax.text(self.x, self.y, "{}".format(self.index), fontsize = 10, va = 'center', ha = 'center')
         
+    def canvas(self, canvas, point2canvas):
+        """
+        This draws the figure of this sensor on the tkinter.Canvas.
+        
+        Parameters
+        ----------
+        canvas : tkinter.Canvas
+        point2canvas : function
+            This converts a coordinate in the layout into the coordinate on the canvas.
+            Parameters
+            ----------
+            xy : tuple of float
+                xy = (x, y) is the target point in the layout.
+            Returns
+            -------
+            ret : tuple of float
+                ret = (xx, yy) is the calculated coordinate on the canvas.
+        Returns
+        -------
+        _id : int
+            The id of the drawn object. 
+        """
+        top_left = point2canvas((self.x - self.radius, self.y + self.radius))
+        bottom_right = point2canvas((self.x + self.radius, self.y - self.radius))
+        return canvas.create_oval(top_left[0], top_left[1], bottom_right[0], bottom_right[1], outline = self.color)        
+        
     def save_text(self):
         """
         This returns string that represents the information of this sensor.
@@ -495,6 +522,32 @@ class SquarePressureSensor(Sensor):
             (x, y) = self.rotate((x, y), (self.x, self.y), self.angle)
         ax.text(x, y, "{}".format(self.index), fontsize = 10, va = 'center', ha = 'center')
         
+    def canvas(self, canvas, point2canvas):
+        """
+        This draws the figure of this sensor on the tkinter.Canvas.
+        
+        Parameters
+        ----------
+        canvas : tkinter.Canvas
+        point2canvas : function
+            This converts a coordinate in the layout into the coordinate on the canvas.
+            Parameters
+            ----------
+            xy : tuple of float
+                xy = (x, y) is the target point in the layout.
+            Returns
+            -------
+            ret : tuple of float
+                ret = (xx, yy) is the calculated coordinate on the canvas.
+        Returns
+        -------
+        _id : int
+            The id of the drawn object. 
+        """
+        top_left = point2canvas((self.x, self.y + self.vertical))
+        bottom_right = point2canvas((self.x + self.horizontal, self.y))
+        return canvas.create_rectangle(top_left[0], top_left[1], bottom_right[0], bottom_right[1], outline = self.color)   
+        
     def save_text(self):
         """
         This returns string that represents the information of this sensor.
@@ -553,6 +606,33 @@ class CostSensor(Sensor):
             Current axes on this figure.
         """
         ax.scatter(self.x, self.y, c = self.color, marker = '*', alpha = 1, s = (plt.rcParams['lines.markersize']**2)*4)
+        
+    def canvas(self, canvas, point2canvas):
+        """
+        This draws the figure of this sensor on the tkinter.Canvas.
+        
+        Parameters
+        ----------
+        canvas : tkinter.Canvas
+        point2canvas : function
+            This converts a coordinate in the layout into the coordinate on the canvas.
+            Parameters
+            ----------
+            xy : tuple of float
+                xy = (x, y) is the target point in the layout.
+            Returns
+            -------
+            ret : tuple of float
+                ret = (xx, yy) is the calculated coordinate on the canvas.
+        Returns
+        -------
+        _id : int
+            The id of the drawn object. 
+        """
+        size = 10
+        top_left = point2canvas((self.x - size / 2, self.y + size / 2))
+        bottom_right = point2canvas((self.x + size / 2, self.y - size / 2))
+        return canvas.create_rectangle(top_left[0], top_left[1], bottom_right[0], bottom_right[1], outline = self.color)   
         
     def save_text(self):
         """
