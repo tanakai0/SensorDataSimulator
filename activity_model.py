@@ -1077,8 +1077,10 @@ def determine_activity_set(path, original_act_model):
 #      Walking speed, [seconds/step].
 #  prefer_foot : string
 #      Preferable foot the resident push out when to start to walk.
-walking_activity = namedtuple('walking_activity', 'name stride step_speed prefer_foot')
-indoor_movement = walking_activity('indoor movement', 55, 0.8, 'left')
+# body_radisu : float
+#      Body radius of the resident
+walking_activity = namedtuple('walking_activity', 'name stride step_speed prefer_foot body_radius')
+indoor_movement = walking_activity('indoor movement', 55, 0.8, 'left', 10)
 
 # example of concrete settings ----------------------------------------------------------------------------------------------------------
 
