@@ -1,4 +1,4 @@
-# new functions
+ # new functions
 # some functions refers to the program of SISG4HEIAlpha from, [1] C. Jiang and A. Mita, "SISG4HEI_Alpha: Alpha version of simulated indoor scenario generator for houses with elderly individuals." Journal of Building Engineering, 35-101963(2021), and [2] https://github.com/Idontwan/SISG4HEI_Alpha.
 import itertools
 import json
@@ -14,7 +14,7 @@ from datetime import timedelta
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+import matplotlib.patches as patches    
 import scipy.stats as stats
 
 # self-made

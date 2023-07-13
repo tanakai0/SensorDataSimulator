@@ -898,11 +898,14 @@ def LF_mat2vec(LF):
 
 
 
-class naive_bayes():
+class NaiveBayes():
+    use_log_prob = True
     """
     Naive Bayes especially for binary sensors.
+    Sometimes, this probability model is called as dynamic naive Bayes.
     Time slices are independent with each other.
     Output of binary sensors are independent with each other.
+    Log probabilities are used.
           
     Abbreviations
     n : int
@@ -913,7 +916,7 @@ class naive_bayes():
         State's probabilities.
         C.shape = (n, ).
     P : numpy.ndarray
-        Parameters of bernoulli dstributions for each state.
+        Parameters of bernoulli distributions for each state.
         P.shape = (n, m).
         
     s_t : Random variables of the state at time t.
@@ -925,7 +928,7 @@ class naive_bayes():
     
     def fit(self, observations, states):
         """
-        This learn parameters of Naive Bayes by maximum likelihood estimation.
+        This learns parameters of naive Bayes by maximum likelihood estimation.
         
         Parameters
         ----------
@@ -939,6 +942,12 @@ class naive_bayes():
             The length of states[i] equals to the one of observations[i].
             The values can only be {0, 1, 2, ..., state_num - 1}.
         """
+        if self.use_log_prob:
+            self._fit_log(observations, states)
+        else:
+            self._fit(observations, states)
+            
+    def _fit(self, observations, states):
         if type(observations) != list:
             observations = [observations]
             states = [states]
@@ -963,6 +972,32 @@ class naive_bayes():
         self.P /= len_o
         return
     
+    
+    def _fit_log(self, observations, states):
+        if type(observations) != list:
+            observations = [observations]
+            states = [states]
+        state_set = set()
+        for s in states:
+            state_set |= set(np.unique(s))
+        self.n = len(state_set)
+        self.m = observations[0].shape[1]
+        self.logC = np.array([-float('inf') for _ in range(self.n)])
+        self.logP = np.full((self.n, self.m), -float('inf'))
+        len_o = len(observations)
+        for (seq, s) in zip(observations, states):
+            seq = seq.astype(int)
+            s = s.astype(int)
+            # counts[i] = the total number of occurrences of state i in the sequence
+            counts = np.bincount(s)
+            self.logC = np.logaddexp(self.logC, np.log(counts) - np.log(seq.shape[0]))
+            for i in range(self.n):
+                for j in range(self.m):
+                    self.logP[i][j] = np.logaddexp(self.logP[i][j], np.log((s == i)@seq[:, j]) - np.log(counts[i]))
+        self.logC -= np.log(len_o)
+        self.logP -= np.log(len_o)
+        return
+    
 
     def predict_states(self, observation):
         """
@@ -983,11 +1018,16 @@ class naive_bayes():
             states.shape = (number of times,)
             The length equals to the one of observations.
         prob : float
-            Probability of the 'state'.
+            Probability of the 'state'. if self.use_log_prob is True, then return log probabilities.
             prob.shape = (number of times,), because the output is independent with time.
             max log P(s_1, ..., s_T, O_1, ..., O_T | parameters). 
         """
-        
+        if self.use_log_prob:
+            return self._predict_states_log(observation)
+        else:
+            return self._predict_states(observation)
+            
+    def _predict_states(self, observation):
         len_o = len(observation)
         observation = observation.astype(int)
         ret = np.zeros(len_o)
@@ -1000,7 +1040,41 @@ class naive_bayes():
             prob[t] = np.max(p)
         return ret, prob
         
+    def _predict_states_log(self, observation):
+        len_o = len(observation)
+        observation = observation.astype(int)
+        ret = np.zeros(len_o)
+        prob = np.zeros(len_o)
+        ones_vec = np.ones(self.m)
+        for t in range(len_o):
+            o_t = observation[t].astype(int)
+            logp = [self.logC[i] + np.sum(self.logP[i]*o_t + np.array([self.logsub(0, self.logP[i][j]) for j in range(self.m)])*(ones_vec - o_t)) for i in range(self.n)]
+            ret[t] = np.argmax(logp)
+            prob[t] = np.max(logp)
+        return ret, prob
 
+    @staticmethod
+    def logadd(logX, logY):
+        if logX < logY:
+            logX, logY = logY, logX
+        if logX == float('inf'):
+            return logX
+        diff = logY - logX
+        if diff < -20:
+            return logX
+        return logX + np.log(1 + np.exp(diff))
+
+    @staticmethod
+    def logsub(logX, logY):
+        if logX < logY:
+            raise ValueError('logX must be larger than logY')
+        if logX == float('inf'):
+            return logX
+        diff = logY - logX
+        if diff < -20:
+            return logX
+        return logX + np.log(1 - np.exp(diff))
+    
 
 class HMM4binary_sensors():
     """
