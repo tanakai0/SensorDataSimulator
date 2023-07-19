@@ -924,6 +924,15 @@ class NaiveBayes():
     p_i_j : Parameter of bernoulli dstribution of j-th value at state i.
     x_t : Output symbol vector (length m) at time t, for now,
           P(x_t = b | s_t = i) = (p_i_1^b * (1-p_i_1)^{1-b}) * ... * (p_i_m^b * (1-p_i_m)^{1-b}).
+          
+    References
+    ----------
+    [1] H. H. Avilés-Arriaga et al. "A comparison of dynamic naive bayesian classifiers and 
+        hidden markov models for gesture recognition."
+        Journal of applied research and technology, 9-1(2011), 81-102.
+    [2] TL van Kasteren, G. Englebienne, and B. J. Kröse, "Human activity recognition from wireless sensor
+        network data: Benchmark and software." Proc. of the Activity recognition in pervasive 
+        intelligent environments, Paris, Atlantis Press, 2011, 165-186.
     """
     
     def fit(self, observations, states):
@@ -1020,6 +1029,7 @@ class NaiveBayes():
         prob : float
             Probability of the 'state'. if self.use_log_prob is True, then return log probabilities.
             prob.shape = (number of times,), because the output is independent with time.
+            max P(s_1, ..., s_T, O_1, ..., O_T | parameters) or 
             max log P(s_1, ..., s_T, O_1, ..., O_T | parameters). 
         """
         if self.use_log_prob:
@@ -1033,9 +1043,13 @@ class NaiveBayes():
         ret = np.zeros(len_o)
         prob = np.zeros(len_o)
         ones_vec = np.ones(self.m)
+        
+        diff = 100000
         for t in range(len_o):
+            if t % diff == 0:
+                new_functions.print_progress_bar(len_o, t, 'prediction in dynamic naive Bayes.')
             o_t = observation[t].astype(int)
-            p = [self.C[i] * np.prod(self.P[i]*o_t + (ones_vec - self.P[i])*np.abs((ones_vec - o_t))) for i in range(self.n)]
+            p = [self.C[i] * np.prod(self.P[i]*o_t + (ones_vec - self.P[i])*(ones_vec - o_t)) for i in range(self.n)]
             ret[t] = np.argmax(p)
             prob[t] = np.max(p)
         return ret, prob
@@ -1046,15 +1060,36 @@ class NaiveBayes():
         ret = np.zeros(len_o)
         prob = np.zeros(len_o)
         ones_vec = np.ones(self.m)
+        
+        # log(1-p)
+        log1P = np.array([[self.logsub(0, self.logP[i][j]) for j in range(self.m)] for i in range(self.n)])
+        
+        diff = 100000
         for t in range(len_o):
+            if t % diff == 0:
+                new_functions.print_progress_bar(len_o, t, 'prediction in dynamic naive Bayes.')
             o_t = observation[t].astype(int)
-            logp = [self.logC[i] + np.sum(self.logP[i]*o_t + np.array([self.logsub(0, self.logP[i][j]) for j in range(self.m)])*(ones_vec - o_t)) for i in range(self.n)]
+            # logp = [self.logC[i] + np.sum(self.logP[i]*o_t + log1P[i]*(ones_vec - o_t)) for i in range(self.n)]
+            logp = [self.logC[i] + np.sum([self.logP[i][j] if o_t[j] else log1P[i][j] for j in range(self.m)]) for i in range(self.n)]
             ret[t] = np.argmax(logp)
             prob[t] = np.max(logp)
         return ret, prob
 
     @staticmethod
     def logadd(logX, logY):
+        """
+        This calculates log(X + Y) from log(X) and log(Y).
+        
+        Parameters
+        ----------
+        logX : float
+        logY : float
+        
+        Returns
+        -------
+        ret : float
+        """
+        # return log(X + Y)
         if logX < logY:
             logX, logY = logY, logX
         if logX == float('inf'):
@@ -1066,6 +1101,18 @@ class NaiveBayes():
 
     @staticmethod
     def logsub(logX, logY):
+        """
+        This calculates log(X - Y) from log(X) and log(Y).
+        
+        Parameters
+        ----------
+        logX : float
+        logY : float
+        
+        Returns
+        -------
+        ret : float
+        """
         if logX < logY:
             raise ValueError('logX must be larger than logY')
         if logX == float('inf'):
@@ -1077,6 +1124,7 @@ class NaiveBayes():
     
 
 class HMM4binary_sensors():
+    use_log_prob = True
     """
     Hidden Markov model (HMM) especially for binary sensors.
     Outputs of binary sensors are independent with each other.
@@ -1101,7 +1149,7 @@ class HMM4binary_sensors():
         Transition matrix.
         A.shape = (n, n).
     P : numpy.ndarray
-        Parameters of bernoulli dstributions.
+        Parameters of bernoulli distributions.
         P.shape = (n, m).
         
     References
@@ -1111,13 +1159,32 @@ class HMM4binary_sensors():
     [2] TL van Kasteren, G. Englebienne, and B. J. Kröse, "Human activity recognition from wireless sensor
         network data: Benchmark and software." Proc. of the Activity recognition in pervasive 
         intelligent environments, Paris, Atlantis Press, 2011, 165-186.
-    [3] H. H. Avilés-Arriaga et al. "A comparison of dynamic naive bayesian classifiers and 
-        hidden markov models for gesture recognition."
-        Journal of applied research and technology, 9-1(2011), 81-102.
     """
     
-    
     def fit_with_true_hidden_states(self, observations, states):
+        if self.use_log_prob:
+            self._fit_with_true_hidden_states_log(observations, states)
+        else:
+            self._fit_with_true_hidden_states(observations, states)
+        """
+        This learn parameters of HMM from the observations with true hidden states.
+        Maximum likelihood estimator.
+        
+        Parameters
+        ----------
+        observations : list of numpy.ndarray
+            observations[i].shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+            If len(observations) > 1, the output parameters are the average of the estimated parameters for each data.
+        states : list of numpy.ndarray
+            states[i].shape = (number of times,)
+            states[i] are hidden states of observations[i].
+            The length of states[i] equals to the one of observations[i].
+            The values can only be {0, 1, 2, ..., state_num - 1}.
+        """
+        
+    
+    def _fit_with_true_hidden_states(self, observations, states):
         """
         This learn parameters of HMM from the observations with true hidden states.
         Maximum likelihood estimator.
@@ -1158,13 +1225,64 @@ class HMM4binary_sensors():
             pairs = [(s[t-1], s[t]) for t in range(1, len(s))]
             for i in range(self.n):
                 for j in range(self.n):
-                    self.A[i][j] = pairs.count((i, j)) / (counts[i] - (s[-1] == i))
+                    self.A[i][j] += pairs.count((i, j)) / (counts[i] - (s[-1] == i))
                 for j in range(self.m):
-                    self.P[i][j] = (s == i)@seq[:, j] / counts[i]
+                    self.P[i][j] += (s == i)@seq[:, j] / counts[i]
         len_o = len(observations)
         self.C /= len_o
         self.A /= len_o
         self.P /= len_o
+        return
+    
+    def _fit_with_true_hidden_states_log(self, observations, states):
+        """
+        This learn parameters of HMM from the observations with true hidden states.
+        Maximum likelihood estimator.
+        This uses log probabilities.
+        
+        Parameters
+        ----------
+        observations : list of numpy.ndarray
+            observations[i].shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+            If len(observations) > 1, the output parameters are the average of the estimated parameters for each data.
+        states : list of numpy.ndarray
+            states[i].shape = (number of times,)
+            states[i] are hidden states of observations[i].
+            The length of states[i] equals to the one of observations[i].
+            The values can only be {0, 1, 2, ..., state_num - 1}.
+        """
+        if type(observations) != list:
+            observations = [observations]
+            states = [states]
+        state_set = set()
+        for s in states:
+            state_set |= set(np.unique(s))
+        state_num = len(state_set)
+        sensor_num = observations[0].shape[1]
+        self.n = state_num
+        self.m = sensor_num
+        self.logC = np.array([-float('inf') for _ in range(self.n)])
+        self.logA = np.full((self.n, self.n), -float('inf'))
+        self.logP = np.full((self.n, self.m), -float('inf'))
+
+        for (seq, s) in zip(observations, states):
+            seq = seq.astype(int)
+            s = s.astype(int)
+            self.logC[s[0]] = np.logaddexp(self.logC[s[0]], 0)
+            # counts[i] = the total number of occurrences of state i in the sequence
+            counts = np.bincount(s)
+            # pairs[i] = (s_{t}, s_{t+1}), 1<= t <= T-1, T: total length of the obsevation
+            pairs = [(s[t-1], s[t]) for t in range(1, len(s))]
+            for i in range(self.n):
+                for j in range(self.n):
+                    self.logA[i][j] = np.logaddexp(self.logA[i][j], np.log(pairs.count((i, j))) - np.log((counts[i] - (s[-1] == i))))
+                for j in range(self.m):
+                    self.logP[i][j] = np.logaddexp(self.logP[i][j], np.log((s == i)@seq[:, j]) - np.log(counts[i]))
+        len_o = len(observations)
+        self.logC -= np.log(len_o)
+        self.logA -= np.log(len_o)
+        self.logP -= np.log(len_o)
         return
     
     def predict_states(self, observation):
@@ -1187,7 +1305,37 @@ class HMM4binary_sensors():
             The length equals to one of observations.
         prob : float
             Probability of the 'state'.
-            max log P(s_1, ..., s_T, O_1, ..., O_T | parameters). 
+            If use_log_prob is True, then returns log probabilities.
+            max P(s_0, ..., s_T, O_0, ..., O_T | parameters) or
+            max log P(s_0, ..., s_T, O_0, ..., O_T | parameters). 
+        """
+        
+        if self.use_log_prob:
+            return self._predict_states_log(observation)
+        else:
+            return self._predict_states(observation)
+        
+    def _predict_states(self, observation):
+        """
+        This predicts states from observed sequences.
+        P(state | observations, parameters) are maximized by Viterbi algorithm.
+        
+        Parameters
+        ----------
+        observation : numpy.ndarray
+            observation.shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+        
+        Returns
+        -------
+        (state, prob) : tuple
+        
+        state : numpy.ndarray
+            states.shape = (number of times,)
+            The length equals to one of observations.
+        prob : float
+            Probability of the 'state'.
+            max P(s_0, ..., s_T, O_0, ..., O_T | parameters). 
         """
         
         len_o = len(observation)
@@ -1195,7 +1343,7 @@ class HMM4binary_sensors():
         
         # delta records the quantity.
         # Let O_t be the observed value at time t.
-        # delta[t][i] = max_{s_0, ... s_{t-1}}{P(s_1, ..., s_{t-1}, s_t = i, O_1, ..., O_t | parameters)}.
+        # delta[t][i] = max_{s_0, ... s_{t-1}}{P(s_0, ..., s_{t-1}, s_t = i, O_0, ..., O_t | parameters)}.
         # delta[t+1][j] = max_{i}{delta[t][i] * a_i_j} * P(x_{t+1} = O_{t+1} | s_t = j)
         delta = np.zeros((len_o, self.n))
         
@@ -1231,6 +1379,126 @@ class HMM4binary_sensors():
             
         return (state, prob)
     
+    def _predict_states_log(self, observation):
+        """
+        This predicts states from observed sequences using log probabilities.
+        P(state | observations, parameters) are maximized by Viterbi algorithm.
+        
+        Parameters
+        ----------
+        observation : numpy.ndarray
+            observation.shape = (number of times, number of sensors)
+            The values can only be False (0) or True (1).
+        
+        Returns
+        -------
+        (state, prob) : tuple
+        
+        state : numpy.ndarray
+            states.shape = (number of times,)
+            The length equals to one of observations.
+        prob : float
+            Log Probability of the 'state'.
+            max log P(s_0, ..., s_T, O_1, ..., O_T | parameters). 
+        """
+        
+        len_o = len(observation)
+        observation = observation.astype(int)
+        
+        # delta records the quantity.
+        # Let O_t be the observed value at time t.
+        # delta[t][i] = max_{s_0, ... s_{t-1}}{P(s_0, ..., s_{t-1}, s_t = i, O_1, ..., O_t | parameters)}.
+        # delta[t+1][j] = max_{i}{delta[t][i] * a_i_j} * P(s_{t+1} = O_{t+1} | s_t = j)
+        logdelta = np.full((len_o, self.n), -float('inf'))
+        
+        # psi records the argument which maximized delta[t+1][j]
+        psi = np.zeros((len_o, self.n))
+        
+        # log(1-p)
+        log1P = np.array([[self.logsub(0, self.logP[i][j]) for j in range(self.m)] for i in range(self.n)])
+        
+        # Viterbi algorithm
+        
+        # Initialization
+        ones_vec = np.ones(self.m)
+        for i in range(self.n):
+            # delta[0][i] = self.C[i] * np.prod(np.abs((ones_vec - observation[0]) - self.P[i]))
+            # np.array([self.logsub(0, self.logP[i][j]) for j in range(self.m)])*(ones_vec - o_t))
+            _temp = np.array([self.logP[i][j] if observation[0] else log1P[i][j] for j in range(self.m)])
+            logdelta[0][i] = self.logC[i] + np.sum(_temp)
+            psi[0][i] = 0
+            
+        # Recursion
+        diff = 100000
+        for t in range(1, len_o):
+            if t % diff == 0:
+                new_functions.print_progress_bar(len_o, t, 'Recursion prediction in HMM.')
+            for j in range(self.n):
+                # score_vec = delta[t-1] * self.A[:, j]
+                # delta[t][j] = np.max(score_vec) * np.prod(np.abs((ones_vec - observation[t]) - self.P[j]))
+                score_vec = logdelta[t-1] + self.logA[:, j]
+                _temp = np.array([self.logP[j][k] if observation[t] else log1P[j][k] for k in range(self.m)])
+                logdelta[t][j] = np.max(score_vec) + np.sum(_temp)
+                psi[t][j] = np.argmax(score_vec)
+                
+        # Termination
+        prob = np.max(delta[-1])
+        state = np.zeros(len_o, dtype = int)
+        state[-1] = np.argmax(delta[-1])
+        
+        # Path backtracking
+        for t in reversed(range(len_o - 1)):
+            state[t] = psi[t+1][state[t+1]]
+            
+        return (state, prob)
+    
+    @staticmethod
+    def logadd(logX, logY):
+        """
+        This calculates log(X + Y) from log(X) and log(Y).
+        
+        Parameters
+        ----------
+        logX : float
+        logY : float
+        
+        Returns
+        -------
+        ret : float
+        """
+        # return log(X + Y)
+        if logX < logY:
+            logX, logY = logY, logX
+        if logX == float('inf'):
+            return logX
+        diff = logY - logX
+        if diff < -20:
+            return logX
+        return logX + np.log(1 + np.exp(diff))
+
+    @staticmethod
+    def logsub(logX, logY):
+        """
+        This calculates log(X - Y) from log(X) and log(Y).
+        
+        Parameters
+        ----------
+        logX : float
+        logY : float
+        
+        Returns
+        -------
+        ret : float
+        """
+        if logX < logY:
+            raise ValueError('logX must be larger than logY')
+        if logX == float('inf'):
+            return logX
+        diff = logY - logX
+        if diff < -20:
+            return logX
+        return logX + np.log(1 - np.exp(diff))
+
     
 class HMM4categorical():
     """
