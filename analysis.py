@@ -1044,12 +1044,16 @@ class NaiveBayes():
         prob = np.zeros(len_o)
         ones_vec = np.ones(self.m)
         
+        # 1 - p
+        oP = np.ones_like(self.P) - self.P
+        
         diff = 100000
         for t in range(len_o):
             if t % diff == 0:
                 new_functions.print_progress_bar(len_o, t, 'prediction in dynamic naive Bayes.')
             o_t = observation[t].astype(int)
-            p = [self.C[i] * np.prod(self.P[i]*o_t + (ones_vec - self.P[i])*(ones_vec - o_t)) for i in range(self.n)]
+            # p = [self.C[i] * np.prod(self.P[i]*o_t + (ones_vec - self.P[i])*(ones_vec - o_t)) for i in range(self.n)]
+            p = self.C * np.prod(np.where(np.repeat(o_t[np.newaxis, :], self.n, axis=0), self.P, oP), axis = 1)
             ret[t] = np.argmax(p)
             prob[t] = np.max(p)
         return ret, prob
@@ -1059,7 +1063,7 @@ class NaiveBayes():
         observation = observation.astype(int)
         ret = np.zeros(len_o)
         prob = np.zeros(len_o)
-        ones_vec = np.ones(self.m)
+        # ones_vec = np.ones(self.m)
         
         # log(1-p)
         log1P = np.array([[self.logsub(0, self.logP[i][j]) for j in range(self.m)] for i in range(self.n)])
@@ -1070,8 +1074,9 @@ class NaiveBayes():
                 new_functions.print_progress_bar(len_o, t, 'prediction in dynamic naive Bayes.')
             o_t = observation[t].astype(int)
             # logp = [self.logC[i] + np.sum(self.logP[i]*o_t + log1P[i]*(ones_vec - o_t)) for i in range(self.n)]
-            # logp = [self.logC[i] + np.sum([self.logP[i][j] if o_t[j] else log1P[i][j] for j in range(self.m)]) for i in range(self.n)]
-            logp = self.logC + np.sum(self.logP*o_t + log1P*(ones_vec - o_t), axis = 1)
+            # logp = self.logC + np.sum(self.logP*o_t + log1P*(ones_vec - o_t), axis = 1)  # can't work if prob = 0
+            # logp = [self.logC[i] + np.sum([self.logP[i][j] if o_t[j] else log1P[i][j] for j in range(self.m)]) for i in range(self.n)] # can't work if prob = 0
+            logp = self.logC + np.sum(np.where(np.repeat(o_t[np.newaxis, :], self.n, axis=0), self.logP, log1P), axis = 1)
             ret[t] = np.argmax(logp)
             prob[t] = np.max(logp)
         return ret, prob
@@ -1421,26 +1426,28 @@ class HMM4binary_sensors():
         # Viterbi algorithm
         
         # Initialization
-        ones_vec = np.ones(self.m)
-        for i in range(self.n):
-            # delta[0][i] = self.C[i] * np.prod(np.abs((ones_vec - observation[0]) - self.P[i]))
-            # np.array([self.logsub(0, self.logP[i][j]) for j in range(self.m)])*(ones_vec - o_t))
-            _temp = np.array([self.logP[i][j] if observation[0] else log1P[i][j] for j in range(self.m)])
-            logdelta[0][i] = self.logC[i] + np.sum(_temp)
-            psi[0][i] = 0
+        
+        # ones_vec = np.ones(self.m)
+        # for i in range(self.n):
+        #     _temp = np.where(observation[0], self.logP[i], log1P[i])
+        #     logdelta[0][i] = self.logC[i] + np.sum(_temp)
+        #     psi[0][i] = 0
+        logdelta[0] = self.logC + np.sum(np.where(np.repeat(observation[0][np.newaxis, :], n, axis=0), self.logP, log1P), axis = 1)
+        psi[0] = np.zeros(self.n)
             
         # Recursion
         diff = 100000
         for t in range(1, len_o):
             if t % diff == 0:
                 new_functions.print_progress_bar(len_o, t, 'Recursion prediction in HMM.')
-            for j in range(self.n):
-                # score_vec = delta[t-1] * self.A[:, j]
-                # delta[t][j] = np.max(score_vec) * np.prod(np.abs((ones_vec - observation[t]) - self.P[j]))
-                score_vec = logdelta[t-1] + self.logA[:, j]
-                _temp = np.array([self.logP[j][k] if observation[t] else log1P[j][k] for k in range(self.m)])
-                logdelta[t][j] = np.max(score_vec) + np.sum(_temp)
-                psi[t][j] = np.argmax(score_vec)
+            # for j in range(self.n):
+            #     score_vec = logdelta[t-1] + self.logA[:, j]
+            #     _temp = np.where(observation[t], self.logP[j], log1P[j])
+            #     logdelta[t][j] = np.max(score_vec) + np.sum(_temp)
+            #     psi[t][j] = np.argmax(score_vec)
+            score_mat = logdelta[t-1].reshape((self.n, 1)) + self.logA[:, j]
+            logdelta[t][j] = np.max(score_mat, axis = 0) + np.sum(np.where(np.repeat(observation[t][np.newaxis, :], n, axis=0), self.logP, log1P), axis = 1)
+            psi[t] = np.argmax(score_mat, axis = 0)
                 
         # Termination
         prob = np.max(delta[-1])
