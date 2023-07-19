@@ -1056,6 +1056,7 @@ class NaiveBayes():
             p = self.C * np.prod(np.where(np.repeat(o_t[np.newaxis, :], self.n, axis=0), self.P, oP), axis = 1)
             ret[t] = np.argmax(p)
             prob[t] = np.max(p)
+        print('')
         return ret, prob
         
     def _predict_states_log(self, observation):
@@ -1079,6 +1080,7 @@ class NaiveBayes():
             logp = self.logC + np.sum(np.where(np.repeat(o_t[np.newaxis, :], self.n, axis=0), self.logP, log1P), axis = 1)
             ret[t] = np.argmax(logp)
             prob[t] = np.max(logp)
+        print('')
         return ret, prob
 
     @staticmethod
@@ -1382,6 +1384,7 @@ class HMM4binary_sensors():
         # Path backtracking
         for t in reversed(range(len_o - 1)):
             state[t] = psi[t+1][state[t+1]]
+        print('')
             
         return (state, prob)
     
@@ -1432,7 +1435,7 @@ class HMM4binary_sensors():
         #     _temp = np.where(observation[0], self.logP[i], log1P[i])
         #     logdelta[0][i] = self.logC[i] + np.sum(_temp)
         #     psi[0][i] = 0
-        logdelta[0] = self.logC + np.sum(np.where(np.repeat(observation[0][np.newaxis, :], n, axis=0), self.logP, log1P), axis = 1)
+        logdelta[0] = self.logC + np.sum(np.where(np.repeat(observation[0][np.newaxis, :], self.n, axis=0), self.logP, log1P), axis = 1)
         psi[0] = np.zeros(self.n)
             
         # Recursion
@@ -1445,19 +1448,20 @@ class HMM4binary_sensors():
             #     _temp = np.where(observation[t], self.logP[j], log1P[j])
             #     logdelta[t][j] = np.max(score_vec) + np.sum(_temp)
             #     psi[t][j] = np.argmax(score_vec)
-            score_mat = logdelta[t-1].reshape((self.n, 1)) + self.logA[:, j]
-            logdelta[t][j] = np.max(score_mat, axis = 0) + np.sum(np.where(np.repeat(observation[t][np.newaxis, :], n, axis=0), self.logP, log1P), axis = 1)
+            score_mat = logdelta[t-1].reshape((self.n, 1)) + self.logA
+            logdelta[t] = np.max(score_mat, axis = 0) + np.sum(np.where(np.repeat(observation[t][np.newaxis, :], self.n, axis=0), self.logP, log1P), axis = 1)
             psi[t] = np.argmax(score_mat, axis = 0)
                 
         # Termination
-        prob = np.max(delta[-1])
+        prob = np.max(logdelta[-1])
         state = np.zeros(len_o, dtype = int)
-        state[-1] = np.argmax(delta[-1])
+        state[-1] = np.argmax(logdelta[-1])
         
         # Path backtracking
         for t in reversed(range(len_o - 1)):
             state[t] = psi[t+1][state[t+1]]
-            
+        print('')
+        
         return (state, prob)
     
     @staticmethod
