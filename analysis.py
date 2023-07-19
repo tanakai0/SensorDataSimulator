@@ -1070,7 +1070,8 @@ class NaiveBayes():
                 new_functions.print_progress_bar(len_o, t, 'prediction in dynamic naive Bayes.')
             o_t = observation[t].astype(int)
             # logp = [self.logC[i] + np.sum(self.logP[i]*o_t + log1P[i]*(ones_vec - o_t)) for i in range(self.n)]
-            logp = [self.logC[i] + np.sum([self.logP[i][j] if o_t[j] else log1P[i][j] for j in range(self.m)]) for i in range(self.n)]
+            # logp = [self.logC[i] + np.sum([self.logP[i][j] if o_t[j] else log1P[i][j] for j in range(self.m)]) for i in range(self.n)]
+            logp = logC + np.sum(logP*o_t + log1P*(ones_vec - o_t), axis = 1)
             ret[t] = np.argmax(logp)
             prob[t] = np.max(logp)
         return ret, prob
