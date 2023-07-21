@@ -1672,12 +1672,12 @@ def direct_path(candidates, stride, Discom, Distance_E, max_dis, edge, g_L, g_W,
 
     Returns
     -------
-    (HPath, Angles) : tuple
-    HPath : list of list of int
-        HPath means the list of path.
-        [i] means an i-th coordinate in the path, e.g., resident_path[i] = [100, 23].
-    Angles : list of float
-        Angles means the list of angles of the resident while walking, e.g., angles[i] = 0.0996.
+    (resident_path, angles) : tuple
+    resident_path : list of list of int
+        resident_path means the list of path.
+        resident_path[i] means an i-th coordinate in the path, e.g., resident_path[i] = [100, 23].
+    angles : list of float
+        angles means the list of angles of the resident while walking, e.g., angles[i] = 0.0996.
         
     See Also
     --------
@@ -1744,16 +1744,16 @@ def direct_path(candidates, stride, Discom, Distance_E, max_dis, edge, g_L, g_W,
         return (II, JJ), I, J
 
     first_point = random.choice(candidates)
-    HPath, Angles = [first_point], []
+    resident_path, angles = [first_point], []
     I, J = first_point[0], first_point[1]
     angle = None
     while Distance_E[I][J] > distance_threshold:
         angle, I, J = next_step(Distance_E, Discom, [I, J], stride, angle, max_dis)
-        if len(HPath) > max_dis / stride:
+        if len(resident_path) > max_dis / stride:
             raise ValueError('The resident may not reach a target end point.')
-        Angles.append(math.atan2(angle[1], angle[0]))
-        HPath.append([I, J])
-    return HPath, Angles
+        angles.append(math.atan2(angle[1], angle[0]))
+        resident_path.append([I, J])
+    return resident_path, angles
 
 
 def normal_bcfp(Hpath, Angles, stride, lims, Preferfoot, edge, g_L, g_W):
