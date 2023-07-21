@@ -1652,7 +1652,7 @@ def direct_path(candidates, stride, Discom, Distance_E, max_dis, edge, g_L, g_W,
     Parameters
     ----------
     candidates: list of list of int
-        Possible place related with the place.
+        Possible positions related with the place.
         These coordinates are candidates of start point and one of them is selected randomly.
     stride : float
         Stride length of 1 step, [cm].
@@ -1686,69 +1686,165 @@ def direct_path(candidates, stride, Discom, Distance_E, max_dis, edge, g_L, g_W,
     [2] https://github.com/Idontwan/SISG4HEI_Alpha.
     """
     
-    def O_dist(I, J):
-        return math.sqrt((I*g_L)**2+(J*g_W)**2)
+# Following programs can work, but are running slow
+#     def calculate_angle_cost(angle1, angle2):
+#         radian1 = math.atan2(angle1[1], angle1[0])
+#         radian2 = math.atan2(angle2[1], angle2[0])
+#         diff_radian = abs(radian1 - radian2)
+#         acute_diff = min(diff_radian, 2*math.pi - diff_radian)
+#         if acute_diff > 3/4*math.pi:
+#             return 200
+#         elif acute_diff > math.pi/4:
+#             return 75
+#         elif acute_diff > math.pi/12:
+#             return (180*acute_diff/math.pi)**2/45
+#         else:
+#             return (180*acute_diff/math.pi)/3
+  
+#     def next_step(distance, discomfort, location, stride, angle):
+#         """
+#         This selects next step.
+#         cost is a moving cost from the present position (location) to the next position.
+#         cost = (1) weighted distance from the next position to the any points in the target area
+#                + (2) weighted distance (with discomfort caused by nearby obstacles) from the position to the next position
+#                + (3) discomfort caused by the resident changing his/her walking direction
+#                + (4) resident’s most suitable walking stride length
+#                + (5) noise
+               
+#         Parameters
+#         ----------
+#         distance : 
+#         discomfort : 
+#         location : 
+#         stride : 
+#         angle : 
+        
+#         Returns
+#         -------
+#         (angle, next_i, next_j)
+#             angle : tuple of int
+#             next_i : int
+#             next_j : int
+#         """
+#         (I, J) = location
+#         M, N = distance.shape
+#         max_ii, max_jj = int(75 / g_L), int(75 / g_W)
+#         min_ii, min_jj = int(30 / g_L), int(30 / g_W)
+        
+#         # key of cost: difference between the present position and next position (ii, jj)
+#         # value of cost: total cost
+#         cost = {}
+        
+#         # key of len_dict: (ii, jj)
+#         # value of len_dict: real length
+#         length_dict = {}
+        
+#         # (1) weighted distance from the next position to the any points in the target area
+#         # (2) weighted distance (with discomfort caused by nearby obstacles) from the position to the next position
+#         discomfort_I_J = discomfort[I][J]
+#         for (ii, jj) in itertools.product(range(- max_ii + 1, max_ii), range(- max_jj + 1, max_jj)):
+#             if (abs(ii) > min_ii or abs(jj) > min_jj) and (-1 < I+ii < M and -1 < J+jj < N):
+#                 mean_discomfort = (discomfort_I_J + discomfort[I+ii//2][J+jj//2] + discomfort[I+ii][J+jj])/3
+#                 length_dict[(ii, jj)] = math.sqrt((ii*g_L)**2+(jj*g_W)**2)
+#                 cost[(ii, jj)] = distance[I+ii][J+jj] + mean_discomfort * length_dict[(ii, jj)]
+                
+#         # (3) discomfort caused by the resident changing his/her walking direction
+#         if angle != None:
+#             for _key in cost:
+#                 cost[_key] += calculate_angle_cost(_key, angle)
+        
+#         # (4) resident’s most suitable walking stride length
+#         for _key in cost:
+#             cost[_key] += (length_dict[_key]-stride)**2/4
+        
+#         # (5) noise
+#         for _key in cost:
+#             cost[_key] += 2*random.random()
 
-    def cal_an_dif(n_ang, o_ang):
-        [n_I, n_J], [o_I, o_J] = n_ang, o_ang
-        angl1 = math.atan2(n_J, n_I)
-        angl0 = math.atan2(o_J, o_I)
-        return min(abs(angl1-angl0), 2*math.pi-abs(angl1-angl0))
+#         angle = min(cost, key = cost.get)
+#         (II, JJ) = angle
+#         return angle, location[0] + II, location[1] + JJ
 
+    def angle_cost(angle_diff):
+        if angle_diff > 3/4*math.pi:
+            return 200
+        elif angle_diff > math.pi/4:
+            return 75
+        elif angle_diff > math.pi/12:
+            return (180*angle_diff/math.pi)**2/45
+        else:
+            return (180*angle_diff/math.pi)/3
+        
+    numpy_angle_cost = np.vectorize(angle_cost)
 
-    def cal_an_val(an_diff):
-        if an_diff > 3/4*math.pi: return 200
-        if an_diff > math.pi/4: return 75
-        if an_diff > math.pi/12: return (180*an_diff/math.pi)**2/45
-        return (180*an_diff/math.pi)/3
-
-    def od_add_ang_len(Od, Slen, angle):
-        for key in Od:
-            (ii, jj) = key
-            sslen = O_dist(ii, jj)
-            len_value = (sslen-Slen)**2/4
-            Od[key] += len_value
-            if angle != None:
-                an_dif = cal_an_dif([ii, jj], angle)
-                an_value = cal_an_val(an_dif)
-                Od[key] += an_value
-
-    def add_noise(Od):
-        for key in Od:
-            noise = 2*random.random()
-            Od[key] += noise
-            
-    def orig_dist(Distances, Discom, O_node):
-        # weighted-distance with discomfort values from O_node
-        Wd = {}
-        [I, J] = O_node
-        O_discom = Discom[I][J]
-        M, N = Distances.shape
+    def next_step(distance, discomfort, location, stride, angle):
+        """
+        cost is a moving cost from the present position (location) to the next position.
+        cost = (1) weighted distance from the next position to the any points in the target area
+               + (2) weighted distance (with discomfort caused by nearby obstacles) from the position to the next position
+               + (3) discomfort caused by the resident changing his/her walking direction
+               + (4) resident’s most suitable walking stride length
+               + (5) noise
+        """
+        (I, J) = location
+        M, N = distance.shape
         max_ii, max_jj = int(75 / g_L), int(75 / g_W)
         min_ii, min_jj = int(30 / g_L), int(30 / g_W)
-        for (ii, jj) in itertools.product(range(- max_ii + 1, max_ii), range(- max_jj + 1, max_jj)):
-            if (abs(ii) > min_ii or abs(jj) > min_jj) and (-1 < I+ii < M and -1 < J+jj < N):
-                ii_h, jj_h = ii//2, jj//2
-                disc_mean = (O_discom + Discom[I+ii_h][J+jj_h] + Discom[I+ii][J+jj])/3
-                Wd[(ii, jj)] = Distances[I+ii][J+jj] + disc_mean * O_dist(ii, jj)
-        return Wd
-    
-    def next_step(distance, discomf, location, stride, angle, max_dis):
-        MWd = orig_dist(distance, discomf, location)
-        od_add_ang_len(MWd, stride, angle)
-        add_noise(MWd)
-        n_key = min(MWd, key = MWd.get)
-        (II, JJ) = n_key
-        [I, J] = location
-        I, J = I + II, J + JJ
-        return (II, JJ), I, J
+        
+        start_i = max(0, I - max_ii + 1)
+        end_i = min(I + max_ii, M)
+        start_j = max(0, J - max_jj + 1)
+        end_j = min(J + max_jj, N)
+        
+        m, n = end_i - start_i, end_j - start_j
+        cost = np.full((m, n), 99999.0)
+        column_index, row_index = np.meshgrid(np.arange(n), np.arange(m))
+        row_index += start_i
+        column_index += start_j
+        
+        # mask is a possible indexes of next step
+        mask = np.full((m, n), True)
+        mask[max(0, I - min_ii) - start_i: min(I + min_ii + 1, M) - start_i, max(0, J - min_jj) - start_j: min(J + min_jj + 1, N) - start_j] = False
+        
+        # (1) weighted distance from the next position to the any points in the target area
+        cost[mask] = distance[row_index, column_index][mask]
+        
+        # (2) weighted distance (with discomfort caused by nearby obstacles) from the position to the next position
+        _temp_row_index = I + (row_index - I) // 2
+        _temp_column_index = J + (column_index - J) // 2
+        discomfort_on_half_position = discomfort[_temp_row_index, _temp_column_index]
+        # approximate discomfort value between the present postion and the next postion
+        mean_discomfort = (discomfort[I][J] + discomfort[row_index, column_index] + discomfort_on_half_position) / 3
+        length_matrix = np.sqrt(np.square((row_index - I) * g_L) + np.square((column_index - J) * g_W))
+        cost += mean_discomfort * length_matrix           
+                
+        # (3) discomfort caused by the resident changing his/her walking direction
+        if angle != None:
+            radian = np.arctan2(column_index - J, row_index - I)
+            diff = np.abs(radian - math.atan2(angle[1], angle[0]))
+            acute_diff_angle = np.minimum(diff, 2 * math.pi - diff)
+            cost += numpy_angle_cost(acute_diff_angle)
+        
+        # (4) resident’s most suitable walking stride length
+        cost += np.square(length_matrix - stride) / 4
+        
+        # (5) noise
+        cost += 2 * np.random.rand(m, n)
+        
+        # select the next step
+        if np.min(cost) >= 99999:
+            raise ValueError('Any position is not possible to move.')
+        min_index_2d = np.unravel_index(np.argmin(cost), cost.shape)
+        next_pos = (start_i + min_index_2d[0], start_j + min_index_2d[1])
+        II, JJ = next_pos[0] - I, next_pos[1] - J
+        return (II, JJ), next_pos[0], next_pos[1]
 
     first_point = random.choice(candidates)
     resident_path, angles = [first_point], []
     I, J = first_point[0], first_point[1]
     angle = None
     while Distance_E[I][J] > distance_threshold:
-        angle, I, J = next_step(Distance_E, Discom, [I, J], stride, angle, max_dis)
+        angle, I, J = next_step(Distance_E, Discom, [I, J], stride, angle)
         if len(resident_path) > max_dis / stride:
             raise ValueError('The resident may not reach a target end point.')
         angles.append(math.atan2(angle[1], angle[0]))
@@ -2087,7 +2183,7 @@ def update_state_of_binary_sensor(sensor_data, sensor_states, sensor, state, t):
         Value are states of sensors.
         If the corresponded sensor of the index is sensor_model.CircularPIRSensor or sensor_model.SquarePressureSensor, the value is boolean, else None.
     sensor : sensor_model.Sensor
-        Index of the sensor.
+        Target sensor.
     state : boolean
         Present state of the sensor.
     t : datetime.timedelta

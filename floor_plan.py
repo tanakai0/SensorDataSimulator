@@ -3041,23 +3041,26 @@ class FloorPlan:
                                 Topology[(i, j)].append([i+ii, j+jj])
             return Topology
         
-        def weighted_dijkstra(s_nodes, topo_graph, dis_val):
+        def weighted_dijkstra(s_nodes, topo_graph, discomfort):
             """
+            This calculates the weighteddistance matrix from discomfort values.
+            
+            
             Parameters
             ----------
             s_nodes : list of list
                 start or destination points of some place, e.g., [[x1, y1], [x2, y2], ..., [xn, yn]]
             topo_graph : dict of list of int
                 a dictionary of nearest cells' indexes, e.g., {(2,2): [[0,1], [0,3], [1,0], ..., [4,3]], (2,3):...}
-            dis_val : numpy.ndarray
+            discomfort : numpy.ndarray
                 a discomfort value matrix
                 be carefult that the indexes of the matrix do not correspond (x,y) coordinate
             
             Returns
             -------
             distance : numpy.ndarray
-                distance from a place
-                The shape is same with dis_val
+                distance[i][j] = Weighted distance from (i, j) to any points in s_nodes.
+                The shape is same with discomfort.
             max_dis : float
                 maximum distance among points that can be arrived from a place
                 
@@ -3070,7 +3073,7 @@ class FloorPlan:
                 [I0, J0], [I1, J1] = P0, P1
                 return math.sqrt(self.g_L*self.g_L*(I1-I0)*(I1-I0)+self.g_W*self.g_W*(J1-J0)*(J1-J0))
 
-            distance = 99999 * np.ones(dis_val.shape, dtype = np.float32)
+            distance = 99999 * np.ones(discomfort.shape, dtype = np.float32)
             boundry, max_dis = {}, 0
             for [k, t] in s_nodes:
                 distance[k][t] = 0.0
@@ -3082,7 +3085,7 @@ class FloorPlan:
                 if neighbors != []:
                     for [II, JJ] in neighbors:
                         real_d = real_distance([II, JJ],[I, J])  # Euclidean distance
-                        n_dis = Od + real_d * dis_val[II][JJ]
+                        n_dis = Od + real_d * discomfort[II][JJ]
                         if n_dis < distance[II][JJ]:
                             distance[II][JJ] = n_dis
                             if n_dis > max_dis: max_dis = n_dis
