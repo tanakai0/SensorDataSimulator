@@ -697,8 +697,8 @@ test_sensors = [
     CircularPIRSensor('normal PIR', 21, 920,   50, '#ff0000', 50),
     SquarePressureSensor('vertical oblong pressure', 22, -30, 0, '#696969', 200, 50, 0),
     SquarePressureSensor('horizontal oblong pressure', 23, -160, -60, '#696969', 50, 150, 0),
-    CostSensor(FLOW_KITCHEN, 24, 990, 60, '#0000ff'),
-    CostSensor(FLOW_BATHROOM, 25, 600, -310, '#0000ff'),
+    CostSensor(FLOW_BATHROOM, 24, 600, -310, '#0000ff'),
+    CostSensor(FLOW_KITCHEN, 25, 990, 60, '#0000ff'),
     CostSensor(POWER_TV, 26, 320, 160, '#ffa500'),
     CostSensor(POWER_KITCHEN, 27, 985, 180, '#ffa500')]
             
