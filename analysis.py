@@ -20,7 +20,7 @@ def generate_block_time_histogram_of_activities(AS, activities, step, start = No
     ----------
     AS : list of ActivityDataPoint
         Time series data of activities.
-    activities : list of activity_model.Activity
+    activities : list of str
         Target activities to count.    
     step : datetime.timedelta
         Time step to count the number of times of the activities.
@@ -55,15 +55,14 @@ def generate_block_time_histogram_of_activities(AS, activities, step, start = No
         end = AS[-1].end
         
     # Value error
-    if target == '':
-        raise ValueError('taget must be input!')
+    if target not in ['frequency', 'duration']:
+        raise ValueError('target is fault!')
     if start > end:
         raise ValueError('Input start must be earlier than input end! If you don\'t specify start or end as input, start or end is defined by activity sequence.')
     if start < AS[0].start or AS[-1].end < end:
         print('Some period between start and end is out of range of activity_sequence. If you don\'t specify start or end as input, start or end is defined by activity sequence.')
         
     counts = []
-    name_list = [x.name for x in activities]
     
     activity_index = 0
     for (i, act) in enumerate(AS):
@@ -76,7 +75,7 @@ def generate_block_time_histogram_of_activities(AS, activities, step, start = No
             temp_count = 0
             tt = t + step
             while True:
-                if act.activity.name in name_list and t <= act.start <= tt:
+                if act.activity.name in activities and t <= act.start <= tt:
                     temp_count += 1
                 if act.end <= tt:
                     activity_index += 1
@@ -93,14 +92,14 @@ def generate_block_time_histogram_of_activities(AS, activities, step, start = No
             temp_d = 0  # duration time in the period [t, t+1]
             while True:
                 if act.end <= tt:
-                    if act.activity.name in name_list:
+                    if act.activity.name in activities:
                         temp_d += (act.end - max(act.start, t)) / timedelta(hours = 1)
                     activity_index += 1
                     if activity_index >= len(AS):
                         break
                     act = AS[activity_index]
                 else:
-                    if act.activity.name in name_list:
+                    if act.activity.name in activities:
                         temp_d += (tt - max(act.start, t) )  / timedelta(hours = 1)
                     break
             counts.append(temp_d)
