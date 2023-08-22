@@ -13,8 +13,6 @@ import src.sensor_model as sensor_model
 
 WANDERING_NAME = "wandering"
 
-
-@total_ordering
 class Activity:
     def __init__(self, name, duration_mean, duration_sd, place, color, home_equipment):
         """
@@ -53,17 +51,6 @@ class Activity:
 
     def __str__(self):
         return "<Activity>" + self.name
-
-    # when to calculate equation of Activity, Activity.name is only considered
-    def __eq__(self, other):
-        if not isinstance(other, Activity):
-            return NotImplemented
-        return self.name == other.name
-
-    def __lt__(self, other):
-        if not isinstance(other, Activity):
-            return NotImplemented
-        return False
 
     # getter
     @property

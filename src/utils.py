@@ -201,7 +201,7 @@ def generate_activity_sequence(
 
     Notes
     -----
-    original_act_model may be modified by the condition of the layout, e.g., activity 'Watch TV' at TV is excluded if the layout does not have any TVs in it.
+    original_act_model will be modified by the condition of the layout, e.g., activity 'Watch TV' at TV is excluded if the layout does not have any TVs in it.
     """
     act_model = activity_model.determine_activity_set(path, original_act_model)
 
@@ -227,7 +227,8 @@ def generate_activity_sequence(
     )
 
     # connect adjacent same activities in the schedule, in particular for sleep activity over 2 days
-    # e.g.,
+    # For example,
+    # (In the following example, activity name str is used instead of activity_model.Activity for simply)
     # [('Sleep', s0, e0), (Sleep', s1, e1), ('Toilet', s2, e2), ('Work', s3, e3), ('TV', s4, e4), ('TV', s5, e5),
     #  ('TV', s6, e6), ('Sleep', s7, e7), ('Sleep', s8, e8)]
     # intervals = [(0, 1), (2, 2), (3, 3), (4, 6), (7, 8)]
@@ -271,55 +272,52 @@ def activity_generator(
     max_try=1000,
 ):
     """
-    generator for activity sequence
-    make activity schedule between start_day day and end_day day
-    This function is generator, so this function become empty iterator once you yield each element in this object. If you use each element repeatedly, use as list by list(activity_generator(start_day, end_day)) or please modify this code by yourself.
+    This is a generator of activity sequence.
+    This makes an activity schedule between start_day day and end_day day.
+    This function is a generator, so this function become empty iterator 
+    once you yield each element in this object.
+    If you use each element repeatedly, use as list by 
+    list(activity_generator(start_day, end_day)) 
+    or please modify this code by yourself.
 
     Parameters
     ----------
     start_day : int
-        sample start day
+        Sample start day.
     end_day : int
-        sample end day
+        Sample end day.
     act_model : dict of list of activity_model.Activity
-        For instance, see activity_model.basic_activity_model
-    state_anomaly_labels : dict of list of tuple, dict()
+        For instance, see activity_model.basic_activity_model.
+    state_anomaly_labels : dict of list of tuple, or dict()
         Periods of state anomalies.
         periods[anomaly][i] = (s, e)
         s : datetime.timedelta
             Start date and time.
         e : datetime.timedelta
             End date and time.
-        For example, state_anomaly_labels = {'being housebound': [(d_1, d_2), ...], 'being semi-bedridden': [(d_a, d_b), ...]}
+        For example,
+        state_anomaly_labels = {'being housebound': [(d_1, d_2), ...],
+                                'being semi-bedridden': [(d_a, d_b), ...]}
     anomaly_parameters : dict of float, default None
         Parameters that is changed during state anomalies.
     max_try: int, default 100
-        maximum number of time to reject abnormal sample
+        Maximum number of time to reject invalid samples.
 
     Yields
     -------
     (activity, activity_start_time, activity_end_time)
         activity : activity_model.Activity
-            activity
+            Activity.
         activity_start_time : datetime.timedelta
-            start time of an activity
+            Start time of the activity.
         activity_end_time : datetime.timedelta
-            end time of an activity
-
-    See Also
-    --------
-
+            End time of the activity.
+    
     Notes
     -----
-    First date is a dammy date and 0 days of start_time corresponding second date right after first date.
-    Be careful that day1 sleep and day2 sleep are connected as activity but they are separated in activity generator.
-
-    Raises
-    ------
-
-    Examples
-    --------
-
+    First date is a dummy date.
+    The first date of the output continues to the first dummy date.
+    Be careful that day1 sleep and day2 sleep are connected as activity after but they are separated in this output.
     """
 
     first_date = day_schedule(num_days=start_day - 1)
@@ -372,42 +370,42 @@ def activity_generator(
 
 class day_schedule:
     """
-    make an activity schedule in one whole day
+    Activity schedule in one whole day.
 
     Instance variables
     ------------------
     schedule : list of tuple
-        label sequence whose activity was already defined
+        Label sequence whose activity was already defined.
         shcedule[i] = (class, start_time, end_time) or i-th activity in this day
             class : activity_model.Activity
             start_time : datetime.timedelta
             end_time : datetime.timedelta
 
     remainder : list of tuple
-        time range whose activity is not defined yet
+        Time range whose activity is not defined yet.
         remainder[i] = (start_time(datetime.timedelta object), end_time(datetime.timedelta object))
 
     last_activity : str
-        last activity name in a day
+        Last activity name in the day.
 
     extra_time_of_last_activity : datetime.timedelta
-        extra time from self.__num_days 24:00 to end time of last activity
+        Extra time from self.__num_days 24:00 to end time of the last activity.
 
     sleep_after_24 : tuple, default None
-        if the start time of sleep is over 24:00, then;
+        If the start time of sleep is over 24:00, then;
         sleep_after_24[0] = activity_model.sleep,
-        sleep_after_24[1] = the extra time from self.__num_days 24:00 to the start time of sleep
-        sleep_after_24[2] = the extra time from self.__num_days 24:00 to the end time of sleep
+        sleep_after_24[1] = the extra time from self.__num_days 24:00 to the start time of sleep,
+        sleep_after_24[2] = the extra time from self.__num_days 24:00 to the end time of sleep.
     """
 
     def __init__(self, num_days):
         """
-        initialize class
+        Initialization.
 
         Parameters
         ----------
         num_days : int
-            number of days
+            Number of the day.
         """
 
         self.__num_days = num_days
@@ -448,16 +446,16 @@ class day_schedule:
 
     def update_schedule(self, activity, start_time, end_time, is_test=False):
         """
-        add the activity in the schedule
+        Add the activity in the schedule.
 
         Parameters
         ----------
         activity : acitivity_model.Activity
-            target activity
+            Target activity.
         start_time : datetime.timedelta
-            start time of the activity
+            Start time of the activity.
         end_time : datetime.timedelta
-            end time of the activity
+            End time of the activity.
         is_test : boolean, default False
             If this is True, then any instance valuables will not be updated.
             Use this as True, when you want to check if the activity of the input is not overlap with the present schedule.
@@ -465,7 +463,7 @@ class day_schedule:
         Returns
         -------
         is_OK : boolean
-        if this updates success, then return True
+            If this updates success, then return True.
 
         """
 
@@ -474,7 +472,7 @@ class day_schedule:
             return False
 
         end_of_today = timedelta(days=self.__num_days, hours=24)
-        # if the end time of the activity succeeds to next day
+        # when the end time of the activity succeeds to the next day
         if end_of_today <= end_time:
             if not is_test:
                 self.__last_activity = activity
@@ -523,7 +521,6 @@ class day_schedule:
                 activity : acitivity_model.Activity
                 start_time : datetime.timedelta
                 end_time : datetime.timedelta
-
         is_test : boolean, default False
             If this is True, then any instance valuables will not be updated.
             Use this as True, when you want to check if the activities of the input is not overlap with the present schedule.
@@ -564,40 +561,23 @@ class day_schedule:
         Parameters
         ----------
         basic_activity_model : dict of list of activity_model.Activity
-            For instance, see activity_model.basic_activity_model
-            informations about activities
-
+            Informations about activities.
+            For example, see activity_model.basic_activity_model.
         first_activity : activity_model.Activity
-            the activity which is taken in 0:00 in this day
-
+            The activity which is taken in 0:00 in this day.
         extra_time : datetime.timedelta
-            the extra time of the last activity yesterday
-
+            The extra time of the last activity yesterday.
         max_try : int, default 100
-            the maximum number of time to reject an abnormal sample
-
+            The maximum number of time to reject an abnormal sample.
         sleep_after_24 : tuple, default None
-            if the start time of last sleep is over 0:00, then;
+            If the start time of the last sleep is over 0:00, then;
             sleep_after_24[0] = activity_model.sleep,
-            sleep_after_24[1] = the extra time from self.__num_days 0:00 to the start time of sleep
-            sleep_after_24[2] = the extra time from self.__num_days 0:00 to the end time of sleep
+            sleep_after_24[1] = the extra time from self.__num_days 0:00 to the start time of sleep,
+            sleep_after_24[2] = the extra time from self.__num_days 0:00 to the end time of sleep.
 
         Returns
         -------
         None
-
-        See Also
-        --------
-
-        Notes
-        -----
-
-        Raises
-        ------
-
-        Examples
-        --------
-
         """
 
         start_of_today = timedelta(days=self.__num_days)
@@ -621,12 +601,10 @@ class day_schedule:
         is_valid = False
         try_count = 0
         while not is_valid:
-            update_activities = (
-                []
-            )  # contains all activities (or sub activities of MetaActivity) to update schedule
-            fundamental_act_info = (
-                []
-            )  # contains information about fundamental activities (not contain sub activities)
+            # all activities (or sub activities of MetaActivity) to update schedule
+            update_activities = []
+            # information about fundamental activities (not contain sub activities)
+            fundamental_act_info = [] 
             for act in basic_activity_model["fundamental_activities"]:
                 start_time = act.sampling_start_time(self.__num_days)
                 duration_time = 0
@@ -682,10 +660,6 @@ class day_schedule:
 
             try_count += 1
             if try_count > max_try:
-                # print("-----------------------------------")
-                # print("end time of last sleep (yesterday): {}".format(start_of_today + sleep_after_24[2]))
-                # for a in update_activities:
-                #     print("{} {} {}".format(a[0], a[1], a[2]))
                 raise ValueError(
                     "fail to sample fundamental activities {} times".format(max_try)
                 )
@@ -705,7 +679,7 @@ class day_schedule:
         for act in random.sample(temp_list, len(temp_list)):  # shuffled order
             act_num = act.sampling_number_of_activity()
             if isinstance(act, activity_model.Activity):
-                for n in range(act_num):
+                for _ in range(act_num):
                     duration_time = act.sampling_duration_time()
                     start_time = None
                     if (
@@ -721,7 +695,7 @@ class day_schedule:
                         )
                     self.update_schedule(act, start_time, start_time + duration_time)
             elif isinstance(act, activity_model.MetaActivity):
-                for n in range(act_num):
+                for _ in range(act_num):
                     temp_start_time = timedelta(days=0)
                     sub_activities = act.sampling_sub_activities(temp_start_time)
                     duration_time = sub_activities[-1][2] - sub_activities[0][1]
@@ -733,8 +707,6 @@ class day_schedule:
                         for x in sub_activities
                     ]
                     self.update_schedule_with_multi(sub_activities)
-                    # for x in sub_activities:
-                    #     self.update_schedule(*x)
             else:
                 raise ValueError(
                     "act in basic_activity_model must be instance of Activity class or MetaActivity class."
@@ -758,7 +730,8 @@ class day_schedule:
                 raise ValueError(
                     "act in basic_activity_model must be instance of Activity class or MetaActivity class."
                 )
-            # To prevent to make short remainder (time range whose activity is not defined yet), reject to sample if the sample arise remainder that is shorter than rejection_range as a result
+            # To prevent to make a short remainder (time range whose activity is not defined yet),
+            # the sample is rejected if the sample arises remainder that is shorter than rejection_range.
             # rejection_range = timedelta(minutes = act.duration_mean) / 10
             rejection_range = timedelta(minutes=1)
             # if the start time of sleep is over 24:00
@@ -819,17 +792,13 @@ class day_schedule:
 
     def connect_same_activities(self):
         """
-        connect adjacent same activity in schedule
-
-        See also
-        --------
-        activity_model.Activity.__eq__ and Activity.__lt__ for comparision of activity_model.Activity class
+        This connects the adjacent same activities in the schedule.
         """
         complete_scan = False
         not_break = True
         while not complete_scan:
             for i in range(len(self.__schedule) - 1):
-                if self.__schedule[i][0] == self.__schedule[i + 1][0]:
+                if self.__schedule[i][0].name == self.__schedule[i + 1][0].name:
                     self.__schedule[i] = (
                         self.__schedule[i][0],
                         self.__schedule[i][1],
@@ -843,13 +812,13 @@ class day_schedule:
 
     def sort_schedule(self):
         """
-        sort schedule by start_time in ascending order
+        Sort the schedule by start_time in ascending order.
         """
         self.__schedule.sort(key=lambda x: x[1])
 
     def delete_0_range(self):
         """
-        delete 0 time range from remainder
+        Delete 0 time range from the remainder.
         """
         unnecessary_indexes = []
         for i, sub_range in enumerate(self.__remainder):
@@ -1234,7 +1203,7 @@ class WalkingTrajectory:
         fall_s_body_range=40,
     ):
         """
-        Initialization of an object of ActivityDataPoint class.
+        Initialization of an object of WalkingTrajectory class.
 
         Parameters
         ----------
@@ -1443,7 +1412,6 @@ class WalkingTrajectory:
             if self.start_time <= d[0] <= self.end_time:
                 s_time = d[0] - self.start_time
                 activations.append((s_time, d[1], d[2]))
-        # print(activations)
         data = {}
         ON_start = {}
         for d in activations:
@@ -1456,7 +1424,6 @@ class WalkingTrajectory:
                     (ON_start[d[1]].total_seconds(), d[0].total_seconds())
                 )
                 del ON_start[d[1]]
-        # print(data)
         y_label = sorted(data.keys())
         y_pos = [i for (i, k) in enumerate(y_label)]
         y_dict = {k: i for (i, k) in enumerate(y_label)}
@@ -1466,8 +1433,7 @@ class WalkingTrajectory:
         plt.yticks(y_pos, y_label)
         plt.ylabel("Sensor number.")
         plt.xlabel("Elapsed seconds in the walking trajectory.")
-        plt.savefig(path / Path(file_name), dpi=120, bbox_inches="tight")
-        # plt.show()
+        plt.savefig(path / Path(file_name), dpi=dpi, bbox_inches="tight")
         plt.close()
 
 
@@ -3253,6 +3219,23 @@ def pickle_load(path, name):
 
 
 class TimeInterval:
+    """
+
+    Examples
+    --------
+    a = utils.TimeInterval(start = timedelta(hours = 30), end = timedelta(hours = 50))
+    b = utils.TimeInterval(start = timedelta(hours = 38), end = timedelta(hours = 47))
+    c = timedelta(hours = 34)
+    print(a.duration)
+    print(b.include(c))
+    print(b.is_included_in(a))
+    print(a)
+
+    20:00:00
+    False
+    True
+    <TimeInterval>[1 day, 6:00:00, 2 days, 2:00:00]
+    """
     def __init__(self, start, end):
         """
         initialize of TimeInterval class
