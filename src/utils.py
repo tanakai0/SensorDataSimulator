@@ -178,7 +178,8 @@ def generate_activity_sequence(
     start_day : int
         Day when this function starts to sample.
     end_day : int
-        The day when this function finishes sampling. This simulator generates from `0:00 in start_day day` to `0:00 in end_day day (= 24:00 in (end_day - 1) day)`.
+        The day when this function finishes sampling. This simulator generates from
+        `0:00 in start_day day` to `0:00 in end_day day (= 24:00 in (end_day - 1) day)`.
     path : pathlib.Path
         Path to the layout data.
     original_act_model : dict
@@ -190,7 +191,9 @@ def generate_activity_sequence(
             Start date and time.
         e : datetime.timedelta
             End date and time.
-        For example, state_anomaly_labels = {'being housebound': [(d_1, d_2), ...], 'being semi-bedridden': [(d_a, d_b), ...]}
+        For example, 
+        state_anomaly_labels = {'being housebound': [(d_1, d_2), ...],
+                                'being semi-bedridden': [(d_a, d_b), ...]}
     anomaly_parameters : dict of float, default None
         Parameters that is changed during state anomalies.
 
@@ -201,7 +204,8 @@ def generate_activity_sequence(
 
     Notes
     -----
-    original_act_model will be modified by the condition of the layout, e.g., activity 'Watch TV' at TV is excluded if the layout does not have any TVs in it.
+    original_act_model will be modified by the condition of the layout,
+    e.g., activity 'Watch TV' at TV is excluded if the layout does not have any TVs in it.
     """
     act_model = activity_model.determine_activity_set(path, original_act_model)
 
