@@ -3727,7 +3727,8 @@ class FloorPlan:
                 v = [v1[i] - v2[i] / 10 for i in range(4)]
                 if flag == "longest_nearst":
                     return [v.index(max(v))]
-                # As primary metrics, the longer the side is the more it will be returned, then as secondary metrics, the nearer the side is related object's center point, the more it will be returned.
+                # As primary metrics, the longer the side is the more it will be returned,
+                # then as secondary metrics, the nearer the side is related object's center point, the more it will be returned.
                 # else return middle sides
                 v2_min_i, v2_max_i = v2.index(min(v2)), v2.index(max(v2))
                 sides = [0, 1, 2, 3]

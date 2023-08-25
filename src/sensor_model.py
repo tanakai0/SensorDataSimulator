@@ -693,7 +693,7 @@ class CostSensor(Sensor):
 
     def __init__(self, name, index, x, y, color):
         """
-        Initialize of an object of SquarePressureSensor class.
+        Initialize of an object of CostSensor class.
 
         Parameters
         ----------
@@ -719,6 +719,111 @@ class CostSensor(Sensor):
             self.y,
             c=self.color,
             marker="*",
+            alpha=1,
+            s=(plt.rcParams["lines.markersize"] ** 2) * 4,
+        )
+
+    def canvas(self, canvas, point2canvas):
+        """
+        This draws the figure of this sensor on the tkinter.Canvas.
+
+        Parameters
+        ----------
+        canvas : tkinter.Canvas
+        point2canvas : function
+            This converts a coordinate in the layout into the coordinate on the canvas.
+            Parameters
+            ----------
+            xy : tuple of float
+                xy = (x, y) is the target point in the layout.
+            Returns
+            -------
+            ret : tuple of float
+                ret = (xx, yy) is the calculated coordinate on the canvas.
+        Returns
+        -------
+        _id : int
+            The id of the drawn object.
+        """
+        size = 10
+        top_left = point2canvas((self.x - size / 2, self.y + size / 2))
+        bottom_right = point2canvas((self.x + size / 2, self.y - size / 2))
+        return canvas.create_rectangle(
+            top_left[0],
+            top_left[1],
+            bottom_right[0],
+            bottom_right[1],
+            outline=self.color,
+        )
+
+    def save_text(self):
+        """
+        This returns string that represents the information of this sensor.
+
+        Returns
+        -------
+        ret : str
+            Text of this sensor.
+        """
+        return "name = {}, index = {}, center coordinate = ({}, {})".format(
+            self.name, self.index, self.x, self.y
+        )
+
+
+class DoorSensor(Sensor):
+    """
+    Class of a door sensor.
+
+    Attributes
+    ----------
+    name : str
+        Name of the sensor.
+    index : int
+        Index of this sensor.
+    x : float
+        A x-axis value of 2D coordinate.
+    y : float
+        A y-axis value of 2D coordinate.
+        The (x, y) is a bottom left point of this sensor.
+    color : str
+        Color code that is used to plot a figure.
+    type_name : str
+        Name of this class.
+    door_name : str
+        Name of the door.
+    """
+
+    type_name = "door"
+
+    def __init__(self, name, index, x, y, color, door_name):
+        """
+        Initialize of an object of SquarePressureSensor class.
+
+        Parameters
+        ----------
+        Same with the Attributes.
+
+        Notes
+        -----
+        The point of (x, y) is the center of the sensor.
+        """
+        super().__init__(name, index, x, y, color)
+        self.door_name = door_name
+
+    def draw(self, ax):
+        """
+        This plots the figure of this sensor.
+
+        Parameters
+        ----------
+        ax : matplotlib.pyplot.gca
+            Current axes on this figure.
+        """
+        ax.scatter(
+            self.x,
+            self.y,
+            c=self.color,
+            marker="^",
             alpha=1,
             s=(plt.rcParams["lines.markersize"] ** 2) * 4,
         )
@@ -824,3 +929,41 @@ test_sensors = [
 ]
 
 check_indexes_of_sensors(test_sensors)
+
+
+# test sensor model for '3/WARDeSoDTAKSCBRFAWMTB/1596,960,2100,222,0LL'
+test_sensors_2 = [
+    CircularPIRSensor("normal PIR", 0, 150, 150, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 1, 400, 120, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 2, 100, 55, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 3, 200, 55, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 4, 300, 40, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 5, 400, 40, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 6, 100, -40, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 7, 200, -40, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 8, 450, -40, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 9, 550, -40, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 10, 650, -40, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 11, -10, -70, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 12, 200, -140, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 13, 300, -140, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 14, 400, -140, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 15, 500, -140, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 16, 610, -140, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 17, 670, 70, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 18, 750, 80, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 19, 850, 90, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 20, 850, 10, "#ff0000", 50),
+    CircularPIRSensor("normal PIR", 21, 920, 50, "#ff0000", 50),
+    SquarePressureSensor("vertical oblong pressure", 22, -30, 0, "#696969", 200, 50, 0),
+    SquarePressureSensor(
+        "horizontal oblong pressure", 23, -160, -60, "#696969", 50, 150, 0
+    ),
+    CostSensor(FLOW_BATHROOM, 24, 600, -310, "#0000ff"),
+    CostSensor(FLOW_KITCHEN, 25, 990, 60, "#0000ff"),
+    CostSensor(POWER_TV, 26, 320, 160, "#ffa500"),
+    CostSensor(POWER_KITCHEN, 27, 985, 180, "#ffa500"),
+    DoorSensor("door", 28, 195, 205, "#D3E173", "Entrance"),
+]
+
+check_indexes_of_sensors(test_sensors_2)

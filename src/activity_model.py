@@ -3,7 +3,6 @@ import random
 from collections import namedtuple
 from copy import deepcopy
 from datetime import timedelta
-from functools import total_ordering
 
 from numpy.random import choice, normal, poisson, rand
 
@@ -12,6 +11,8 @@ import src.floor_plan as floor_plan
 import src.sensor_model as sensor_model
 
 WANDERING_NAME = "wandering"
+GO_OUT_NAME = "Go out"
+
 
 class Activity:
     def __init__(self, name, duration_mean, duration_sd, place, color, home_equipment):
@@ -318,7 +319,7 @@ class FundamentalActivity(Activity):
         duration_sd=None,
         place=None,
         color=None,
-        home_equipment=None
+        home_equipment=None,
     ):
         """
         This generates a new fundamental activity that is modified some parameters of original fundamental activity.
@@ -670,7 +671,7 @@ class NecessaryActivity(Activity):
         duration_sd=None,
         place=None,
         color=None,
-        home_equipment=None
+        home_equipment=None,
     ):
         """
         This returns a new necessary activity.
@@ -789,7 +790,7 @@ class RandomActivity(Activity):
         place=None,
         color=None,
         home_equipment=None,
-        weight=None
+        weight=None,
     ):
         """
         This returns a new random activity.
@@ -1286,7 +1287,7 @@ brush_teeth = NecessaryActivity(
 )
 
 rest = RandomActivity("Rest", 30, 10, ["Sofa", "Desk_Chair", "Bed"], "#d3d3d3", {})
-go_out = RandomActivity("Go out", 40, 20, ["Entrance"], "#ffe4c4", {})
+go_out = RandomActivity(GO_OUT_NAME, 40, 20, ["Entrance"], "#ffe4c4", {})
 cooking = RandomActivity(
     "Cooking",
     30,
@@ -1416,7 +1417,9 @@ applied_take_a_bath = MetaNecessaryActivity(
 applied_go_out_1 = Activity(
     "(sub 1) Put on a coat", 2, 0.1, ["Wardrobe"], "#008000", {}
 )
-applied_go_out_2 = Activity("(sub 2) Go out", 40, 20, ["Entrance"], "#ffe4c4", {})
+applied_go_out_2 = Activity(
+    f"(sub 2) {GO_OUT_NAME}", 40, 20, ["Entrance"], "#ffe4c4", {}
+)
 applied_go_out_3 = Activity(
     "(sub 3) Put on a coat", 2, 0.1, ["Wardrobe"], "#008000", {}
 )

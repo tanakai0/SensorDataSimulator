@@ -191,7 +191,7 @@ def generate_activity_sequence(
             Start date and time.
         e : datetime.timedelta
             End date and time.
-        For example, 
+        For example,
         state_anomaly_labels = {'being housebound': [(d_1, d_2), ...],
                                 'being semi-bedridden': [(d_a, d_b), ...]}
     anomaly_parameters : dict of float, default None
@@ -278,10 +278,10 @@ def activity_generator(
     """
     This is a generator of activity sequence.
     This makes an activity schedule between start_day day and end_day day.
-    This function is a generator, so this function become empty iterator 
+    This function is a generator, so this function become empty iterator
     once you yield each element in this object.
-    If you use each element repeatedly, use as list by 
-    list(activity_generator(start_day, end_day)) 
+    If you use each element repeatedly, use as list by
+    list(activity_generator(start_day, end_day))
     or please modify this code by yourself.
 
     Parameters
@@ -316,7 +316,7 @@ def activity_generator(
             Start time of the activity.
         activity_end_time : datetime.timedelta
             End time of the activity.
-    
+
     Notes
     -----
     First date is a dummy date.
@@ -608,7 +608,7 @@ class day_schedule:
             # all activities (or sub activities of MetaActivity) to update schedule
             update_activities = []
             # information about fundamental activities (not contain sub activities)
-            fundamental_act_info = [] 
+            fundamental_act_info = []
             for act in basic_activity_model["fundamental_activities"]:
                 start_time = act.sampling_start_time(self.__num_days)
                 duration_time = 0
@@ -2894,6 +2894,87 @@ def generate_cost_sensor_data(
     return sensor_data
 
 
+def generate_door_sensor_data(
+    sensors, AS, sampling_seconds=1, sync_reference_point=timedelta(days=0)
+):
+    """
+    This simulates door sensor data.
+    For now, the all sensors share the same sampling rate.
+
+    Parameters
+    ----------
+    sensors : list of sensor_model.Sensor
+        Target sensors. Cost sensor in this input is only considered.
+    AS : list of ActivityDataPoints
+        An activity sequence.
+    sampling_seconds : float
+        Sampling duration [seconds] of sensors.
+    sync_reference_point : datetime.timedelta, default timedelta(days = 0)
+        Start time of the all activities.
+        This is used to adjust the sampling time.
+
+    Returns
+    -------
+    sensor_data : list of tuple
+        sensor_data[i] = (time, sensor_index, sensor_state),
+            time : datetime.timedelta
+                Time the sensor changes its state.
+            sensor_index : int
+                Index of the sensor. This is the number that is written in sensor_model.Sensor.index, not the index of input 'sensors'.
+            sensor_state : boolean
+                Sensor state.
+                For now, binary sensors are considered.
+
+    Notes
+    -----
+    All binary sensor states are initialized as False.
+    """
+    activation_time_mean = 7  # duration time [seconds] to open and close a door
+    activation_time_std = 1
+
+    sensor_data = []
+    # If the sensor is sensor_model.DoorSensor, the first sensor state is initialized as False.
+    # States of other kinds of sensors are initialized as None (that is not updated in this function).
+    sensor_states = {}
+    for s in sensors:
+        if isinstance(s, sensor_model.DoorSensor):
+            sensor_states[s.index] = False
+        else:
+            sensor_states[s.index] = None
+
+    _step = 1000
+    _max_len = len(AS)
+    for i, act in enumerate(AS):
+        if i%_step == 0:
+            print_progress_bar(_max_len, i, "Making door sensor data")
+        if act.activity.name == activity_model.GO_OUT_NAME:
+            for s in sensors:
+                if isinstance(s, sensor_model.DoorSensor) and (
+                    s.door_name == act.place
+                ):
+                    _time = define_synchronous_sampling_point(
+                        sync_reference_point, act.start, sampling_seconds
+                    )
+                    update_state_of_binary_sensor(
+                        sensor_data, sensor_states, s, True, _time
+                    )
+                    duration = timedelta(
+                        seconds=np.random.normal(
+                            loc=activation_time_mean, scale=activation_time_std
+                        )
+                    )
+                    _time = define_synchronous_sampling_point(
+                        sync_reference_point,
+                        act.start + duration,
+                        sampling_seconds,
+                    )
+                    update_state_of_binary_sensor(
+                        sensor_data, sensor_states, s, False, _time
+                    )
+
+    return sensor_data
+
+
 def save_layout(
     output_path,
     layout_path,
@@ -3240,6 +3321,7 @@ class TimeInterval:
     True
     <TimeInterval>[1 day, 6:00:00, 2 days, 2:00:00]
     """
+
     def __init__(self, start, end):
         """
         initialize of TimeInterval class
