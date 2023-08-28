@@ -1,5 +1,4 @@
 import time
-from datetime import timedelta
 from pathlib import Path
 
 # self-made
@@ -18,8 +17,8 @@ path = Path(layout_data_path / "test_layout")
 data_save_path = utils.generate_data_folder(path, utils.present_date_and_time())
 
 start_days = 0
-# end_days = 15
-end_days = 9 * 360
+end_days = 30
+# end_days = 9 * 360
 
 temp_time = time.time()
 
@@ -31,7 +30,7 @@ utils.pickle_dump(data_save_path, "FP", FP)
 
 
 # models for Anomaly labels (AL)
-anomaly_info = utils.generate_six_anomalies(path, data_save_path, 9 * 360, show=False)
+anomaly_info = utils.generate_six_anomalies(path, data_save_path, end_days, show=False)
 fall_s_place_bed = ["Bed"]
 fall_w_parameters = {"num": anomaly_info["fall_w_num"], "mean_lie_down_seconds": 30}
 fall_s_parameters = {
@@ -100,7 +99,12 @@ utils.pickle_dump(data_save_path, "SD_model", sensors)
 utils.save_layout(data_save_path, path, sensors=sensors, show=False)
 
 motion_SD = utils.generate_motion_sensor_data(
-    sensors, WT, sampling_seconds=0.1, sync_reference_point=AS[0].start, body_radius=10
+    sensors,
+    AS,
+    WT,
+    sampling_seconds=0.1,
+    sync_reference_point=AS[0].start,
+    body_radius=10,
 )
 print("Motion sensor data was simulated. {}[s]".format(time.time() - temp_time))
 
@@ -116,12 +120,7 @@ cost_SD = utils.generate_cost_sensor_data(
 )
 print("Cost sensor data was simulated. {}[s]".format(time.time() - temp_time))
 
-door_SD = utils.generate_door_sensor_data(
-    sensors, AS, sampling_seconds=1, sync_reference_point=timedelta(days=0)
-)
-print("Door sensor data was simulated. {}[s]".format(time.time() - temp_time))
-
-sorted_sensor_data = sorted(motion_SD + cost_SD + door_SD, key=lambda x: x[0])
+sorted_sensor_data = sorted(motion_SD + cost_SD, key=lambda x: x[0])
 utils.save_binary_sensor_data(
     data_save_path, sensors, sorted_sensor_data, filename="SD"
 )

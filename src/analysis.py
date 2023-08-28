@@ -571,10 +571,11 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
     """
     This divided the time into fixed time intervals.
     The SD and AL_periods are discretized similary.
-    Some feature representations of sensor data [1] can be used, such as 'raw', 'change point', 'last-fired'.
+    Some feature representations of sensor data [1] can be used,
+    such as 'raw', 'change point', 'last-fired'.
     [1] TLM van Kasteren, G. Englebienne, and B. J. Krose,
         "Human activity recognition from wireless sensor network data: Benchmark and software."
-        Proc of Activity recognition in pervasive intelligent environments, 2011, 165–186.
+        Proc. of Activity recognition in pervasive intelligent environments, 2011, 165–186.
 
     Parameters
     ----------
@@ -583,8 +584,9 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
         (time, index, state).
     AL : list of tuple
         Anomaly labels.
-        For example, AL[anomaly.HOUSEBOUND] = [(timedelta(days = 10), timedelta(days = 20)),
-                                               (timedelta(days = 100), timedelta(days = 107))]
+        For example, AL[anomaly.HOUSEBOUND]
+                     = [(timedelta(days = 10), timedelta(days = 20)),
+                        (timedelta(days = 100), timedelta(days = 107))]
     start : datetime.timedelta
         Start time of discretization.
     end : datetime.timedelta
@@ -638,7 +640,8 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
 
     def transformation4change_point(SD):
         """
-        This transform the raw sensor data to be able to calculate change point features in matrix_with_discretized_time_interval.
+        This transform the raw sensor data to be able to calculate
+        change point features in matrix_with_discretized_time_interval.
 
         Parameters
         ----------
@@ -666,7 +669,8 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
 
     def transformation4last_fired(SD, start, end, duration):
         """
-        This transform the raw sensor data to be able to calculate last-fired features in matrix_with_discretized_time_interval.
+        This transform the raw sensor data to be able to calculate
+        last-fired features in matrix_with_discretized_time_interval.
 
         Parameters
         ----------

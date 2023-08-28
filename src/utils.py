@@ -1,5 +1,6 @@
 # new functions
 # some functions refers to the program of SISG4HEIAlpha from, [1] C. Jiang and A. Mita, "SISG4HEI_Alpha: Alpha version of simulated indoor scenario generator for houses with elderly individuals." Journal of Building Engineering, 35-101963(2021), and [2] https://github.com/Idontwan/SISG4HEI_Alpha.
+import bisect
 import datetime
 import itertools
 import math
@@ -93,6 +94,25 @@ def present_date_and_time():
     """
     now = datetime.datetime.now()
     return now.strftime("%Y_%m_%d_%H_%M_%S")
+
+
+def find_less_than_or_equal(_list, threshold):
+    """
+    Find the index that is less than or equal to the 'threshold'.
+
+    Parameters
+    ----------
+    _list : list of comparable object
+    threshold : comparable object
+
+    Returns
+    -------
+    index : int
+        A index that is less than or equal to the 'threshold'.
+        If 'threshold' is less than all elements, returns -1.
+    """
+    index = bisect.bisect_right(_list, threshold)
+    return index - 1
 
 
 class ActivityDataPoint:
@@ -2477,10 +2497,12 @@ def save_walking_trajectoires(path, WT, file_name="walking_trajectories"):
 
 def generate_motion_sensor_data(
     sensors,
+    AS,
     WT,
     sampling_seconds=0.1,
     sync_reference_point=timedelta(days=0),
     body_radius=10,
+    go_out_name=activity_model.GO_OUT_NAME,
 ):
     """
     This simulates sensor data with or withour anomalies, that is related with resident's motion.
@@ -2490,6 +2512,8 @@ def generate_motion_sensor_data(
     ----------
     sensors : list of sensor_model.Sensor
         Target sensors.
+    AS : list of ActivityDataPoint
+        Activities.
     WT : list of WalkingTrajectory
         Walking trajectories.
     sampling_seconds : float
@@ -2499,6 +2523,8 @@ def generate_motion_sensor_data(
         This is used to adjust the sampling time.
     body_radius : float
         Radius[cm] of resident's body on floor.
+    go_out_name : str
+        Name of the activity the resident leave their home.
 
     Returns
     -------
@@ -2515,22 +2541,59 @@ def generate_motion_sensor_data(
     Notes
     -----
     All binary sensor states are initialized as False.
+    Assuming that there is always an entry and exit from the house before and after 'Go out' (go_out_name).
     """
     sensor_data = []
     # If the sensor is sensor_model.CircularPIRSensor or sensor_model.SquarePressureSensor, first sensor state is initialized as False.
     # States of other kinds of sensors are initialized as None (that is not updated in this function).
     sensor_states = {}
     for s in sensors:
-        if isinstance(s, sensor_model.CircularPIRSensor) or isinstance(
-            s, sensor_model.SquarePressureSensor
+        if (
+            isinstance(s, sensor_model.CircularPIRSensor)
+            or isinstance(s, sensor_model.SquarePressureSensor)
+            or isinstance(s, sensor_model.DoorSensor)
         ):
             sensor_states[s.index] = False
         else:
             sensor_states[s.index] = None
 
-    # update states of motion sensors for each walking trajectory
+    _step = 10
+    _max_len = len(WT)
+    # update states of door sensors
     for i, wt in enumerate(WT):
-        print_progress_bar(len(WT), i, "Making motion sensor data")
+        if i % _step == 0:
+            print_progress_bar(_max_len, i, "Making motion sensor data (door)")
+        act = AS[i]
+        if act.activity.name == go_out_name:
+            update_states_of_door_sensors(
+                sensors,
+                sensor_data,
+                sensor_states,
+                wt,
+                sampling_seconds,
+                sync_reference_point,
+                act,
+            )
+    # for the case that the last activities is going out
+    act = AS[-1]
+    if act.activity.name == go_out_name:
+        update_states_of_door_sensors(
+            sensors,
+            sensor_data,
+            sensor_states,
+            None,
+            sampling_seconds,
+            sync_reference_point,
+            act,
+        )
+    print('')
+
+    # update states of motion sensors
+    for i, wt in enumerate(WT):
+        if i % _step == 0:
+            print_progress_bar(
+                _max_len, i, "Making motion sensor data (PIR / pressure)"
+            )
         if wt.centers != []:
             update_states_of_motion_sensors(
                 sensors,
@@ -2541,7 +2604,105 @@ def generate_motion_sensor_data(
                 sync_reference_point,
                 body_radius,
             )
+    print('')
     return sensor_data
+
+
+def update_states_of_door_sensors(
+    sensors, sensor_data, sensor_states, wt, sampling_seconds, sync_reference_point, act
+):
+    """
+    Update states of sensors related with door sensors.
+
+    Parameters
+    ----------
+    sensors : list of sensor_model.Sensor
+        Target sensors.
+    sensor_data : list of tuple
+        sensor_data[i] = (time, sensor_index, sensor_state),
+            time : datetime.timedelta
+                Time the sensor changes its state.
+            sensor_index : int
+                Index of the sensor. This is the number of Sensor.index, not the index in 'sensors'.
+            sensor_state : boolean
+                Sensor state.
+                For now, binary sensors are considered.
+    sensor_states : dict
+        Present states of sensors.
+        Keys are indexes of sensors that are recorded in sensor_model.Sensor.index, not indexes in input's 'sensors'.
+        Value are states of sensors.
+        If the corresponded sensor of the index is sensor_model.CircularPIRSensor or sensor_model.SquarePressureSensor, the value is boolean, else None.
+    wt : list of WalkingTrajectory
+        Walking trajectories.
+    sampling_seconds : float
+        Sampling duration [s] of sensors.
+    sync_reference_point : datetime.timedelta, default timedelta(days = 0)
+        Start time of the all activities.
+        This is used to adjust the sampling time.
+    act : activity_model.ActivityDataPoint
+
+    See Also
+    -----
+    sensor_model.DoorSensor.door_name and ActivityDataPoint.place
+    """
+    # mean and std of duration time [seconds] to open and close a door
+    activation_time_mean = 7
+    activation_time_std = 1
+
+    for s in sensors:
+        if isinstance(s, sensor_model.DoorSensor) and (s.door_name == act.place):
+            # Leave the home
+            duration = timedelta(
+                seconds=np.random.normal(
+                    loc=activation_time_mean, scale=activation_time_std
+                )
+            )
+            start_time = define_synchronous_sampling_point(
+                sync_reference_point, act.start, sampling_seconds
+            )
+            end_time = define_synchronous_sampling_point(
+                sync_reference_point,
+                act.start + duration,
+                sampling_seconds,
+            )
+            update_state_of_binary_sensor(
+                sensor_data, sensor_states, s, True, start_time
+            )
+            update_state_of_binary_sensor(
+                sensor_data, sensor_states, s, False, end_time
+            )
+
+            # Enter the home
+            duration = timedelta(
+                seconds=np.random.normal(
+                    loc=activation_time_mean, scale=activation_time_std
+                )
+            )
+            if wt is None:
+                start_time = define_synchronous_sampling_point(
+                    sync_reference_point, act.end - duration, sampling_seconds
+                )
+                end_time = define_synchronous_sampling_point(
+                    sync_reference_point,
+                    act.end,
+                    sampling_seconds,
+                )
+            else:
+                start_time = define_synchronous_sampling_point(
+                    sync_reference_point, wt.start_time - duration, sampling_seconds
+                )
+                end_time = define_synchronous_sampling_point(
+                    sync_reference_point,
+                    wt.start_time,
+                    sampling_seconds,
+                )
+
+            update_state_of_binary_sensor(
+                sensor_data, sensor_states, s, True, start_time
+            )
+            update_state_of_binary_sensor(
+                sensor_data, sensor_states, s, False, end_time
+            )
 
 
 def update_states_of_motion_sensors(
@@ -2613,7 +2774,9 @@ def update_states_of_motion_sensors(
         if t == wt.end_time:
             p = wt.centers[-1]
         else:
-            i, t_i = [(j, t_j) for (j, t_j) in enumerate(wt.timestamp) if t_j <= t][-1]
+            i = find_less_than_or_equal(wt.timestamp, t)
+            t_i = wt.timestamp[i]
+            # i, t_i = [(j, t_j) for (j, t_j) in enumerate(wt.timestamp) if t_j <= t][-1]
             t_ii = wt.timestamp[i + 1]
             c_i, c_ii = wt.centers[i], wt.centers[i + 1]
             p = tuple(
@@ -2890,87 +3053,6 @@ def generate_cost_sensor_data(
                 update_state_of_binary_sensor(
                     sensor_data, sensor_states, s, temp_state, t
                 )
-
-    return sensor_data
-
-
-def generate_door_sensor_data(
-    sensors, AS, sampling_seconds=1, sync_reference_point=timedelta(days=0)
-):
-    """
-    This simulates door sensor data.
-    For now, the all sensors share the same sampling rate.
-
-    Parameters
-    ----------
-    sensors : list of sensor_model.Sensor
-        Target sensors. Cost sensor in this input is only considered.
-    AS : list of ActivityDataPoints
-        An activity sequence.
-    sampling_seconds : float
-        Sampling duration [seconds] of sensors.
-    sync_reference_point : datetime.timedelta, default timedelta(days = 0)
-        Start time of the all activities.
-        This is used to adjust the sampling time.
-
-    Returns
-    -------
-    sensor_data : list of tuple
-        sensor_data[i] = (time, sensor_index, sensor_state),
-            time : datetime.timedelta
-                Time the sensor changes its state.
-            sensor_index : int
-                Index of the sensor. This is the number that is written in sensor_model.Sensor.index, not the index of input 'sensors'.
-            sensor_state : boolean
-                Sensor state.
-                For now, binary sensors are considered.
-
-    Notes
-    -----
-    All binary sensor states are initialized as False.
-    """
-    activation_time_mean = 7  # duration time [seconds] to open and close a door
-    activation_time_std = 1
-
-    sensor_data = []
-    # If the sensor is sensor_model.DoorSensor, the first sensor state is initialized as False.
-    # States of other kinds of sensors are initialized as None (that is not updated in this function).
-    sensor_states = {}
-    for s in sensors:
-        if isinstance(s, sensor_model.DoorSensor):
-            sensor_states[s.index] = False
-        else:
-            sensor_states[s.index] = None
-
-    _step = 1000
-    _max_len = len(AS)
-    for i, act in enumerate(AS):
-        if i%_step == 0:
-            print_progress_bar(_max_len, i, "Making door sensor data")
-        if act.activity.name == activity_model.GO_OUT_NAME:
-            for s in sensors:
-                if isinstance(s, sensor_model.DoorSensor) and (
-                    s.door_name == act.place
-                ):
-                    _time = define_synchronous_sampling_point(
-                        sync_reference_point, act.start, sampling_seconds
-                    )
-                    update_state_of_binary_sensor(
-                        sensor_data, sensor_states, s, True, _time
-                    )
-                    duration = timedelta(
-                        seconds=np.random.normal(
-                            loc=activation_time_mean, scale=activation_time_std
-                        )
-                    )
-                    _time = define_synchronous_sampling_point(
-                        sync_reference_point,
-                        act.start + duration,
-                        sampling_seconds,
-                    )
-                    update_state_of_binary_sensor(
-                        sensor_data, sensor_states, s, False, _time
-                    )
 
     return sensor_data
 
