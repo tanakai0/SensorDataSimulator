@@ -2557,7 +2557,7 @@ def generate_motion_sensor_data(
         else:
             sensor_states[s.index] = None
 
-    _step = 10
+    _step = 100
     _max_len = len(WT)
     # update states of door sensors
     for i, wt in enumerate(WT):
@@ -2586,8 +2586,9 @@ def generate_motion_sensor_data(
             sync_reference_point,
             act,
         )
-    print('')
+    print("")
 
+    _step = 10
     # update states of motion sensors
     for i, wt in enumerate(WT):
         if i % _step == 0:
@@ -2604,7 +2605,7 @@ def generate_motion_sensor_data(
                 sync_reference_point,
                 body_radius,
             )
-    print('')
+    print("")
     return sensor_data
 
 
