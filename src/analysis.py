@@ -582,7 +582,7 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
     SD : list of tuple
         Raw sensor data.
         (time, index, state).
-    AL : list of tuple
+    AL : dict of list of tuple
         Anomaly labels.
         For example, AL[anomaly.HOUSEBOUND]
                      = [(timedelta(days = 10), timedelta(days = 20)),
@@ -773,7 +773,11 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
     len_AL = len(AL)
     reach_last_SD, reach_last_AL = False, False  # whether to reach the last indexes
 
+    _max_num = len(utils.date_generator(start, end, duration))
+    diff = 100000
     for i, t in enumerate(utils.date_generator(start, end, duration)):
+        if i % diff == 0:
+            utils.print_progress_bar(_max_num, i, "prediction in dynamic naive Bayes.")
         tt = t + duration
         if not (reach_last_SD):
             while t <= SD[SD_i][0] < tt:

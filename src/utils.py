@@ -1355,7 +1355,7 @@ class WalkingTrajectory:
                 self.fall_w,
                 self.lie_down_seconds_w,
                 *get_d_h_m_s_ms(self.timestamp[self.fall_w_index]),
-                self.fall_w_body_range
+                self.fall_w_body_range,
             )
         else:
             text += "Fall while walking: {} {} {} {}\n".format(
@@ -1369,7 +1369,7 @@ class WalkingTrajectory:
                 self.fall_s,
                 self.lie_down_seconds_s,
                 *get_d_h_m_s_ms(self.timestamp[self.fall_s_index]),
-                self.fall_s_body_range
+                self.fall_s_body_range,
             )
         else:
             text += "Fall while standing: {} {} {} {}\n".format(
@@ -1844,9 +1844,7 @@ def sample_walking_trajectories(
                     count += 1
                     if count > max_try:
                         raise ValueError(
-                            "sample_walking_trajectories() failed to generate walking trajectories {} times.".format(
-                                max_try
-                            )
+                            f"sample_walking_trajectories() failed to generate walking trajectories {max_try} times."
                         )
                     continue
                 else:
@@ -1868,8 +1866,9 @@ def sample_walking_trajectories(
                     )
                     if start_time <= AS[i].start:
                         raise ValueError(
-                            "The duration time of the {}-th activity is less than the duration time of the past wandering. Try to increase duration time of short activities.".format(
-                                i
+                            (
+                                f"The duration time of the {i}-th activity is less than the duration time of the past wandering."
+                                + "Try to increase duration time of short activities."
                             )
                         )
 
@@ -1893,8 +1892,11 @@ def sample_walking_trajectories(
             start_time -= lie_down_duration_w
             if start_time <= AS[i].start:
                 print(
-                    "The duration time of the {}-th activity is less than the duration time of {}-th walking to move between places and fall for {} seconds. Try to increase duration time of short activities.".format(
-                        i, i, fall_w_sec
+                    (
+                        f"The duration time of the {i}-th activity is less than the duration time"
+                        + f" of {i}-th walking and fall ({fall_w_sec} seconds). "
+                        + "So, abandoned this fall anomaly."
+                        + "If you avoid this error, try to increase duration time of short activities."
                     )
                 )
                 fall_w = False
@@ -1928,9 +1930,9 @@ def sample_walking_trajectories(
             start_time -= lie_down_duration_s
             if start_time <= AS[i].start:
                 print(
-                    "The duration time of the {}-th activity is less than the duration time of {}-th walking to move between places and fall for {} seconds. Try to increase duration time of short activities.".format(
-                        i, i, fall_s_sec
-                    )
+                    f"The duration time of the {i}-th activity is less than"
+                    + f"the duration time of {i}-th walking and fall ({fall_s_sec} seconds)."
+                    + "Try to increase duration time of short activities."
                 )
                 fall_s = False
                 fall_s_sec = 0

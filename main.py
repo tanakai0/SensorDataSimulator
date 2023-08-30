@@ -94,7 +94,7 @@ print("Walking trajectories were generated. {} [s]".format(time.time() - temp_ti
 
 
 # sensor data (SD)
-sensors = sensor_model.test_sensors_2  # for test_layout
+sensors = sensor_model.test_sensors  # for test_layout
 utils.pickle_dump(data_save_path, "SD_model", sensors)
 utils.save_layout(data_save_path, path, sensors=sensors, show=False)
 
