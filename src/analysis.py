@@ -140,11 +140,7 @@ def generate_on_seconds_histogram(data, ha_index, step, start=None, end=None):
     Returns
     -------
     seconds : list of tuple
-        seconds[i] = (start, end, second)
-        start : datetime.timedelta
-            Start date of this bin.
-        end : datetime.timedelta
-            End date of this bin.
+        seconds[i] = second
         second : float
             Seconds that the home applicne turns on in the time range of this bin.
         Duration between start and end equals to input's ``step``.
@@ -185,31 +181,35 @@ def generate_on_seconds_histogram(data, ha_index, step, start=None, end=None):
 
     seconds = []
 
-    for t in utils.date_generator(start, end, step):
-        start, end = t, t + step
+    _max_num = len(list(utils.date_generator(start, end, step)))
+    diff = 1
+    for i, t in enumerate(utils.date_generator(start, end, step)):
+        if i % diff == 0:
+            utils.print_progress_bar(_max_num, i, "Calculate histograms.")
+        _start, _end = t, t + step
         in_interval = True
         _sum = 0.0
         while in_interval:
             if range_index == len(on_range):
                 break
-            if start <= on_range[range_index][0]:
-                if on_range[range_index][0] <= end:
-                    if on_range[range_index][1] < end:
+            if _start <= on_range[range_index][0]:
+                if on_range[range_index][0] <= _end:
+                    if on_range[range_index][1] < _end:
                         _sum += (
                             on_range[range_index][1] - on_range[range_index][0]
                         ).total_seconds()
                         range_index += 1
                     else:
-                        _sum += (end - on_range[range_index][0]).total_seconds()
+                        _sum += (_end - on_range[range_index][0]).total_seconds()
                         in_interval = False
                 else:
                     in_interval = False
             else:
-                if on_range[range_index][1] <= end:
-                    _sum += (on_range[range_index][1] - start).total_seconds()
+                if on_range[range_index][1] <= _end:
+                    _sum += (on_range[range_index][1] - _start).total_seconds()
                     range_index += 1
                 else:
-                    _sum += (end - start).total_seconds()
+                    _sum += (_end - _start).total_seconds()
                     in_interval = False
         seconds.append(_sum)
 
