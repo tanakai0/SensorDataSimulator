@@ -719,9 +719,10 @@ class CostSensor(Sensor):
             self.y,
             c=self.color,
             marker="*",
-            alpha=1,
+            alpha=0.6,
             s=(plt.rcParams["lines.markersize"] ** 2) * 4,
         )
+        ax.text(self.x, self.y, "{}".format(self.index), fontsize=10, va="center", ha="center")
 
     def canvas(self, canvas, point2canvas):
         """
@@ -824,9 +825,10 @@ class DoorSensor(Sensor):
             self.y,
             c=self.color,
             marker="^",
-            alpha=1,
+            alpha=0.5,
             s=(plt.rcParams["lines.markersize"] ** 2) * 4,
         )
+        ax.text(self.x, self.y, "{}".format(self.index), fontsize=10, va="center", ha="center")
 
     def canvas(self, canvas, point2canvas):
         """
