@@ -1,16 +1,16 @@
 import bisect
 import re
 
-# import sys  # for pickle load
+import sys  # for pickle load
 import tkinter
 from datetime import timedelta
 from pathlib import Path
 from tkinter import ttk
 
-import src.floor_plan as floor_plan
-import src.utils as utils
+sys.path.append("./src")
+import floor_plan
+import utils
 
-# sys.path.append("./src")
 
 
 class FootprintSimulator:
