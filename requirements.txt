@@ -3,4 +3,7 @@ matplotlib
 scipy
 hmmlearn
 Levenshtein
-ace-sklearn-crfsuite
+black
+isort
+flake8
+# ace-sklearn-crfsuite
