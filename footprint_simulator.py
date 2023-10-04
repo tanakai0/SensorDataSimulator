@@ -374,20 +374,20 @@ class FootprintSimulator:
                 outline="black",
                 fill="black",
             )
-            # if timestamp_i % 2 == 1:
-            #     left_step = self.WT[self.WT_i].left_steps[timestamp_i // 2 + 1]
-            #     left_step_left = self.point2canvas((left_step[0] - self.foot_radius, left_step[1] + self.foot_radius))
-            #     left_step_bottom_right = self.point2canvas((left_step[0] + self.foot_radius, left_step[1] - self.foot_radius))
-            #     self.left_step_id = self.figure.create_oval(left_step_left[0], left_step_left[1],
-            #                                              left_step_bottom_right[0], left_step_bottom_right[1],
-            #                                              outline = 'black', fill = 'red')
-            # else:
-            #     right_step = self.WT[self.WT_i].right_steps[timestamp_i // 2]
-            #     right_step_left = self.point2canvas((right_step[0] - self.foot_radius, right_step[1] + self.foot_radius))
-            #     right_step_bottom_right = self.point2canvas((right_step[0] + self.foot_radius, right_step[1] - self.foot_radius))
-            #     self.right_step_id = self.figure.create_oval(right_step_left[0], right_step_left[1],
-            #                                              right_step_bottom_right[0], right_step_bottom_right[1],
-            #                                              outline = 'black', fill = 'blue')
+            if timestamp_i % 2 == 1:
+                left_step = self.WT[self.WT_i].left_steps[timestamp_i // 2 + 1]
+                left_step_left = self.point2canvas((left_step[0] - self.foot_radius, left_step[1] + self.foot_radius))
+                left_step_bottom_right = self.point2canvas((left_step[0] + self.foot_radius, left_step[1] - self.foot_radius))
+                self.left_step_id = self.figure.create_oval(left_step_left[0], left_step_left[1],
+                                                         left_step_bottom_right[0], left_step_bottom_right[1],
+                                                         outline = 'black', fill = 'red')
+            else:
+                right_step = self.WT[self.WT_i].right_steps[timestamp_i // 2]
+                right_step_left = self.point2canvas((right_step[0] - self.foot_radius, right_step[1] + self.foot_radius))
+                right_step_bottom_right = self.point2canvas((right_step[0] + self.foot_radius, right_step[1] - self.foot_radius))
+                self.right_step_id = self.figure.create_oval(right_step_left[0], right_step_left[1],
+                                                         right_step_bottom_right[0], right_step_bottom_right[1],
+                                                         outline = 'black', fill = 'blue')
 
     def interpolate_positions(self):
         pass
