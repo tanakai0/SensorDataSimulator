@@ -1,16 +1,22 @@
 import bisect
 import re
-
-import sys  # for pickle load
 import tkinter
 from datetime import timedelta
 from pathlib import Path
 from tkinter import ttk
 
-sys.path.append("./src")
-import floor_plan
-import utils
+# New pickled data can be loaded as below.
+import src.floor_plan as floor_plan
+import src.utils as utils
 
+# Old pickled sensor_model are made when the sensor_model.py was located in the same folder hierarchy as main.py.
+# New sensor_model.py is located in the src/sensor_model.py, that is different from the folder hierarchy of main.py.
+# How to load both old and newly created data is below. But linter error may arise.
+# import sys
+# sys.path.append("./src")
+# import floor_plan
+# import utils
+# import sensor_model
 
 
 class FootprintSimulator:
@@ -376,18 +382,36 @@ class FootprintSimulator:
             )
             if timestamp_i % 2 == 1:
                 left_step = self.WT[self.WT_i].left_steps[timestamp_i // 2 + 1]
-                left_step_left = self.point2canvas((left_step[0] - self.foot_radius, left_step[1] + self.foot_radius))
-                left_step_bottom_right = self.point2canvas((left_step[0] + self.foot_radius, left_step[1] - self.foot_radius))
-                self.left_step_id = self.figure.create_oval(left_step_left[0], left_step_left[1],
-                                                         left_step_bottom_right[0], left_step_bottom_right[1],
-                                                         outline = 'black', fill = 'red')
+                left_step_left = self.point2canvas(
+                    (left_step[0] - self.foot_radius, left_step[1] + self.foot_radius)
+                )
+                left_step_bottom_right = self.point2canvas(
+                    (left_step[0] + self.foot_radius, left_step[1] - self.foot_radius)
+                )
+                self.left_step_id = self.figure.create_oval(
+                    left_step_left[0],
+                    left_step_left[1],
+                    left_step_bottom_right[0],
+                    left_step_bottom_right[1],
+                    outline="black",
+                    fill="red",
+                )
             else:
                 right_step = self.WT[self.WT_i].right_steps[timestamp_i // 2]
-                right_step_left = self.point2canvas((right_step[0] - self.foot_radius, right_step[1] + self.foot_radius))
-                right_step_bottom_right = self.point2canvas((right_step[0] + self.foot_radius, right_step[1] - self.foot_radius))
-                self.right_step_id = self.figure.create_oval(right_step_left[0], right_step_left[1],
-                                                         right_step_bottom_right[0], right_step_bottom_right[1],
-                                                         outline = 'black', fill = 'blue')
+                right_step_left = self.point2canvas(
+                    (right_step[0] - self.foot_radius, right_step[1] + self.foot_radius)
+                )
+                right_step_bottom_right = self.point2canvas(
+                    (right_step[0] + self.foot_radius, right_step[1] - self.foot_radius)
+                )
+                self.right_step_id = self.figure.create_oval(
+                    right_step_left[0],
+                    right_step_left[1],
+                    right_step_bottom_right[0],
+                    right_step_bottom_right[1],
+                    outline="black",
+                    fill="blue",
+                )
 
     def interpolate_positions(self):
         pass

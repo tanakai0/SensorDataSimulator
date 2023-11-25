@@ -1208,7 +1208,7 @@ def determine_activity_set(path, original_act_model):
 #      Walking speed, [seconds/step].
 #  prefer_foot : string
 #      Preferable foot the resident push out when to start to walk.
-# body_radisu : float
+# body_radius : float
 #      Body radius of the resident
 
 walking_activity = namedtuple(
