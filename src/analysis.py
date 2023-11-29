@@ -1863,3 +1863,142 @@ def linear_chain_CRF():
             labels.shape = (number of times, ).
         """
         pass
+
+def find_true_regions_in_ndarray(arr):
+    """
+    Find continuous True regions.
+
+    Parameters
+    ----------
+    arr : numpy.ndarray of bool
+        arr.shape = (n, ).
+
+    Returns
+    -------
+    start_end_indices : list of tuple of int
+        start_end_indices[i] = (index of start, index of end) of ith regions.
+
+    Examples
+    --------
+    >>> find_true_regions(np.array([False, True, True, False, False, True, True, True, False, True]))
+    >>> [(1, 3), (5, 8), (9, 10)]
+    """
+    indices = np.where(arr)[0]
+    split_points = np.where(np.diff(indices) > 1)[0] + 1
+    ranges = np.split(indices, split_points)
+    start_end_indices = [(r[0], r[-1] + 1) for r in ranges]
+    return start_end_indices
+
+
+def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "sum_in_window"):
+    """
+    Calculate nonresponse time in time windows.
+    A day is divided into time windows with a windows length exclusively.
+    Last fired sensors at time t are last activated sensors of all sensors before time t.
+    Time since last activation (last fired elapsed time) of sensor s at time t is the time [sec.]
+    during which sensor s continues to be the last fired sensor.
+    If the sensor s is not last fired at time t, then the elapsed time is 0.
+    Based on the last fired elapsed time, nonresponse time of sensor s in each time window of the day
+    is defined in the following two ways;
+    (NRT1) The sum of the last fired elapsed time of s which elapsed within that time window.
+    So the NRT1 of each time window cannot exceed windows length.
+    (NRT2) Maximum last fired elapsed time at any point within that time window.
+
+    Parameters
+    ----------
+    mat : nummpy.ndarray of bool
+        Raw sensor data matrix.
+        mat[i][j] = j-th sensor state at i-th time.
+    cost_sensor_id : list of int
+        Indexes of cost sensors that is removed in the result matrix.
+    time_step : float
+        Time step length [seconds] of mat = mat[1][0] - mat[0][0].
+    window_len : int
+        Length [seconds.] of window that divide time exclusively.
+        If window_len = 60 [sec.] = 1[min.], a day is divided into 60*24 time windows.
+    _type : str, default "sum_in_window"
+        Type of nonresponse time.
+        "sum_in_window" : total nonresponse time within the time window. Max = window_len.
+        "max_time"      : maximum nonresponse time at any time point within the time window.
+    
+    Returns
+    -------
+    (nrt, valid_sensor_ids)
+    nrt : numpy.ndarray
+        nrt[s][i] = nonresponse time [seconds] of the s-th sensor of the i-th time window.
+        nrt.shape[0] does not equal to mat.shape[1] because cost sensors are removed.
+    valid_sensor_ids : list of int
+        Explanation of sensor id. len(valid_sensor_ids) == nrt.shape[0].
+
+    Examples
+    --------
+    * : fired
+    window_length = 30[s]
+    sensor1             *  *   *       *
+    sensor2     *   *          *     *   *
+    time(w=30s) |-----|-----|-----|-----|-----|-----|
+
+    + : Last fired state
+    sensor1              +++++++++++++  ++   
+    sensor2      ++++++++       ++++++++  +++++++++++
+
+    NRT1 : _type = "sum_in_window"
+    NRT2 : _type = "max_time"
+
+    NRT1
+    sensor1        0    20    30    20     5     0
+    sensor2       30    10    15    25    25    30  
+
+    NRT2
+    sensor1        0    20    50    65    10     0
+    sensor2       30    40    15    40    25    55
+
+    Check examples by this program
+    >>> test_SD = np.zeros((180, 2), dtype=bool)
+    >>> sensor1_true = [40, 55, 75, 115]
+    >>> sensor2_true = [0, 20, 75, 105, 125]
+    >>> for ind in sensor1_true:
+    >>>     test_SD[ind][0] = True
+    >>> for ind in sensor2_true:
+    >>>     test_SD[ind][1] = True
+    >>> NRT1, valid_sensors1 = non_response_time(test_SD, [], 1, 30, "sum_in_window")
+    >>> NRT2, valid_sensors2 = non_response_time(test_SD, [], 1, 30, "max_time")
+    >>> print(NRT1)
+    >>> print(NRT2)
+    """
+    num_time_points = mat.shape[0]
+    num_windows = num_time_points // window_len
+
+    # Remove cost sensors from the matrix
+    valid_sensor_ids = [i for i in range(mat.shape[1]) if i not in cost_sensor_id]
+
+    # Initialize the output array
+    nrt = np.zeros((len(valid_sensor_ids), num_windows))
+    last_fired_time = np.full((len(valid_sensor_ids),), -1)
+    last_fired_sensors = np.zeros(len(valid_sensor_ids), dtype = bool)
+
+    for w in range(num_windows):
+        window_start = w * window_len
+        window_end = (w + 1) * window_len
+        window_data = mat[window_start:window_end, valid_sensor_ids]
+
+        for t in range(window_len):
+            # Update last fired sensors
+            if np.any(window_data[t]):
+                for s, _id in enumerate(valid_sensor_ids):
+                    if not last_fired_sensors[s] and window_data[t][s]:
+                        last_fired_time[s] = window_start + t
+                    if last_fired_sensors[s] and not window_data[t][s]:
+                        last_fired_time[s] = -1
+                last_fired_sensors = window_data[t]
+
+            # Calculate elapsed time for each sensor
+            for s, _id in enumerate(valid_sensor_ids):
+                if _type == "sum_in_window":
+                    nrt[s][w] += (last_fired_time[s] != -1)
+                elif _type == "max_time":
+                    elapsed = (window_start + t - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0
+                    nrt[s][w] = max(nrt[s][w], elapsed)
+
+    nrt *= time_step
+    return (nrt, valid_sensor_ids)
