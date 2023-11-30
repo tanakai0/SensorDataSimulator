@@ -1890,7 +1890,7 @@ def find_true_regions_in_ndarray(arr):
     return start_end_indices
 
 
-def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "sum_in_window"):
+def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_time"):
     """
     Calculate nonresponse time in time windows.
     A day is divided into time windows with a windows length exclusively.
@@ -1916,7 +1916,7 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "sum_in
     window_len : int
         Length [seconds.] of window that divide time exclusively.
         If window_len = 60 [sec.] = 1[min.], a day is divided into 60*24 time windows.
-    _type : str, default "sum_in_window"
+    _type : str, default "max_time"
         Type of nonresponse time.
         "sum_in_window" : total nonresponse time within the time window. Max = window_len.
         "max_time"      : maximum nonresponse time at any time point within the time window.
