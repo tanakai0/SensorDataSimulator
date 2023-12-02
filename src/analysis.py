@@ -2002,3 +2002,53 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
 
     nrt *= time_step
     return (nrt, valid_sensor_ids)
+
+
+def plot_nonresponse_time(ax, nrt, window_duration, extra_x = None, extra_y = None):
+    """
+    Plot scatter plot of nonresponse time.
+    x-axis : time of day
+    y-axis : nonresponse time
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        The Matplotlib Axes object where the plot will be drawn.
+    nrt : numpy.ndarray
+        nrt[i] = nonresponse time [seconds] of the i-th time window.
+    window_duration : float
+        Duration time [seconds] of each window.
+        Assume that 24*60*60 % window_duration == 0. 
+    extra_x : list of int
+        Extra data point. List of numbers of window.
+    extra_y : list of float
+        Extra data point. List of nrt values.
+        
+    Examples
+    --------
+    >>> fig, ax = plt.subplots()
+    >>> plot_nonresponse_time(ax, nrt, 60)
+    """
+    sec_of_day = 86400
+    if sec_of_day % window_duration !=0:
+        raise ValueError(f"window_duration {window_duration} [seconds] cannot divide 24*60*60[seconds].")
+    num_windows_per_day = int(sec_of_day / window_duration)
+    window_centers = np.arange(window_duration / 2, sec_of_day, window_duration)
+    num_days = int(len(nrt) // num_windows_per_day)
+
+    x_data = []
+    y_data = []
+    for day in range(num_days):
+        for window in range(num_windows_per_day):
+            x_data.append(window_centers[window])
+            y_data.append(nrt[day * num_windows_per_day + window])
+    ax.scatter(x_data, y_data, alpha=0.2, c = 'black')
+    if (extra_x is not None) and (extra_y is not None):
+        ax.scatter(window_centers[extra_x], extra_y, c = "tab:orange")
+
+    ax.set_xticks(np.arange(0, 86400, 3600), 
+               [(f"{int(t/3600)%24:02d}:00") for t in np.arange(0, 86400, 3600)], 
+               rotation=45)
+    ax.set_xlabel("Time of day.")
+    ax.set_ylabel("Nonresponse Time [seconds].")
+    ax.set_ylim(bottom=0)
