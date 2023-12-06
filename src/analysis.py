@@ -773,11 +773,11 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
     len_AL = len(AL)
     reach_last_SD, reach_last_AL = False, False  # whether to reach the last indexes
 
-    _max_num = len(utils.date_generator(start, end, duration))
+    _max_num = (end - start) // duration
     diff = 100000
     for i, t in enumerate(utils.date_generator(start, end, duration)):
         if i % diff == 0:
-            utils.print_progress_bar(_max_num, i, "prediction in dynamic naive Bayes.")
+            utils.print_progress_bar(_max_num, i, "Making the sensor matrix.")
         tt = t + duration
         if not (reach_last_SD):
             while t <= SD[SD_i][0] < tt:
@@ -801,6 +801,7 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
         for x in AL_names:
             if AL_states[x]:
                 AL_mat[i][AL_name2index[x]] = True
+    print("\nThe creation of sensor data matrix is complete.")
 
     return (SD_mat, SD_names, AL_mat, AL_names)
 
