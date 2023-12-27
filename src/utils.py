@@ -3318,9 +3318,9 @@ def generate_six_anomalies(path, save_path, days, show=True):
         )
 
     plt.tight_layout()
-    plt.savefig(str(save_path) + "/anomaly_parameter_transitions.png", dpi=500)
     if show:
         plt.show()
+    plt.savefig(str(save_path) + "/anomaly_parameter_transitions.png", dpi=500)
     plt.close()
 
     # anomaly.save_MMSE(save_path, MMSE)
