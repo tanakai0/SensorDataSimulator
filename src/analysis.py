@@ -1967,6 +1967,8 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
     >>> print(NRT1)
     >>> print(NRT2)
     """
+    if _type not in ["max_time", "sum_in_window"]:
+        raise ValueError("_type error!")
     num_time_points = mat.shape[0]
     num_windows = num_time_points // window_len
 
