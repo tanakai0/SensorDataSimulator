@@ -2002,7 +2002,7 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
                 elif _type == "max_time":
                     elapsed = (window_start + t - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0
                     nrt[s][w] = max(nrt[s][w], elapsed)
-
+                    
     nrt *= time_step
     return (nrt, valid_sensor_ids)
 
