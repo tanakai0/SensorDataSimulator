@@ -10,7 +10,7 @@ import random
 from copy import deepcopy
 from datetime import timedelta
 from pathlib import Path
-import zipfile
+import gzip
 
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
@@ -3344,10 +3344,10 @@ def generate_six_anomalies(path, save_path, days, show=True):
     return ret_dict
 
 
-def pickle_dump(path, name, data, zipped=False):
+def pickle_dump(path, name, data, gzipped=False):
     """
     This saves the data as pickle object at path.
-    File can be saved as '.pickle' or '.pickle.zip'.
+    File can be saved as '.pickle' or '.pickle.gz'.
 
     Parameters
     ----------
@@ -3357,28 +3357,26 @@ def pickle_dump(path, name, data, zipped=False):
         File name.
     data :
         Data to save.
-    zipped : bool
-        If True, data is saved as zipped pickle file. Otherwise, as regular pickle file.
+    gzipped : bool
+        If True, data is saved as gzipped pickle file. Otherwise, as regular pickle file.
 
     Returns
     -------
     None
     """
 
-    file_path = path / "{}.pickle".format(name)
-    if zipped:
-        with zipfile.ZipFile(str(file_path) + ".zip", "w", zipfile.ZIP_DEFLATED) as z:
-            with z.open("{}.pickle".format(name), "w") as p:
-                pickle.dump(data, p)
+    file_path = path / f"{name}.pickle"
+    if gzipped:
+        with gzip.open(str(file_path) + ".gz", "wb") as gz:
+            pickle.dump(data, gz)
     else:
         with open(file_path, "wb") as p:
             pickle.dump(data, p)
 
-
-def pickle_load(path, name, zipped=False):
+def pickle_load(path, name, gzipped=False):
     """
     This loads the data saved as pickle.
-    File can be loaded from '.pickle' or '.pickle.zip'.
+    File can be loaded from '.pickle' or '.pickle.gz'.
 
     Parameters
     ----------
@@ -3386,21 +3384,20 @@ def pickle_load(path, name, zipped=False):
         Path to the file.
     name : str
         File name.
-    zipped : bool
-        If True, loads data from zipped pickle file. Otherwise, from regular pickle file.
+    gzipped : bool
+        If True, loads data from gzipped pickle file. Otherwise, from regular pickle file.
 
     Returns
     -------
     loaded_object
     """
 
-    file_path = path / "{}.pickle".format(name)
+    file_path = path / f"{name}.pickle"
     loaded_object = None
 
-    if zipped:
-        with zipfile.ZipFile(str(file_path) + ".zip", "r") as z:
-            with z.open("{}.pickle".format(name)) as f:
-                loaded_object = pickle.load(f)
+    if gzipped:
+        with gzip.open(str(file_path) + ".gz", "rb") as gz:
+            loaded_object = pickle.load(gz)
     else:
         with open(file_path, "rb") as f:
             loaded_object = pickle.load(f)
