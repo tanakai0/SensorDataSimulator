@@ -17,7 +17,7 @@ path = Path(layout_data_path / "test_layout")
 data_save_path = utils.generate_data_folder(path, utils.present_date_and_time())
 
 start_days = 0
-end_days = 61
+end_days = 30
 # end_days = 9 * 360
 
 temp_time = time.time()
@@ -54,7 +54,6 @@ AL_model = {
     "forgetting_num": anomaly_info["forgetting_num"],
 }
 utils.pickle_dump(data_save_path, "AL_model", AL_model)
-
 
 # Activity sequence (AS)
 state_anomaly_labels = {
