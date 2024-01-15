@@ -1915,8 +1915,9 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
     time_step : float
         Time step length [seconds] of mat = mat[1][0] - mat[0][0].
     window_len : int
-        Length [seconds.] of window that divide time exclusively.
-        If window_len = 60 [sec.] = 1[min.], a day is divided into 60*24 time windows.
+        Length of window that divide time exclusively.
+        window_len is the number of columns in mat.
+        If time_step = 1 [sec.] and window_len = 60 [sec.] = 1[min.], a day is divided into 60*24 time windows.
     _type : str, default "max_time"
         Type of nonresponse time.
         "sum_in_window" : total nonresponse time within the time window. Max = window_len.
@@ -2055,3 +2056,129 @@ def plot_nonresponse_time(ax, nrt, window_duration, extra_x = None, extra_y = No
     ax.set_xlabel("Time of day.")
     ax.set_ylabel("Nonresponse Time [seconds].")
     ax.set_ylim(bottom=0)
+
+
+def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type = "max_time"):
+    """
+    Calculate nonresponse time in time windows.
+    A day is divided into time windows with a sliding window.
+    Last fired sensors at time t are last activated sensors of all sensors before time t.
+    Time since last activation (last fired elapsed time) of sensor s at time t is the time [sec.]
+    during which sensor s continues to be the last fired sensor.
+    If the sensor s is not last fired at time t, then the elapsed time is 0.
+    Based on the last fired elapsed time, nonresponse time of sensor s in each time window of the day
+    is defined in the following two ways;
+    (NRT1) The sum of the last fired elapsed time of s which elapsed within that time window.
+    So the NRT1 of each time window cannot exceed windows length.
+    (NRT2) Maximum last fired elapsed time at any point within that time window.
+
+    Parameters
+    ----------
+    mat : nummpy.ndarray of bool
+        Raw sensor data matrix.
+        mat[i][j] = j-th sensor state at i-th time.
+    cost_sensor_id : list of int
+        Indexes of cost sensors that is removed in the result matrix.
+    time_step : float
+        Time step length [seconds] of mat = mat[1][0] - mat[0][0].
+    window_len : int
+        Length of window that divide time exclusively.
+        window_len is the number of columns in mat.
+        window_len must be an odd number.
+    _type : str, default "max_time"
+        Type of nonresponse time.
+        "sum_in_window" : total nonresponse time within the time window. Max = window_len.
+        "max_time"      : maximum nonresponse time at any time point within the time window.
+    
+    Returns
+    -------
+    (nrt, valid_sensor_ids)
+    nrt : numpy.ndarray
+        nrt[s][i] = nonresponse time [seconds] of the s-th sensor of the i-th time window.
+        nrt.shape[0] == mat.shape[0].
+        Let w be a (window_len - 1)/2.
+        nrt.shape[i] is a vector made from mat[i-w/2:i+w/2+1] for any w/2 <= i <mat.shape[0]-w/2
+        nrt.shape[i] is a vector made from mat[0:i+w/2+1] for any i < w/2.
+        nrt.shape[i] is a vector made from mat[i-w/2:mat.shape[0]] for any i >= mat.shape[0]-w/2.
+        nrt.shape[0] does not equal to mat.shape[1] because cost sensors are removed.
+
+    valid_sensor_ids : list of int
+        Explanation of sensor id. len(valid_sensor_ids) == nrt.shape[0].
+    """
+
+    def summarize_sliding_window(window_data, nrt_type):
+        if nrt_type == "sum_in_window":
+            return np.count_nonzero(window_data, axis=1)
+        elif nrt_type == "max_time":
+            return np.max(window_data, axis = 1)
+        
+    if _type not in ["max_time", "sum_in_window"]:
+        raise ValueError("_type error!")
+    if window_len % 2 == 0:
+        raise ValueError("window_len must be an odd number!")
+
+    # Remove cost sensors from the matrix
+    valid_sensor_ids = [i for i in range(mat.shape[1]) if i not in cost_sensor_id]
+
+    # Initialize the output array
+    sensor_num = len(valid_sensor_ids)
+    nrt = np.zeros((sensor_num, mat.shape[0]), dtype = np.int32)
+    last_fired_time = np.full((sensor_num,), -1)
+    last_fired_sensors = np.zeros(sensor_num, dtype = bool)
+    
+    w = int((window_len - 1)/2)
+    window_data = np.zeros((sensor_num, window_len))
+
+    for i in range(w):
+        sd = mat[i]
+        if np.any(sd):
+            for s, _id in enumerate(valid_sensor_ids):
+                if not last_fired_sensors[s] and sd[s]:
+                    last_fired_time[s] = i
+                if last_fired_sensors[s] and not sd[s]:
+                    last_fired_time[s] = -1
+            last_fired_sensors = sd
+
+        instantaneous_nrt = np.empty(sensor_num)
+        for s, _id in enumerate(valid_sensor_ids):
+            instantaneous_nrt[s] = ((i - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0)
+        window_data[:, i+w+1] = instantaneous_nrt
+
+    # [0, 0, 0, a, b] for example of w = 2.
+
+    for i in range(w, mat.shape[0]):
+        center = i - w  # index of window center
+        sd = mat[i]
+        if np.any(sd):
+            for s, _id in enumerate(valid_sensor_ids):
+                if not last_fired_sensors[s] and sd[s]:
+                    last_fired_time[s] = i
+                if last_fired_sensors[s] and not sd[s]:
+                    last_fired_time[s] = -1
+            last_fired_sensors = sd
+
+        instantaneous_nrt = np.empty(sensor_num)
+        for s, _id in enumerate(valid_sensor_ids):
+            instantaneous_nrt[s] = ((i - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0)
+
+        # shift window
+        # For example of w = 2;
+        # from [a, b, c, d, e] to [b, c, d, e, f]
+        window_data = np.roll(window_data, shift=-1, axis=1)
+        window_data[:, -1] = instantaneous_nrt
+
+        # Calculate elapsed time of the sliding window
+        nrt[:, center] = summarize_sliding_window(window_data, _type)
+
+    for center in range(mat.shape[0]-w, mat.shape[0]):
+         # shift window
+        window_data = np.roll(window_data, shift=-1, axis=1)
+        window_data[:, -1] = np.zeros(sensor_num)
+
+        # Calculate elapsed time of the sliding window
+        nrt[:, center] = summarize_sliding_window(window_data, _type)
+
+                    
+    nrt *= time_step
+    return (nrt, valid_sensor_ids)
+
