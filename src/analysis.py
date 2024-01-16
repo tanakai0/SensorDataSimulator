@@ -1891,7 +1891,7 @@ def find_true_regions_in_ndarray(arr):
     return start_end_indices
 
 
-def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_time"):
+def nonresponse_time(mat, time_step, window_len, _type = "max_time"):
     """
     Calculate nonresponse time in time windows.
     A day is divided into time windows with a windows length exclusively.
@@ -1910,8 +1910,6 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
     mat : nummpy.ndarray of bool
         Raw sensor data matrix.
         mat[i][j] = j-th sensor state at i-th time.
-    cost_sensor_id : list of int
-        Indexes of cost sensors that is removed in the result matrix.
     time_step : float
         Time step length [seconds] of mat = mat[1][0] - mat[0][0].
     window_len : int
@@ -1925,12 +1923,10 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
     
     Returns
     -------
-    (nrt, valid_sensor_ids)
+    nrt
     nrt : numpy.ndarray
         nrt[s][i] = nonresponse time [seconds] of the s-th sensor of the i-th time window.
         nrt.shape[0] does not equal to mat.shape[1] because cost sensors are removed.
-    valid_sensor_ids : list of int
-        Explanation of sensor id. len(valid_sensor_ids) == nrt.shape[0].
 
     Examples
     --------
@@ -1963,8 +1959,8 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
     >>>     test_SD[ind][0] = True
     >>> for ind in sensor2_true:
     >>>     test_SD[ind][1] = True
-    >>> NRT1, valid_sensors1 = non_response_time(test_SD, [], 1, 30, "sum_in_window")
-    >>> NRT2, valid_sensors2 = non_response_time(test_SD, [], 1, 30, "max_time")
+    >>> NRT1 = non_response_time(test_SD, 1, 30, "sum_in_window")
+    >>> NRT2 = non_response_time(test_SD, 1, 30, "max_time")
     >>> print(NRT1)
     >>> print(NRT2)
     """
@@ -1973,23 +1969,21 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
     num_time_points = mat.shape[0]
     num_windows = num_time_points // window_len
 
-    # Remove cost sensors from the matrix
-    valid_sensor_ids = [i for i in range(mat.shape[1]) if i not in cost_sensor_id]
-
     # Initialize the output array
-    nrt = np.zeros((len(valid_sensor_ids), num_windows))
-    last_fired_time = np.full((len(valid_sensor_ids),), -1)
-    last_fired_sensors = np.zeros(len(valid_sensor_ids), dtype = bool)
+    sensor_num = mat.shape[1]
+    nrt = np.zeros((sensor_num, num_windows))
+    last_fired_time = np.full((sensor_num,), -1)
+    last_fired_sensors = np.zeros(sensor_num, dtype = bool)
 
     for w in range(num_windows):
         window_start = w * window_len
         window_end = (w + 1) * window_len
-        window_data = mat[window_start:window_end, valid_sensor_ids]
+        window_data = mat[window_start:window_end, :]
 
         for t in range(window_len):
             # Update last fired sensors
             if np.any(window_data[t]):
-                for s, _id in enumerate(valid_sensor_ids):
+                for s, _id in enumerate(range(sensor_num)):
                     if not last_fired_sensors[s] and window_data[t][s]:
                         last_fired_time[s] = window_start + t
                     if last_fired_sensors[s] and not window_data[t][s]:
@@ -1997,7 +1991,7 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
                 last_fired_sensors = window_data[t]
 
             # Calculate elapsed time for each sensor
-            for s, _id in enumerate(valid_sensor_ids):
+            for s, _id in enumerate(range(sensor_num)):
                 if _type == "sum_in_window":
                     nrt[s][w] += (last_fired_time[s] != -1)
                 elif _type == "max_time":
@@ -2005,7 +1999,7 @@ def nonresponse_time(mat, cost_sensor_id, time_step, window_len, _type = "max_ti
                     nrt[s][w] = max(nrt[s][w], elapsed)
                     
     nrt *= time_step
-    return (nrt, valid_sensor_ids)
+    return nrt
 
 
 def plot_nonresponse_time(ax, nrt, window_duration, extra_x = None, extra_y = None):
@@ -2058,7 +2052,7 @@ def plot_nonresponse_time(ax, nrt, window_duration, extra_x = None, extra_y = No
     ax.set_ylim(bottom=0)
 
 
-def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type = "max_time"):
+def nonresponse_time_sliding(mat, time_step, window_len, _type = "max_time"):
     """
     Calculate nonresponse time in time windows.
     A day is divided into time windows with a sliding window.
@@ -2077,8 +2071,6 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
     mat : nummpy.ndarray of bool
         Raw sensor data matrix.
         mat[i][j] = j-th sensor state at i-th time.
-    cost_sensor_id : list of int
-        Indexes of cost sensors that is removed in the result matrix.
     time_step : float
         Time step length [seconds] of mat = mat[1][0] - mat[0][0].
     window_len : int
@@ -2092,7 +2084,7 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
     
     Returns
     -------
-    (nrt, valid_sensor_ids)
+    nrt
     nrt : numpy.ndarray
         nrt[s][i] = nonresponse time [seconds] of the s-th sensor of the i-th time window.
         nrt.shape[0] == mat.shape[0].
@@ -2101,9 +2093,6 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
         nrt.shape[i] is a vector made from mat[0:i+w/2+1] for any i < w/2.
         nrt.shape[i] is a vector made from mat[i-w/2:mat.shape[0]] for any i >= mat.shape[0]-w/2.
         nrt.shape[0] does not equal to mat.shape[1] because cost sensors are removed.
-
-    valid_sensor_ids : list of int
-        Explanation of sensor id. len(valid_sensor_ids) == nrt.shape[0].
     """
 
     def summarize_sliding_window(window_data, nrt_type):
@@ -2117,11 +2106,8 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
     if window_len % 2 == 0:
         raise ValueError("window_len must be an odd number!")
 
-    # Remove cost sensors from the matrix
-    valid_sensor_ids = [i for i in range(mat.shape[1]) if i not in cost_sensor_id]
-
     # Initialize the output array
-    sensor_num = len(valid_sensor_ids)
+    sensor_num = mat.shape[1]
     nrt = np.zeros((sensor_num, mat.shape[0]), dtype = np.int32)
     last_fired_time = np.full((sensor_num,), -1)
     last_fired_sensors = np.zeros(sensor_num, dtype = bool)
@@ -2132,7 +2118,7 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
     for i in range(w):
         sd = mat[i]
         if np.any(sd):
-            for s, _id in enumerate(valid_sensor_ids):
+            for s, _id in enumerate(range(sensor_num)):
                 if not last_fired_sensors[s] and sd[s]:
                     last_fired_time[s] = i
                 if last_fired_sensors[s] and not sd[s]:
@@ -2140,7 +2126,7 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
             last_fired_sensors = sd
 
         instantaneous_nrt = np.empty(sensor_num)
-        for s, _id in enumerate(valid_sensor_ids):
+        for s, _id in enumerate(range(sensor_num)):
             instantaneous_nrt[s] = ((i - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0)
         window_data[:, i+w+1] = instantaneous_nrt
 
@@ -2150,7 +2136,7 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
         center = i - w  # index of window center
         sd = mat[i]
         if np.any(sd):
-            for s, _id in enumerate(valid_sensor_ids):
+            for s, _id in enumerate(range(sensor_num)):
                 if not last_fired_sensors[s] and sd[s]:
                     last_fired_time[s] = i
                 if last_fired_sensors[s] and not sd[s]:
@@ -2158,7 +2144,7 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
             last_fired_sensors = sd
 
         instantaneous_nrt = np.empty(sensor_num)
-        for s, _id in enumerate(valid_sensor_ids):
+        for s, _id in enumerate(range(sensor_num)):
             instantaneous_nrt[s] = ((i - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0)
 
         # shift window
@@ -2180,5 +2166,5 @@ def nonresponse_time_sliding(mat, cost_sensor_id, time_step, window_len, _type =
 
                     
     nrt *= time_step
-    return (nrt, valid_sensor_ids)
+    return nrt
 
