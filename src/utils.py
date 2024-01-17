@@ -3344,7 +3344,7 @@ def generate_six_anomalies(path, save_path, days, show=True):
     return ret_dict
 
 
-def pickle_dump(path, name, data, gzipped=False):
+def pickle_dump(path, name, data, gzipped=True):
     """
     This saves the data as pickle object at path.
     File can be saved as '.pickle' or '.pickle.gz'.
@@ -3373,7 +3373,7 @@ def pickle_dump(path, name, data, gzipped=False):
         with open(file_path, "wb") as p:
             pickle.dump(data, p)
 
-def pickle_load(path, name, gzipped=False):
+def pickle_load(path, name, gzipped=True):
     """
     This loads the data saved as pickle.
     File can be loaded from '.pickle' or '.pickle.gz'.
