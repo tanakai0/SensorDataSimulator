@@ -3373,7 +3373,7 @@ def pickle_dump(path, name, data, gzipped=True):
         with open(file_path, "wb") as p:
             pickle.dump(data, p)
 
-def pickle_load(path, name, gzipped=True):
+def pickle_load(path, name, gzipped=False):
     """
     This loads the data saved as pickle.
     File can be loaded from '.pickle' or '.pickle.gz'.
