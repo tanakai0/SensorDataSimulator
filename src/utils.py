@@ -3149,7 +3149,8 @@ def save_layout(
 
     if mark_point is not None:
         for p in mark_point:
-            plt.scatter(p[0], p[1], marker="v", color="black")
+            # plt.scatter(p[0], p[1], marker="v", color="black")
+            plt.scatter(p[0], p[1], marker="o", color="red")
 
     # save
     plt.savefig(str(output_path) + "/" + filename, dpi=dpi, bbox_inches="tight")
