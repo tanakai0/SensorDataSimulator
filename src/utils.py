@@ -3071,6 +3071,7 @@ def save_layout(
     filename="",
     dpi=400,
     mark_point=None,
+    return_ax=False
 ):
     """
     This saves a layout data as a figure with walking trajectories and sensors.
@@ -3100,6 +3101,9 @@ def save_layout(
     mark_point : list of tuple of float
         2D coordinate to mark.
         For example, [(100.0, 51.2), (210, 13.9)].
+    return_ax : bool
+        Whether to return ax of the plot.
+        If this is True, then plt will not be closed and saved.
 
     See Also
     --------
@@ -3145,13 +3149,15 @@ def save_layout(
             for c in wt.centers:
                 x.append(c[0])
                 y.append(c[1])
-            plt.plot(x, y, "--", c=cm[i])
+            ax.plot(x, y, "--", c=cm[i])
 
     if mark_point is not None:
         for p in mark_point:
             # plt.scatter(p[0], p[1], marker="v", color="black")
-            plt.scatter(p[0], p[1], marker="o", color="red")
+            ax.scatter(p[0], p[1], marker="o", color="red")
 
+    if return_ax:
+        return ax
     # save
     plt.savefig(str(output_path) + "/" + filename, dpi=dpi, bbox_inches="tight")
     if show:
