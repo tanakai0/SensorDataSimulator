@@ -1,0 +1,1970 @@
+Total number of forgetting: 492
+0
+start: 0028 [day] 17 [h] 07 [m] 29 [s] 756507 [ms]
+end  : 0028 [day] 18 [h] 32 [m] 43 [s] 468511 [ms]
+name: water flow sensor at kitchen, cost: 1
+1
+start: 0033 [day] 08 [h] 06 [m] 07 [s] 482668 [ms]
+end  : 0033 [day] 09 [h] 53 [m] 18 [s] 080096 [ms]
+name: electric energy meter of TV, cost: 1
+2
+start: 0048 [day] 14 [h] 44 [m] 05 [s] 678088 [ms]
+end  : 0048 [day] 20 [h] 04 [m] 10 [s] 248313 [ms]
+name: water flow sensor at kitchen, cost: 1
+3
+start: 0057 [day] 05 [h] 59 [m] 22 [s] 914233 [ms]
+end  : 0057 [day] 06 [h] 53 [m] 14 [s] 180579 [ms]
+name: water flow sensor in bathroom, cost: 1
+4
+start: 0134 [day] 16 [h] 22 [m] 11 [s] 772531 [ms]
+end  : 0134 [day] 16 [h] 25 [m] 01 [s] 272215 [ms]
+name: water flow sensor at kitchen, cost: 1
+5
+start: 0148 [day] 10 [h] 57 [m] 56 [s] 283637 [ms]
+end  : 0148 [day] 11 [h] 02 [m] 53 [s] 078266 [ms]
+name: water flow sensor in bathroom, cost: 1
+6
+start: 0188 [day] 20 [h] 06 [m] 05 [s] 630769 [ms]
+end  : 0189 [day] 05 [h] 05 [m] 26 [s] 892004 [ms]
+name: water flow sensor in bathroom, cost: 1
+7
+start: 0197 [day] 13 [h] 11 [m] 34 [s] 625292 [ms]
+end  : 0197 [day] 14 [h] 49 [m] 04 [s] 629734 [ms]
+name: water flow sensor at kitchen, cost: 1
+8
+start: 0201 [day] 11 [h] 38 [m] 15 [s] 547935 [ms]
+end  : 0201 [day] 12 [h] 56 [m] 05 [s] 778718 [ms]
+name: water flow sensor at kitchen, cost: 1
+9
+start: 0224 [day] 15 [h] 14 [m] 01 [s] 628446 [ms]
+end  : 0224 [day] 17 [h] 12 [m] 20 [s] 661129 [ms]
+name: electric energy meter at kitchen, cost: 1
+10
+start: 0224 [day] 18 [h] 21 [m] 29 [s] 362552 [ms]
+end  : 0225 [day] 06 [h] 40 [m] 59 [s] 969144 [ms]
+name: water flow sensor in bathroom, cost: 1
+11
+start: 0237 [day] 06 [h] 51 [m] 16 [s] 491367 [ms]
+end  : 0237 [day] 07 [h] 21 [m] 01 [s] 507811 [ms]
+name: electric energy meter of TV, cost: 1
+12
+start: 0241 [day] 17 [h] 36 [m] 25 [s] 594737 [ms]
+end  : 0242 [day] 07 [h] 25 [m] 16 [s] 720718 [ms]
+name: electric energy meter of TV, cost: 1
+13
+start: 0255 [day] 17 [h] 53 [m] 36 [s] 165142 [ms]
+end  : 0256 [day] 12 [h] 48 [m] 03 [s] 130929 [ms]
+name: electric energy meter at kitchen, cost: 1
+14
+start: 0287 [day] 16 [h] 24 [m] 57 [s] 374164 [ms]
+end  : 0287 [day] 18 [h] 23 [m] 09 [s] 051515 [ms]
+name: electric energy meter of TV, cost: 1
+15
+start: 0296 [day] 09 [h] 23 [m] 42 [s] 802910 [ms]
+end  : 0296 [day] 09 [h] 23 [m] 42 [s] 802910 [ms]
+name: electric energy meter of TV, cost: 1
+16
+start: 0305 [day] 07 [h] 05 [m] 30 [s] 829588 [ms]
+end  : 0305 [day] 08 [h] 03 [m] 17 [s] 432414 [ms]
+name: electric energy meter of TV, cost: 1
+17
+start: 0311 [day] 11 [h] 18 [m] 36 [s] 314668 [ms]
+end  : 0311 [day] 16 [h] 25 [m] 37 [s] 436485 [ms]
+name: electric energy meter of TV, cost: 1
+18
+start: 0326 [day] 15 [h] 36 [m] 13 [s] 202390 [ms]
+end  : 0326 [day] 15 [h] 36 [m] 13 [s] 202390 [ms]
+name: electric energy meter of TV, cost: 1
+19
+start: 0330 [day] 07 [h] 13 [m] 20 [s] 383270 [ms]
+end  : 0330 [day] 11 [h] 38 [m] 09 [s] 284413 [ms]
+name: water flow sensor in bathroom, cost: 1
+20
+start: 0351 [day] 09 [h] 16 [m] 19 [s] 869678 [ms]
+end  : 0351 [day] 13 [h] 59 [m] 46 [s] 434404 [ms]
+name: electric energy meter of TV, cost: 1
+21
+start: 0365 [day] 19 [h] 53 [m] 09 [s] 188162 [ms]
+end  : 0366 [day] 05 [h] 37 [m] 53 [s] 451697 [ms]
+name: water flow sensor in bathroom, cost: 1
+22
+start: 0375 [day] 08 [h] 26 [m] 24 [s] 771917 [ms]
+end  : 0375 [day] 09 [h] 25 [m] 13 [s] 155307 [ms]
+name: water flow sensor at kitchen, cost: 1
+23
+start: 0380 [day] 13 [h] 40 [m] 41 [s] 710321 [ms]
+end  : 0380 [day] 19 [h] 09 [m] 20 [s] 492040 [ms]
+name: water flow sensor at kitchen, cost: 1
+24
+start: 0381 [day] 20 [h] 39 [m] 45 [s] 390788 [ms]
+end  : 0382 [day] 13 [h] 43 [m] 30 [s] 284718 [ms]
+name: water flow sensor in bathroom, cost: 1
+25
+start: 0393 [day] 15 [h] 15 [m] 51 [s] 186239 [ms]
+end  : 0393 [day] 18 [h] 55 [m] 41 [s] 400293 [ms]
+name: water flow sensor at kitchen, cost: 1
+26
+start: 0406 [day] 14 [h] 52 [m] 23 [s] 369233 [ms]
+end  : 0406 [day] 17 [h] 11 [m] 47 [s] 885742 [ms]
+name: water flow sensor in bathroom, cost: 1
+27
+start: 0443 [day] 08 [h] 56 [m] 48 [s] 862335 [ms]
+end  : 0443 [day] 09 [h] 25 [m] 17 [s] 279825 [ms]
+name: electric energy meter of TV, cost: 1
+28
+start: 0447 [day] 06 [h] 59 [m] 51 [s] 179629 [ms]
+end  : 0447 [day] 11 [h] 25 [m] 02 [s] 614280 [ms]
+name: water flow sensor in bathroom, cost: 1
+29
+start: 0447 [day] 18 [h] 00 [m] 51 [s] 674170 [ms]
+end  : 0447 [day] 18 [h] 52 [m] 17 [s] 882929 [ms]
+name: electric energy meter of TV, cost: 1
+30
+start: 0457 [day] 15 [h] 58 [m] 11 [s] 629142 [ms]
+end  : 0458 [day] 06 [h] 23 [m] 26 [s] 963553 [ms]
+name: water flow sensor at kitchen, cost: 1
+31
+start: 0472 [day] 17 [h] 14 [m] 26 [s] 833785 [ms]
+end  : 0472 [day] 19 [h] 48 [m] 24 [s] 426234 [ms]
+name: water flow sensor at kitchen, cost: 1
+32
+start: 0473 [day] 10 [h] 10 [m] 02 [s] 157870 [ms]
+end  : 0473 [day] 10 [h] 44 [m] 48 [s] 621728 [ms]
+name: water flow sensor at kitchen, cost: 1
+33
+start: 0481 [day] 06 [h] 58 [m] 22 [s] 048994 [ms]
+end  : 0481 [day] 10 [h] 00 [m] 30 [s] 755674 [ms]
+name: water flow sensor in bathroom, cost: 1
+34
+start: 0503 [day] 21 [h] 23 [m] 05 [s] 679424 [ms]
+end  : 0504 [day] 07 [h] 05 [m] 48 [s] 641858 [ms]
+name: electric energy meter at kitchen, cost: 1
+35
+start: 0510 [day] 13 [h] 57 [m] 05 [s] 789565 [ms]
+end  : 0510 [day] 19 [h] 35 [m] 03 [s] 798382 [ms]
+name: water flow sensor in bathroom, cost: 1
+36
+start: 0517 [day] 19 [h] 46 [m] 02 [s] 351390 [ms]
+end  : 0518 [day] 18 [h] 39 [m] 01 [s] 081676 [ms]
+name: water flow sensor in bathroom, cost: 1
+37
+start: 0555 [day] 06 [h] 58 [m] 56 [s] 177176 [ms]
+end  : 0555 [day] 08 [h] 14 [m] 18 [s] 160484 [ms]
+name: electric energy meter of TV, cost: 1
+38
+start: 0570 [day] 07 [h] 42 [m] 38 [s] 351759 [ms]
+end  : 0570 [day] 08 [h] 34 [m] 47 [s] 402525 [ms]
+name: electric energy meter of TV, cost: 1
+39
+start: 0600 [day] 11 [h] 40 [m] 49 [s] 776127 [ms]
+end  : 0600 [day] 13 [h] 15 [m] 32 [s] 100682 [ms]
+name: water flow sensor in bathroom, cost: 1
+40
+start: 0611 [day] 15 [h] 01 [m] 48 [s] 796553 [ms]
+end  : 0611 [day] 19 [h] 40 [m] 54 [s] 102372 [ms]
+name: electric energy meter at kitchen, cost: 1
+41
+start: 0613 [day] 06 [h] 58 [m] 14 [s] 161847 [ms]
+end  : 0613 [day] 16 [h] 25 [m] 11 [s] 199067 [ms]
+name: electric energy meter at kitchen, cost: 1
+42
+start: 0624 [day] 11 [h] 05 [m] 21 [s] 046417 [ms]
+end  : 0624 [day] 11 [h] 26 [m] 36 [s] 901793 [ms]
+name: electric energy meter of TV, cost: 1
+43
+start: 0635 [day] 14 [h] 34 [m] 34 [s] 041767 [ms]
+end  : 0635 [day] 17 [h] 35 [m] 40 [s] 178217 [ms]
+name: electric energy meter of TV, cost: 1
+44
+start: 0656 [day] 15 [h] 28 [m] 34 [s] 701681 [ms]
+end  : 0656 [day] 15 [h] 44 [m] 45 [s] 339801 [ms]
+name: water flow sensor in bathroom, cost: 1
+45
+start: 0673 [day] 18 [h] 00 [m] 01 [s] 172157 [ms]
+end  : 0673 [day] 19 [h] 38 [m] 56 [s] 761657 [ms]
+name: water flow sensor at kitchen, cost: 1
+46
+start: 0694 [day] 16 [h] 37 [m] 36 [s] 961625 [ms]
+end  : 0694 [day] 17 [h] 17 [m] 24 [s] 542279 [ms]
+name: water flow sensor at kitchen, cost: 1
+47
+start: 0734 [day] 14 [h] 14 [m] 25 [s] 439396 [ms]
+end  : 0734 [day] 14 [h] 22 [m] 20 [s] 694899 [ms]
+name: electric energy meter of TV, cost: 1
+48
+start: 0748 [day] 13 [h] 20 [m] 08 [s] 627331 [ms]
+end  : 0748 [day] 16 [h] 53 [m] 17 [s] 580302 [ms]
+name: electric energy meter at kitchen, cost: 1
+49
+start: 0757 [day] 20 [h] 33 [m] 03 [s] 030434 [ms]
+end  : 0758 [day] 06 [h] 28 [m] 11 [s] 472275 [ms]
+name: water flow sensor in bathroom, cost: 1
+50
+start: 0783 [day] 13 [h] 00 [m] 05 [s] 166537 [ms]
+end  : 0783 [day] 13 [h] 42 [m] 34 [s] 950696 [ms]
+name: water flow sensor in bathroom, cost: 1
+51
+start: 0828 [day] 18 [h] 04 [m] 01 [s] 915697 [ms]
+end  : 0828 [day] 19 [h] 23 [m] 11 [s] 242172 [ms]
+name: electric energy meter of TV, cost: 1
+52
+start: 0847 [day] 06 [h] 40 [m] 05 [s] 714847 [ms]
+end  : 0847 [day] 08 [h] 40 [m] 30 [s] 476333 [ms]
+name: water flow sensor in bathroom, cost: 1
+53
+start: 0853 [day] 21 [h] 10 [m] 06 [s] 482903 [ms]
+end  : 0853 [day] 21 [h] 43 [m] 51 [s] 106555 [ms]
+name: electric energy meter at kitchen, cost: 1
+54
+start: 0862 [day] 11 [h] 38 [m] 01 [s] 023025 [ms]
+end  : 0862 [day] 13 [h] 14 [m] 43 [s] 515331 [ms]
+name: electric energy meter of TV, cost: 1
+55
+start: 0870 [day] 13 [h] 37 [m] 07 [s] 437774 [ms]
+end  : 0870 [day] 15 [h] 46 [m] 40 [s] 738096 [ms]
+name: water flow sensor at kitchen, cost: 1
+56
+start: 0877 [day] 07 [h] 16 [m] 59 [s] 236608 [ms]
+end  : 0877 [day] 09 [h] 38 [m] 01 [s] 554842 [ms]
+name: water flow sensor in bathroom, cost: 1
+57
+start: 0883 [day] 18 [h] 59 [m] 03 [s] 977608 [ms]
+end  : 0884 [day] 16 [h] 21 [m] 24 [s] 816111 [ms]
+name: water flow sensor at kitchen, cost: 1
+58
+start: 0887 [day] 16 [h] 43 [m] 51 [s] 029457 [ms]
+end  : 0887 [day] 19 [h] 51 [m] 10 [s] 277171 [ms]
+name: electric energy meter of TV, cost: 1
+59
+start: 0898 [day] 18 [h] 57 [m] 32 [s] 444587 [ms]
+end  : 0898 [day] 20 [h] 19 [m] 18 [s] 634983 [ms]
+name: electric energy meter of TV, cost: 1
+60
+start: 0902 [day] 10 [h] 41 [m] 53 [s] 096193 [ms]
+end  : 0902 [day] 16 [h] 29 [m] 29 [s] 444561 [ms]
+name: water flow sensor in bathroom, cost: 1
+61
+start: 0904 [day] 07 [h] 07 [m] 13 [s] 295650 [ms]
+end  : 0904 [day] 08 [h] 41 [m] 01 [s] 498363 [ms]
+name: electric energy meter of TV, cost: 1
+62
+start: 0904 [day] 12 [h] 10 [m] 14 [s] 277130 [ms]
+end  : 0904 [day] 14 [h] 27 [m] 44 [s] 158875 [ms]
+name: water flow sensor at kitchen, cost: 1
+63
+start: 0904 [day] 15 [h] 51 [m] 49 [s] 271650 [ms]
+end  : 0904 [day] 17 [h] 05 [m] 07 [s] 974753 [ms]
+name: water flow sensor in bathroom, cost: 1
+64
+start: 0956 [day] 06 [h] 27 [m] 30 [s] 824565 [ms]
+end  : 0956 [day] 06 [h] 30 [m] 33 [s] 695984 [ms]
+name: water flow sensor in bathroom, cost: 1
+65
+start: 0957 [day] 18 [h] 09 [m] 20 [s] 992846 [ms]
+end  : 0957 [day] 19 [h] 07 [m] 52 [s] 228753 [ms]
+name: electric energy meter of TV, cost: 1
+66
+start: 0959 [day] 04 [h] 41 [m] 11 [s] 978175 [ms]
+end  : 0959 [day] 13 [h] 48 [m] 31 [s] 850281 [ms]
+name: water flow sensor at kitchen, cost: 1
+67
+start: 0962 [day] 16 [h] 22 [m] 30 [s] 990488 [ms]
+end  : 0963 [day] 07 [h] 15 [m] 14 [s] 167573 [ms]
+name: water flow sensor at kitchen, cost: 1
+68
+start: 0967 [day] 08 [h] 07 [m] 23 [s] 946757 [ms]
+end  : 0967 [day] 08 [h] 16 [m] 02 [s] 576104 [ms]
+name: electric energy meter of TV, cost: 1
+69
+start: 0967 [day] 10 [h] 55 [m] 15 [s] 565817 [ms]
+end  : 0967 [day] 11 [h] 35 [m] 56 [s] 598610 [ms]
+name: water flow sensor at kitchen, cost: 1
+70
+start: 0994 [day] 09 [h] 20 [m] 49 [s] 765649 [ms]
+end  : 0994 [day] 12 [h] 50 [m] 30 [s] 780290 [ms]
+name: electric energy meter of TV, cost: 1
+71
+start: 0995 [day] 17 [h] 13 [m] 26 [s] 721080 [ms]
+end  : 0995 [day] 17 [h] 13 [m] 26 [s] 721080 [ms]
+name: electric energy meter of TV, cost: 1
+72
+start: 0995 [day] 21 [h] 46 [m] 40 [s] 399682 [ms]
+end  : 0995 [day] 21 [h] 52 [m] 55 [s] 171580 [ms]
+name: electric energy meter at kitchen, cost: 1
+73
+start: 1014 [day] 17 [h] 43 [m] 53 [s] 442450 [ms]
+end  : 1014 [day] 20 [h] 13 [m] 36 [s] 076559 [ms]
+name: water flow sensor in bathroom, cost: 1
+74
+start: 1016 [day] 11 [h] 03 [m] 27 [s] 560296 [ms]
+end  : 1016 [day] 14 [h] 00 [m] 13 [s] 479227 [ms]
+name: water flow sensor in bathroom, cost: 1
+75
+start: 1018 [day] 09 [h] 24 [m] 34 [s] 375146 [ms]
+end  : 1018 [day] 09 [h] 58 [m] 09 [s] 844781 [ms]
+name: water flow sensor in bathroom, cost: 1
+76
+start: 1019 [day] 13 [h] 42 [m] 41 [s] 073377 [ms]
+end  : 1019 [day] 20 [h] 04 [m] 19 [s] 746216 [ms]
+name: water flow sensor in bathroom, cost: 1
+77
+start: 1026 [day] 16 [h] 20 [m] 03 [s] 793349 [ms]
+end  : 1026 [day] 16 [h] 23 [m] 58 [s] 602899 [ms]
+name: electric energy meter of TV, cost: 1
+78
+start: 1031 [day] 16 [h] 14 [m] 53 [s] 810788 [ms]
+end  : 1031 [day] 18 [h] 31 [m] 12 [s] 996394 [ms]
+name: water flow sensor in bathroom, cost: 1
+79
+start: 1035 [day] 06 [h] 05 [m] 08 [s] 019289 [ms]
+end  : 1035 [day] 07 [h] 46 [m] 22 [s] 240279 [ms]
+name: water flow sensor at kitchen, cost: 1
+80
+start: 1038 [day] 20 [h] 54 [m] 52 [s] 554525 [ms]
+end  : 1039 [day] 06 [h] 21 [m] 11 [s] 875673 [ms]
+name: electric energy meter of TV, cost: 1
+81
+start: 1049 [day] 21 [h] 03 [m] 24 [s] 371983 [ms]
+end  : 1050 [day] 06 [h] 01 [m] 43 [s] 853048 [ms]
+name: electric energy meter at kitchen, cost: 1
+82
+start: 1054 [day] 07 [h] 01 [m] 06 [s] 572410 [ms]
+end  : 1054 [day] 08 [h] 37 [m] 27 [s] 926512 [ms]
+name: water flow sensor in bathroom, cost: 1
+83
+start: 1058 [day] 13 [h] 31 [m] 06 [s] 146193 [ms]
+end  : 1058 [day] 15 [h] 19 [m] 33 [s] 621262 [ms]
+name: electric energy meter of TV, cost: 1
+84
+start: 1082 [day] 18 [h] 38 [m] 33 [s] 753353 [ms]
+end  : 1083 [day] 07 [h] 00 [m] 53 [s] 256120 [ms]
+name: electric energy meter at kitchen, cost: 1
+85
+start: 1084 [day] 10 [h] 22 [m] 41 [s] 817972 [ms]
+end  : 1084 [day] 10 [h] 53 [m] 25 [s] 423533 [ms]
+name: water flow sensor in bathroom, cost: 1
+86
+start: 1089 [day] 16 [h] 17 [m] 28 [s] 162721 [ms]
+end  : 1090 [day] 08 [h] 47 [m] 51 [s] 943413 [ms]
+name: electric energy meter at kitchen, cost: 1
+87
+start: 1092 [day] 17 [h] 14 [m] 33 [s] 640988 [ms]
+end  : 1092 [day] 19 [h] 31 [m] 57 [s] 056079 [ms]
+name: water flow sensor at kitchen, cost: 1
+88
+start: 1096 [day] 16 [h] 19 [m] 19 [s] 707669 [ms]
+end  : 1097 [day] 09 [h] 43 [m] 07 [s] 081062 [ms]
+name: electric energy meter at kitchen, cost: 1
+89
+start: 1097 [day] 16 [h] 08 [m] 41 [s] 238479 [ms]
+end  : 1097 [day] 16 [h] 41 [m] 24 [s] 079439 [ms]
+name: water flow sensor in bathroom, cost: 1
+90
+start: 1114 [day] 06 [h] 23 [m] 51 [s] 925084 [ms]
+end  : 1114 [day] 12 [h] 17 [m] 20 [s] 471637 [ms]
+name: electric energy meter of TV, cost: 1
+91
+start: 1122 [day] 15 [h] 34 [m] 10 [s] 650255 [ms]
+end  : 1122 [day] 17 [h] 05 [m] 41 [s] 463871 [ms]
+name: electric energy meter of TV, cost: 1
+92
+start: 1132 [day] 08 [h] 43 [m] 49 [s] 657561 [ms]
+end  : 1132 [day] 09 [h] 20 [m] 09 [s] 052791 [ms]
+name: water flow sensor at kitchen, cost: 1
+93
+start: 1136 [day] 21 [h] 04 [m] 44 [s] 757177 [ms]
+end  : 1137 [day] 04 [h] 44 [m] 26 [s] 391872 [ms]
+name: water flow sensor at kitchen, cost: 1
+94
+start: 1142 [day] 21 [h] 12 [m] 30 [s] 424204 [ms]
+end  : 1143 [day] 09 [h] 51 [m] 02 [s] 617123 [ms]
+name: water flow sensor in bathroom, cost: 1
+95
+start: 1146 [day] 17 [h] 03 [m] 39 [s] 587886 [ms]
+end  : 1146 [day] 17 [h] 59 [m] 25 [s] 023013 [ms]
+name: electric energy meter of TV, cost: 1
+96
+start: 1150 [day] 14 [h] 04 [m] 05 [s] 198460 [ms]
+end  : 1150 [day] 14 [h] 28 [m] 19 [s] 745009 [ms]
+name: water flow sensor at kitchen, cost: 1
+97
+start: 1155 [day] 19 [h] 16 [m] 53 [s] 000000 [ms]
+end  : 1155 [day] 20 [h] 10 [m] 13 [s] 280397 [ms]
+name: electric energy meter at kitchen, cost: 1
+98
+start: 1162 [day] 12 [h] 09 [m] 00 [s] 796983 [ms]
+end  : 1162 [day] 13 [h] 12 [m] 30 [s] 752099 [ms]
+name: electric energy meter of TV, cost: 1
+99
+start: 1172 [day] 21 [h] 07 [m] 23 [s] 263723 [ms]
+end  : 1173 [day] 07 [h] 07 [m] 07 [s] 511237 [ms]
+name: water flow sensor at kitchen, cost: 1
+100
+start: 1189 [day] 12 [h] 57 [m] 05 [s] 597263 [ms]
+end  : 1189 [day] 15 [h] 44 [m] 48 [s] 563092 [ms]
+name: water flow sensor in bathroom, cost: 1
+101
+start: 1201 [day] 14 [h] 05 [m] 09 [s] 069587 [ms]
+end  : 1201 [day] 16 [h] 12 [m] 08 [s] 469218 [ms]
+name: electric energy meter at kitchen, cost: 1
+102
+start: 1206 [day] 11 [h] 14 [m] 14 [s] 897901 [ms]
+end  : 1206 [day] 12 [h] 12 [m] 19 [s] 976389 [ms]
+name: electric energy meter of TV, cost: 1
+103
+start: 1214 [day] 13 [h] 35 [m] 09 [s] 527343 [ms]
+end  : 1214 [day] 14 [h] 20 [m] 21 [s] 025660 [ms]
+name: water flow sensor at kitchen, cost: 1
+104
+start: 1216 [day] 14 [h] 18 [m] 11 [s] 690174 [ms]
+end  : 1216 [day] 15 [h] 18 [m] 17 [s] 066940 [ms]
+name: electric energy meter of TV, cost: 1
+105
+start: 1221 [day] 14 [h] 36 [m] 59 [s] 578531 [ms]
+end  : 1222 [day] 05 [h] 26 [m] 08 [s] 956248 [ms]
+name: water flow sensor at kitchen, cost: 1
+106
+start: 1227 [day] 13 [h] 14 [m] 11 [s] 167479 [ms]
+end  : 1227 [day] 16 [h] 05 [m] 32 [s] 546279 [ms]
+name: water flow sensor in bathroom, cost: 1
+107
+start: 1229 [day] 08 [h] 08 [m] 40 [s] 097066 [ms]
+end  : 1229 [day] 08 [h] 16 [m] 20 [s] 706190 [ms]
+name: water flow sensor in bathroom, cost: 1
+108
+start: 1229 [day] 18 [h] 13 [m] 05 [s] 555916 [ms]
+end  : 1230 [day] 08 [h] 55 [m] 14 [s] 379640 [ms]
+name: electric energy meter at kitchen, cost: 1
+109
+start: 1246 [day] 17 [h] 18 [m] 18 [s] 820155 [ms]
+end  : 1246 [day] 17 [h] 57 [m] 22 [s] 363713 [ms]
+name: electric energy meter at kitchen, cost: 1
+110
+start: 1252 [day] 16 [h] 02 [m] 53 [s] 723336 [ms]
+end  : 1254 [day] 18 [h] 20 [m] 39 [s] 594388 [ms]
+name: water flow sensor in bathroom, cost: 1
+111
+start: 1259 [day] 11 [h] 37 [m] 46 [s] 849201 [ms]
+end  : 1259 [day] 14 [h] 02 [m] 42 [s] 741531 [ms]
+name: water flow sensor at kitchen, cost: 1
+112
+start: 1273 [day] 08 [h] 56 [m] 00 [s] 646333 [ms]
+end  : 1273 [day] 09 [h] 25 [m] 31 [s] 383327 [ms]
+name: water flow sensor in bathroom, cost: 1
+113
+start: 1280 [day] 07 [h] 30 [m] 09 [s] 857789 [ms]
+end  : 1280 [day] 09 [h] 09 [m] 50 [s] 904600 [ms]
+name: electric energy meter at kitchen, cost: 1
+114
+start: 1280 [day] 20 [h] 06 [m] 32 [s] 806138 [ms]
+end  : 1281 [day] 06 [h] 22 [m] 38 [s] 777966 [ms]
+name: water flow sensor at kitchen, cost: 1
+115
+start: 1287 [day] 11 [h] 45 [m] 51 [s] 571492 [ms]
+end  : 1287 [day] 13 [h] 28 [m] 23 [s] 370351 [ms]
+name: water flow sensor at kitchen, cost: 1
+116
+start: 1290 [day] 13 [h] 27 [m] 32 [s] 031620 [ms]
+end  : 1290 [day] 19 [h] 43 [m] 43 [s] 981028 [ms]
+name: water flow sensor in bathroom, cost: 1
+117
+start: 1298 [day] 07 [h] 37 [m] 08 [s] 086700 [ms]
+end  : 1298 [day] 11 [h] 42 [m] 13 [s] 486100 [ms]
+name: water flow sensor at kitchen, cost: 1
+118
+start: 1299 [day] 07 [h] 27 [m] 39 [s] 184441 [ms]
+end  : 1299 [day] 11 [h] 38 [m] 39 [s] 545232 [ms]
+name: water flow sensor in bathroom, cost: 1
+119
+start: 1303 [day] 17 [h] 49 [m] 53 [s] 109930 [ms]
+end  : 1303 [day] 19 [h] 38 [m] 09 [s] 153806 [ms]
+name: electric energy meter of TV, cost: 1
+120
+start: 1305 [day] 15 [h] 00 [m] 00 [s] 188435 [ms]
+end  : 1305 [day] 20 [h] 10 [m] 11 [s] 116702 [ms]
+name: electric energy meter at kitchen, cost: 1
+121
+start: 1314 [day] 11 [h] 46 [m] 56 [s] 298470 [ms]
+end  : 1314 [day] 12 [h] 34 [m] 58 [s] 138328 [ms]
+name: electric energy meter of TV, cost: 1
+122
+start: 1329 [day] 12 [h] 22 [m] 58 [s] 505083 [ms]
+end  : 1329 [day] 13 [h] 16 [m] 11 [s] 122725 [ms]
+name: electric energy meter of TV, cost: 1
+123
+start: 1332 [day] 20 [h] 42 [m] 08 [s] 218334 [ms]
+end  : 1332 [day] 20 [h] 44 [m] 06 [s] 728389 [ms]
+name: electric energy meter of TV, cost: 1
+124
+start: 1354 [day] 05 [h] 53 [m] 20 [s] 997061 [ms]
+end  : 1354 [day] 06 [h] 05 [m] 30 [s] 708046 [ms]
+name: water flow sensor at kitchen, cost: 1
+125
+start: 1363 [day] 19 [h] 32 [m] 36 [s] 806637 [ms]
+end  : 1364 [day] 06 [h] 20 [m] 10 [s] 646472 [ms]
+name: water flow sensor in bathroom, cost: 1
+126
+start: 1365 [day] 07 [h] 42 [m] 09 [s] 709350 [ms]
+end  : 1365 [day] 09 [h] 05 [m] 06 [s] 391209 [ms]
+name: water flow sensor at kitchen, cost: 1
+127
+start: 1372 [day] 07 [h] 58 [m] 28 [s] 387156 [ms]
+end  : 1372 [day] 07 [h] 58 [m] 28 [s] 387156 [ms]
+name: electric energy meter of TV, cost: 1
+128
+start: 1383 [day] 07 [h] 23 [m] 23 [s] 869418 [ms]
+end  : 1384 [day] 16 [h] 47 [m] 22 [s] 233372 [ms]
+name: water flow sensor at kitchen, cost: 1
+129
+start: 1395 [day] 08 [h] 28 [m] 20 [s] 345815 [ms]
+end  : 1395 [day] 08 [h] 51 [m] 59 [s] 745711 [ms]
+name: water flow sensor in bathroom, cost: 1
+130
+start: 1395 [day] 21 [h] 02 [m] 05 [s] 027344 [ms]
+end  : 1396 [day] 06 [h] 37 [m] 12 [s] 485833 [ms]
+name: electric energy meter of TV, cost: 1
+131
+start: 1397 [day] 10 [h] 17 [m] 17 [s] 275550 [ms]
+end  : 1397 [day] 13 [h] 58 [m] 30 [s] 109505 [ms]
+name: water flow sensor at kitchen, cost: 1
+132
+start: 1397 [day] 19 [h] 21 [m] 53 [s] 645326 [ms]
+end  : 1398 [day] 07 [h] 09 [m] 09 [s] 694586 [ms]
+name: water flow sensor in bathroom, cost: 1
+133
+start: 1401 [day] 17 [h] 30 [m] 17 [s] 169585 [ms]
+end  : 1401 [day] 21 [h] 05 [m] 15 [s] 695892 [ms]
+name: electric energy meter of TV, cost: 1
+134
+start: 1407 [day] 17 [h] 22 [m] 54 [s] 721070 [ms]
+end  : 1408 [day] 08 [h] 20 [m] 38 [s] 038717 [ms]
+name: water flow sensor in bathroom, cost: 1
+135
+start: 1411 [day] 16 [h] 38 [m] 19 [s] 962319 [ms]
+end  : 1411 [day] 17 [h] 00 [m] 07 [s] 002869 [ms]
+name: water flow sensor in bathroom, cost: 1
+136
+start: 1418 [day] 10 [h] 15 [m] 03 [s] 521727 [ms]
+end  : 1418 [day] 12 [h] 32 [m] 50 [s] 666252 [ms]
+name: electric energy meter of TV, cost: 1
+137
+start: 1421 [day] 09 [h] 06 [m] 47 [s] 685053 [ms]
+end  : 1421 [day] 09 [h] 40 [m] 01 [s] 621870 [ms]
+name: electric energy meter of TV, cost: 1
+138
+start: 1421 [day] 18 [h] 26 [m] 58 [s] 641911 [ms]
+end  : 1421 [day] 18 [h] 29 [m] 55 [s] 627841 [ms]
+name: electric energy meter of TV, cost: 1
+139
+start: 1430 [day] 14 [h] 03 [m] 03 [s] 472275 [ms]
+end  : 1430 [day] 15 [h] 26 [m] 17 [s] 507644 [ms]
+name: electric energy meter of TV, cost: 1
+140
+start: 1433 [day] 12 [h] 12 [m] 11 [s] 288636 [ms]
+end  : 1433 [day] 14 [h] 14 [m] 11 [s] 115913 [ms]
+name: water flow sensor at kitchen, cost: 1
+141
+start: 1444 [day] 12 [h] 34 [m] 54 [s] 730465 [ms]
+end  : 1444 [day] 12 [h] 44 [m] 33 [s] 634210 [ms]
+name: electric energy meter of TV, cost: 1
+142
+start: 1451 [day] 04 [h] 55 [m] 11 [s] 783551 [ms]
+end  : 1451 [day] 14 [h] 29 [m] 08 [s] 383913 [ms]
+name: water flow sensor in bathroom, cost: 1
+143
+start: 1454 [day] 21 [h] 22 [m] 29 [s] 680428 [ms]
+end  : 1454 [day] 21 [h] 25 [m] 46 [s] 991107 [ms]
+name: water flow sensor at kitchen, cost: 1
+144
+start: 1463 [day] 10 [h] 29 [m] 50 [s] 484168 [ms]
+end  : 1463 [day] 14 [h] 48 [m] 14 [s] 184012 [ms]
+name: water flow sensor in bathroom, cost: 1
+145
+start: 1470 [day] 08 [h] 55 [m] 51 [s] 365274 [ms]
+end  : 1470 [day] 11 [h] 09 [m] 18 [s] 006079 [ms]
+name: water flow sensor in bathroom, cost: 1
+146
+start: 1475 [day] 10 [h] 51 [m] 28 [s] 908989 [ms]
+end  : 1475 [day] 15 [h] 45 [m] 29 [s] 941459 [ms]
+name: water flow sensor at kitchen, cost: 1
+147
+start: 1476 [day] 11 [h] 17 [m] 49 [s] 342014 [ms]
+end  : 1476 [day] 12 [h] 19 [m] 45 [s] 788996 [ms]
+name: electric energy meter at kitchen, cost: 1
+148
+start: 1492 [day] 14 [h] 26 [m] 09 [s] 395766 [ms]
+end  : 1492 [day] 15 [h] 05 [m] 46 [s] 996093 [ms]
+name: electric energy meter of TV, cost: 1
+149
+start: 1494 [day] 10 [h] 19 [m] 24 [s] 186571 [ms]
+end  : 1494 [day] 12 [h] 03 [m] 05 [s] 553690 [ms]
+name: electric energy meter at kitchen, cost: 1
+150
+start: 1495 [day] 06 [h] 35 [m] 05 [s] 481455 [ms]
+end  : 1495 [day] 08 [h] 38 [m] 29 [s] 463476 [ms]
+name: electric energy meter of TV, cost: 1
+151
+start: 1497 [day] 21 [h] 38 [m] 09 [s] 761860 [ms]
+end  : 1497 [day] 21 [h] 38 [m] 09 [s] 761860 [ms]
+name: electric energy meter of TV, cost: 1
+152
+start: 1500 [day] 19 [h] 48 [m] 24 [s] 983598 [ms]
+end  : 1501 [day] 08 [h] 53 [m] 03 [s] 245338 [ms]
+name: water flow sensor in bathroom, cost: 1
+153
+start: 1502 [day] 15 [h] 00 [m] 22 [s] 695513 [ms]
+end  : 1502 [day] 16 [h] 09 [m] 35 [s] 553358 [ms]
+name: electric energy meter of TV, cost: 1
+154
+start: 1504 [day] 09 [h] 02 [m] 37 [s] 378989 [ms]
+end  : 1504 [day] 09 [h] 05 [m] 41 [s] 246387 [ms]
+name: electric energy meter of TV, cost: 1
+155
+start: 1505 [day] 09 [h] 19 [m] 49 [s] 453370 [ms]
+end  : 1505 [day] 16 [h] 12 [m] 31 [s] 875689 [ms]
+name: water flow sensor at kitchen, cost: 1
+156
+start: 1511 [day] 20 [h] 19 [m] 56 [s] 457645 [ms]
+end  : 1511 [day] 20 [h] 32 [m] 52 [s] 662662 [ms]
+name: water flow sensor in bathroom, cost: 1
+157
+start: 1519 [day] 19 [h] 59 [m] 14 [s] 856486 [ms]
+end  : 1519 [day] 20 [h] 05 [m] 57 [s] 796954 [ms]
+name: water flow sensor in bathroom, cost: 1
+158
+start: 1528 [day] 09 [h] 24 [m] 17 [s] 391180 [ms]
+end  : 1528 [day] 10 [h] 10 [m] 20 [s] 943740 [ms]
+name: water flow sensor in bathroom, cost: 1
+159
+start: 1533 [day] 19 [h] 48 [m] 37 [s] 945227 [ms]
+end  : 1533 [day] 20 [h] 45 [m] 11 [s] 631787 [ms]
+name: electric energy meter of TV, cost: 1
+160
+start: 1551 [day] 10 [h] 41 [m] 29 [s] 867720 [ms]
+end  : 1551 [day] 10 [h] 52 [m] 53 [s] 215751 [ms]
+name: water flow sensor in bathroom, cost: 1
+161
+start: 1554 [day] 08 [h] 04 [m] 55 [s] 961011 [ms]
+end  : 1554 [day] 12 [h] 44 [m] 17 [s] 612830 [ms]
+name: electric energy meter of TV, cost: 1
+162
+start: 1568 [day] 09 [h] 00 [m] 28 [s] 672556 [ms]
+end  : 1568 [day] 15 [h] 56 [m] 42 [s] 567824 [ms]
+name: electric energy meter at kitchen, cost: 1
+163
+start: 1577 [day] 16 [h] 35 [m] 49 [s] 748293 [ms]
+end  : 1578 [day] 08 [h] 34 [m] 44 [s] 979912 [ms]
+name: electric energy meter at kitchen, cost: 1
+164
+start: 1602 [day] 10 [h] 41 [m] 24 [s] 224105 [ms]
+end  : 1602 [day] 11 [h] 29 [m] 13 [s] 118840 [ms]
+name: electric energy meter of TV, cost: 1
+165
+start: 1603 [day] 07 [h] 42 [m] 05 [s] 484248 [ms]
+end  : 1603 [day] 08 [h] 15 [m] 54 [s] 045432 [ms]
+name: water flow sensor at kitchen, cost: 1
+166
+start: 1608 [day] 11 [h] 45 [m] 00 [s] 202970 [ms]
+end  : 1608 [day] 12 [h] 09 [m] 19 [s] 557835 [ms]
+name: electric energy meter of TV, cost: 1
+167
+start: 1628 [day] 10 [h] 48 [m] 22 [s] 827559 [ms]
+end  : 1629 [day] 12 [h] 36 [m] 11 [s] 029454 [ms]
+name: water flow sensor at kitchen, cost: 1
+168
+start: 1629 [day] 11 [h] 41 [m] 49 [s] 042995 [ms]
+end  : 1629 [day] 12 [h] 38 [m] 26 [s] 159871 [ms]
+name: water flow sensor in bathroom, cost: 1
+169
+start: 1631 [day] 12 [h] 06 [m] 32 [s] 911767 [ms]
+end  : 1631 [day] 13 [h] 15 [m] 37 [s] 566708 [ms]
+name: water flow sensor in bathroom, cost: 1
+170
+start: 1639 [day] 16 [h] 27 [m] 11 [s] 608165 [ms]
+end  : 1640 [day] 08 [h] 12 [m] 11 [s] 739775 [ms]
+name: water flow sensor at kitchen, cost: 1
+171
+start: 1640 [day] 11 [h] 41 [m] 24 [s] 135499 [ms]
+end  : 1640 [day] 13 [h] 26 [m] 50 [s] 174703 [ms]
+name: water flow sensor at kitchen, cost: 1
+172
+start: 1644 [day] 16 [h] 19 [m] 49 [s] 997217 [ms]
+end  : 1644 [day] 20 [h] 39 [m] 35 [s] 838375 [ms]
+name: electric energy meter of TV, cost: 1
+173
+start: 1675 [day] 15 [h] 02 [m] 14 [s] 375318 [ms]
+end  : 1675 [day] 15 [h] 52 [m] 32 [s] 212125 [ms]
+name: water flow sensor in bathroom, cost: 1
+174
+start: 1680 [day] 09 [h] 29 [m] 00 [s] 056247 [ms]
+end  : 1680 [day] 19 [h] 54 [m] 56 [s] 712218 [ms]
+name: water flow sensor in bathroom, cost: 1
+175
+start: 1685 [day] 15 [h] 54 [m] 32 [s] 890683 [ms]
+end  : 1685 [day] 17 [h] 05 [m] 35 [s] 531492 [ms]
+name: electric energy meter of TV, cost: 1
+176
+start: 1685 [day] 18 [h] 21 [m] 42 [s] 040173 [ms]
+end  : 1685 [day] 21 [h] 40 [m] 42 [s] 564156 [ms]
+name: electric energy meter of TV, cost: 1
+177
+start: 1720 [day] 08 [h] 56 [m] 02 [s] 800978 [ms]
+end  : 1720 [day] 11 [h] 10 [m] 39 [s] 756778 [ms]
+name: electric energy meter at kitchen, cost: 1
+178
+start: 1726 [day] 14 [h] 10 [m] 34 [s] 618556 [ms]
+end  : 1726 [day] 14 [h] 10 [m] 34 [s] 618556 [ms]
+name: electric energy meter of TV, cost: 1
+179
+start: 1736 [day] 07 [h] 16 [m] 38 [s] 551823 [ms]
+end  : 1736 [day] 09 [h] 01 [m] 36 [s] 266433 [ms]
+name: electric energy meter at kitchen, cost: 1
+180
+start: 1740 [day] 14 [h] 14 [m] 27 [s] 460956 [ms]
+end  : 1740 [day] 15 [h] 33 [m] 12 [s] 554206 [ms]
+name: electric energy meter of TV, cost: 1
+181
+start: 1745 [day] 06 [h] 21 [m] 35 [s] 686663 [ms]
+end  : 1745 [day] 06 [h] 29 [m] 37 [s] 874519 [ms]
+name: water flow sensor in bathroom, cost: 1
+182
+start: 1748 [day] 14 [h] 16 [m] 33 [s] 026771 [ms]
+end  : 1748 [day] 16 [h] 24 [m] 37 [s] 731148 [ms]
+name: water flow sensor in bathroom, cost: 1
+183
+start: 1755 [day] 09 [h] 17 [m] 50 [s] 532998 [ms]
+end  : 1755 [day] 13 [h] 50 [m] 53 [s] 900715 [ms]
+name: water flow sensor at kitchen, cost: 1
+184
+start: 1757 [day] 15 [h] 46 [m] 26 [s] 226245 [ms]
+end  : 1757 [day] 16 [h] 33 [m] 00 [s] 549441 [ms]
+name: electric energy meter of TV, cost: 1
+185
+start: 1770 [day] 21 [h] 22 [m] 15 [s] 008680 [ms]
+end  : 1770 [day] 21 [h] 25 [m] 54 [s] 877434 [ms]
+name: electric energy meter at kitchen, cost: 1
+186
+start: 1792 [day] 18 [h] 58 [m] 46 [s] 904811 [ms]
+end  : 1792 [day] 20 [h] 05 [m] 38 [s] 693044 [ms]
+name: water flow sensor at kitchen, cost: 1
+187
+start: 1794 [day] 06 [h] 08 [m] 17 [s] 798882 [ms]
+end  : 1794 [day] 09 [h] 18 [m] 38 [s] 131688 [ms]
+name: water flow sensor in bathroom, cost: 1
+188
+start: 1801 [day] 08 [h] 38 [m] 43 [s] 259031 [ms]
+end  : 1801 [day] 11 [h] 08 [m] 59 [s] 799752 [ms]
+name: water flow sensor in bathroom, cost: 1
+189
+start: 1805 [day] 07 [h] 35 [m] 14 [s] 753348 [ms]
+end  : 1806 [day] 09 [h] 15 [m] 57 [s] 552867 [ms]
+name: water flow sensor in bathroom, cost: 1
+190
+start: 1816 [day] 12 [h] 23 [m] 56 [s] 488547 [ms]
+end  : 1816 [day] 15 [h] 59 [m] 36 [s] 770827 [ms]
+name: electric energy meter at kitchen, cost: 1
+191
+start: 1817 [day] 15 [h] 46 [m] 13 [s] 246977 [ms]
+end  : 1817 [day] 15 [h] 56 [m] 31 [s] 122739 [ms]
+name: electric energy meter of TV, cost: 1
+192
+start: 1819 [day] 19 [h] 44 [m] 21 [s] 785829 [ms]
+end  : 1820 [day] 06 [h] 00 [m] 30 [s] 155856 [ms]
+name: electric energy meter at kitchen, cost: 1
+193
+start: 1831 [day] 20 [h] 38 [m] 48 [s] 577639 [ms]
+end  : 1832 [day] 05 [h] 31 [m] 38 [s] 107714 [ms]
+name: water flow sensor in bathroom, cost: 1
+194
+start: 1835 [day] 16 [h] 11 [m] 13 [s] 300369 [ms]
+end  : 1835 [day] 16 [h] 50 [m] 52 [s] 180175 [ms]
+name: electric energy meter of TV, cost: 1
+195
+start: 1840 [day] 12 [h] 22 [m] 01 [s] 226013 [ms]
+end  : 1840 [day] 14 [h] 07 [m] 20 [s] 647754 [ms]
+name: electric energy meter of TV, cost: 1
+196
+start: 1843 [day] 07 [h] 27 [m] 55 [s] 256535 [ms]
+end  : 1843 [day] 13 [h] 56 [m] 06 [s] 597245 [ms]
+name: electric energy meter of TV, cost: 1
+197
+start: 1844 [day] 20 [h] 46 [m] 51 [s] 770329 [ms]
+end  : 1845 [day] 06 [h] 27 [m] 09 [s] 810150 [ms]
+name: electric energy meter of TV, cost: 1
+198
+start: 1848 [day] 08 [h] 17 [m] 56 [s] 292868 [ms]
+end  : 1848 [day] 10 [h] 14 [m] 33 [s] 896739 [ms]
+name: electric energy meter at kitchen, cost: 1
+199
+start: 1848 [day] 10 [h] 20 [m] 58 [s] 511125 [ms]
+end  : 1848 [day] 14 [h] 28 [m] 22 [s] 094001 [ms]
+name: water flow sensor at kitchen, cost: 1
+200
+start: 1853 [day] 14 [h] 55 [m] 39 [s] 289603 [ms]
+end  : 1853 [day] 15 [h] 06 [m] 45 [s] 564542 [ms]
+name: electric energy meter of TV, cost: 1
+201
+start: 1855 [day] 09 [h] 09 [m] 46 [s] 622602 [ms]
+end  : 1855 [day] 11 [h] 52 [m] 56 [s] 292518 [ms]
+name: water flow sensor at kitchen, cost: 1
+202
+start: 1861 [day] 20 [h] 39 [m] 22 [s] 063215 [ms]
+end  : 1862 [day] 07 [h] 42 [m] 12 [s] 174214 [ms]
+name: electric energy meter of TV, cost: 1
+203
+start: 1869 [day] 12 [h] 45 [m] 48 [s] 428886 [ms]
+end  : 1869 [day] 18 [h] 36 [m] 09 [s] 096269 [ms]
+name: electric energy meter at kitchen, cost: 1
+204
+start: 1883 [day] 06 [h] 16 [m] 29 [s] 709626 [ms]
+end  : 1884 [day] 20 [h] 35 [m] 54 [s] 029408 [ms]
+name: water flow sensor in bathroom, cost: 1
+205
+start: 1887 [day] 10 [h] 31 [m] 47 [s] 319762 [ms]
+end  : 1887 [day] 11 [h] 08 [m] 41 [s] 097464 [ms]
+name: water flow sensor in bathroom, cost: 1
+206
+start: 1897 [day] 17 [h] 08 [m] 15 [s] 124045 [ms]
+end  : 1898 [day] 13 [h] 44 [m] 36 [s] 953529 [ms]
+name: water flow sensor at kitchen, cost: 1
+207
+start: 1898 [day] 19 [h] 55 [m] 55 [s] 640149 [ms]
+end  : 1898 [day] 20 [h] 59 [m] 13 [s] 461664 [ms]
+name: electric energy meter of TV, cost: 1
+208
+start: 1905 [day] 15 [h] 48 [m] 20 [s] 411588 [ms]
+end  : 1906 [day] 04 [h] 40 [m] 47 [s] 442742 [ms]
+name: water flow sensor at kitchen, cost: 1
+209
+start: 1907 [day] 18 [h] 17 [m] 53 [s] 824022 [ms]
+end  : 1907 [day] 19 [h] 50 [m] 03 [s] 329418 [ms]
+name: electric energy meter of TV, cost: 1
+210
+start: 1914 [day] 09 [h] 56 [m] 48 [s] 956865 [ms]
+end  : 1914 [day] 10 [h] 03 [m] 44 [s] 362231 [ms]
+name: water flow sensor at kitchen, cost: 1
+211
+start: 1925 [day] 07 [h] 40 [m] 53 [s] 454915 [ms]
+end  : 1925 [day] 09 [h] 23 [m] 08 [s] 378230 [ms]
+name: water flow sensor at kitchen, cost: 1
+212
+start: 1926 [day] 09 [h] 28 [m] 56 [s] 507019 [ms]
+end  : 1926 [day] 10 [h] 18 [m] 13 [s] 172912 [ms]
+name: electric energy meter of TV, cost: 1
+213
+start: 1930 [day] 15 [h] 23 [m] 59 [s] 629508 [ms]
+end  : 1931 [day] 07 [h] 49 [m] 17 [s] 926202 [ms]
+name: water flow sensor at kitchen, cost: 1
+214
+start: 1932 [day] 06 [h] 35 [m] 29 [s] 036249 [ms]
+end  : 1932 [day] 07 [h] 00 [m] 57 [s] 351678 [ms]
+name: water flow sensor in bathroom, cost: 1
+215
+start: 1957 [day] 16 [h] 22 [m] 54 [s] 610583 [ms]
+end  : 1957 [day] 20 [h] 49 [m] 45 [s] 624883 [ms]
+name: water flow sensor at kitchen, cost: 1
+216
+start: 1958 [day] 08 [h] 26 [m] 54 [s] 969240 [ms]
+end  : 1958 [day] 12 [h] 04 [m] 05 [s] 602937 [ms]
+name: electric energy meter at kitchen, cost: 1
+217
+start: 1966 [day] 17 [h] 40 [m] 21 [s] 484874 [ms]
+end  : 1966 [day] 17 [h] 40 [m] 21 [s] 484874 [ms]
+name: electric energy meter of TV, cost: 1
+218
+start: 1967 [day] 09 [h] 25 [m] 49 [s] 763860 [ms]
+end  : 1967 [day] 14 [h] 34 [m] 51 [s] 326196 [ms]
+name: electric energy meter at kitchen, cost: 1
+219
+start: 1969 [day] 17 [h] 36 [m] 32 [s] 999732 [ms]
+end  : 1969 [day] 18 [h] 15 [m] 33 [s] 774708 [ms]
+name: electric energy meter of TV, cost: 1
+220
+start: 1985 [day] 08 [h] 06 [m] 49 [s] 171861 [ms]
+end  : 1985 [day] 08 [h] 39 [m] 08 [s] 616145 [ms]
+name: electric energy meter of TV, cost: 1
+221
+start: 1988 [day] 17 [h] 46 [m] 58 [s] 419060 [ms]
+end  : 1988 [day] 20 [h] 39 [m] 30 [s] 851177 [ms]
+name: electric energy meter of TV, cost: 1
+222
+start: 1994 [day] 13 [h] 20 [m] 53 [s] 196472 [ms]
+end  : 1994 [day] 13 [h] 20 [m] 53 [s] 196472 [ms]
+name: electric energy meter of TV, cost: 1
+223
+start: 1999 [day] 16 [h] 27 [m] 14 [s] 329689 [ms]
+end  : 1999 [day] 17 [h] 09 [m] 00 [s] 216131 [ms]
+name: electric energy meter at kitchen, cost: 1
+224
+start: 1999 [day] 17 [h] 12 [m] 44 [s] 222743 [ms]
+end  : 1999 [day] 20 [h] 21 [m] 10 [s] 162133 [ms]
+name: electric energy meter at kitchen, cost: 1
+225
+start: 2011 [day] 11 [h] 02 [m] 25 [s] 935442 [ms]
+end  : 2011 [day] 12 [h] 38 [m] 14 [s] 507040 [ms]
+name: electric energy meter of TV, cost: 1
+226
+start: 2016 [day] 12 [h] 53 [m] 43 [s] 224802 [ms]
+end  : 2016 [day] 15 [h] 47 [m] 45 [s] 360688 [ms]
+name: electric energy meter of TV, cost: 1
+227
+start: 2018 [day] 06 [h] 06 [m] 35 [s] 866779 [ms]
+end  : 2018 [day] 08 [h] 25 [m] 25 [s] 635852 [ms]
+name: water flow sensor in bathroom, cost: 1
+228
+start: 2019 [day] 11 [h] 28 [m] 10 [s] 769001 [ms]
+end  : 2019 [day] 11 [h] 30 [m] 41 [s] 642803 [ms]
+name: electric energy meter of TV, cost: 1
+229
+start: 2021 [day] 13 [h] 14 [m] 08 [s] 482311 [ms]
+end  : 2021 [day] 17 [h] 30 [m] 46 [s] 828178 [ms]
+name: water flow sensor in bathroom, cost: 1
+230
+start: 2023 [day] 16 [h] 52 [m] 57 [s] 908000 [ms]
+end  : 2023 [day] 17 [h] 50 [m] 32 [s] 679519 [ms]
+name: electric energy meter of TV, cost: 1
+231
+start: 2025 [day] 08 [h] 14 [m] 48 [s] 849271 [ms]
+end  : 2025 [day] 11 [h] 20 [m] 28 [s] 676782 [ms]
+name: electric energy meter at kitchen, cost: 1
+232
+start: 2040 [day] 14 [h] 23 [m] 23 [s] 918511 [ms]
+end  : 2040 [day] 16 [h] 02 [m] 21 [s] 811879 [ms]
+name: electric energy meter at kitchen, cost: 1
+233
+start: 2043 [day] 12 [h] 19 [m] 18 [s] 678233 [ms]
+end  : 2043 [day] 13 [h] 53 [m] 00 [s] 182463 [ms]
+name: electric energy meter of TV, cost: 1
+234
+start: 2052 [day] 09 [h] 25 [m] 33 [s] 300648 [ms]
+end  : 2052 [day] 09 [h] 35 [m] 05 [s] 849260 [ms]
+name: electric energy meter at kitchen, cost: 1
+235
+start: 2054 [day] 06 [h] 35 [m] 26 [s] 351004 [ms]
+end  : 2054 [day] 10 [h] 02 [m] 04 [s] 590086 [ms]
+name: water flow sensor at kitchen, cost: 1
+236
+start: 2063 [day] 10 [h] 26 [m] 26 [s] 458344 [ms]
+end  : 2063 [day] 11 [h] 21 [m] 36 [s] 472463 [ms]
+name: water flow sensor at kitchen, cost: 1
+237
+start: 2071 [day] 14 [h] 14 [m] 15 [s] 955768 [ms]
+end  : 2071 [day] 21 [h] 05 [m] 12 [s] 434604 [ms]
+name: water flow sensor at kitchen, cost: 1
+238
+start: 2071 [day] 21 [h] 48 [m] 12 [s] 494382 [ms]
+end  : 2072 [day] 21 [h] 15 [m] 39 [s] 113238 [ms]
+name: electric energy meter at kitchen, cost: 1
+239
+start: 2075 [day] 10 [h] 57 [m] 09 [s] 559793 [ms]
+end  : 2075 [day] 13 [h] 30 [m] 52 [s] 480730 [ms]
+name: water flow sensor at kitchen, cost: 1
+240
+start: 2077 [day] 22 [h] 26 [m] 41 [s] 688659 [ms]
+end  : 2078 [day] 09 [h] 16 [m] 58 [s] 551664 [ms]
+name: water flow sensor at kitchen, cost: 1
+241
+start: 2082 [day] 12 [h] 14 [m] 39 [s] 451206 [ms]
+end  : 2083 [day] 05 [h] 42 [m] 00 [s] 970422 [ms]
+name: water flow sensor in bathroom, cost: 1
+242
+start: 2085 [day] 13 [h] 46 [m] 09 [s] 810692 [ms]
+end  : 2085 [day] 14 [h] 14 [m] 24 [s] 269055 [ms]
+name: electric energy meter of TV, cost: 1
+243
+start: 2096 [day] 06 [h] 01 [m] 32 [s] 251002 [ms]
+end  : 2096 [day] 12 [h] 21 [m] 33 [s] 248533 [ms]
+name: water flow sensor at kitchen, cost: 1
+244
+start: 2099 [day] 12 [h] 08 [m] 07 [s] 242660 [ms]
+end  : 2099 [day] 13 [h] 21 [m] 09 [s] 658804 [ms]
+name: electric energy meter of TV, cost: 1
+245
+start: 2100 [day] 21 [h] 13 [m] 41 [s] 096596 [ms]
+end  : 2100 [day] 21 [h] 24 [m] 07 [s] 077017 [ms]
+name: electric energy meter of TV, cost: 1
+246
+start: 2103 [day] 11 [h] 19 [m] 19 [s] 907352 [ms]
+end  : 2103 [day] 17 [h] 41 [m] 21 [s] 250736 [ms]
+name: electric energy meter at kitchen, cost: 1
+247
+start: 2106 [day] 13 [h] 03 [m] 08 [s] 383761 [ms]
+end  : 2106 [day] 13 [h] 52 [m] 16 [s] 702506 [ms]
+name: electric energy meter of TV, cost: 1
+248
+start: 2116 [day] 18 [h] 32 [m] 51 [s] 771268 [ms]
+end  : 2116 [day] 18 [h] 32 [m] 51 [s] 771268 [ms]
+name: electric energy meter of TV, cost: 1
+249
+start: 2122 [day] 09 [h] 07 [m] 03 [s] 081671 [ms]
+end  : 2122 [day] 16 [h] 25 [m] 11 [s] 052176 [ms]
+name: electric energy meter of TV, cost: 1
+250
+start: 2126 [day] 07 [h] 25 [m] 44 [s] 716896 [ms]
+end  : 2126 [day] 07 [h] 43 [m] 07 [s] 157639 [ms]
+name: water flow sensor in bathroom, cost: 1
+251
+start: 2131 [day] 13 [h] 08 [m] 00 [s] 583440 [ms]
+end  : 2131 [day] 18 [h] 14 [m] 09 [s] 212821 [ms]
+name: water flow sensor at kitchen, cost: 1
+252
+start: 2133 [day] 12 [h] 33 [m] 44 [s] 171228 [ms]
+end  : 2133 [day] 15 [h] 48 [m] 13 [s] 906428 [ms]
+name: water flow sensor in bathroom, cost: 1
+253
+start: 2148 [day] 15 [h] 26 [m] 18 [s] 707146 [ms]
+end  : 2148 [day] 15 [h] 45 [m] 42 [s] 192501 [ms]
+name: electric energy meter of TV, cost: 1
+254
+start: 2153 [day] 18 [h] 45 [m] 06 [s] 038880 [ms]
+end  : 2153 [day] 19 [h] 22 [m] 03 [s] 983992 [ms]
+name: electric energy meter of TV, cost: 1
+255
+start: 2155 [day] 06 [h] 05 [m] 44 [s] 402936 [ms]
+end  : 2155 [day] 06 [h] 28 [m] 52 [s] 737376 [ms]
+name: electric energy meter at kitchen, cost: 1
+256
+start: 2166 [day] 20 [h] 17 [m] 18 [s] 085737 [ms]
+end  : 2167 [day] 07 [h] 11 [m] 54 [s] 641355 [ms]
+name: water flow sensor in bathroom, cost: 1
+257
+start: 2171 [day] 05 [h] 14 [m] 33 [s] 326282 [ms]
+end  : 2171 [day] 07 [h] 35 [m] 27 [s] 361096 [ms]
+name: electric energy meter at kitchen, cost: 1
+258
+start: 2171 [day] 06 [h] 09 [m] 23 [s] 424975 [ms]
+end  : 2171 [day] 06 [h] 52 [m] 55 [s] 216111 [ms]
+name: electric energy meter of TV, cost: 1
+259
+start: 2180 [day] 07 [h] 40 [m] 36 [s] 366484 [ms]
+end  : 2180 [day] 10 [h] 52 [m] 22 [s] 890665 [ms]
+name: electric energy meter of TV, cost: 1
+260
+start: 2187 [day] 04 [h] 57 [m] 53 [s] 444246 [ms]
+end  : 2188 [day] 20 [h] 24 [m] 36 [s] 935661 [ms]
+name: water flow sensor in bathroom, cost: 1
+261
+start: 2196 [day] 19 [h] 21 [m] 30 [s] 306753 [ms]
+end  : 2196 [day] 19 [h] 24 [m] 43 [s] 719301 [ms]
+name: water flow sensor at kitchen, cost: 1
+262
+start: 2197 [day] 06 [h] 43 [m] 01 [s] 097080 [ms]
+end  : 2197 [day] 10 [h] 32 [m] 44 [s] 808304 [ms]
+name: water flow sensor in bathroom, cost: 1
+263
+start: 2204 [day] 16 [h] 29 [m] 51 [s] 186798 [ms]
+end  : 2204 [day] 16 [h] 29 [m] 51 [s] 186798 [ms]
+name: electric energy meter of TV, cost: 1
+264
+start: 2207 [day] 10 [h] 12 [m] 10 [s] 319259 [ms]
+end  : 2207 [day] 15 [h] 27 [m] 43 [s] 311675 [ms]
+name: water flow sensor at kitchen, cost: 1
+265
+start: 2213 [day] 07 [h] 20 [m] 57 [s] 622855 [ms]
+end  : 2213 [day] 11 [h] 03 [m] 41 [s] 165897 [ms]
+name: electric energy meter at kitchen, cost: 1
+266
+start: 2216 [day] 11 [h] 23 [m] 21 [s] 984849 [ms]
+end  : 2216 [day] 13 [h] 29 [m] 08 [s] 561731 [ms]
+name: electric energy meter of TV, cost: 1
+267
+start: 2226 [day] 18 [h] 11 [m] 39 [s] 471571 [ms]
+end  : 2226 [day] 20 [h] 28 [m] 47 [s] 261208 [ms]
+name: electric energy meter of TV, cost: 1
+268
+start: 2226 [day] 19 [h] 32 [m] 29 [s] 514682 [ms]
+end  : 2226 [day] 19 [h] 43 [m] 05 [s] 604710 [ms]
+name: electric energy meter at kitchen, cost: 1
+269
+start: 2228 [day] 14 [h] 19 [m] 52 [s] 173459 [ms]
+end  : 2228 [day] 14 [h] 28 [m] 06 [s] 531943 [ms]
+name: electric energy meter at kitchen, cost: 1
+270
+start: 2234 [day] 19 [h] 54 [m] 31 [s] 777956 [ms]
+end  : 2234 [day] 20 [h] 47 [m] 37 [s] 479925 [ms]
+name: electric energy meter of TV, cost: 1
+271
+start: 2255 [day] 07 [h] 13 [m] 15 [s] 028243 [ms]
+end  : 2255 [day] 08 [h] 45 [m] 44 [s] 922860 [ms]
+name: electric energy meter of TV, cost: 1
+272
+start: 2257 [day] 11 [h] 49 [m] 54 [s] 340428 [ms]
+end  : 2258 [day] 05 [h] 43 [m] 44 [s] 098303 [ms]
+name: water flow sensor in bathroom, cost: 1
+273
+start: 2265 [day] 10 [h] 49 [m] 21 [s] 397767 [ms]
+end  : 2265 [day] 13 [h] 08 [m] 00 [s] 448639 [ms]
+name: water flow sensor at kitchen, cost: 1
+274
+start: 2266 [day] 05 [h] 38 [m] 31 [s] 393040 [ms]
+end  : 2266 [day] 05 [h] 44 [m] 13 [s] 873384 [ms]
+name: water flow sensor in bathroom, cost: 1
+275
+start: 2284 [day] 19 [h] 08 [m] 15 [s] 672870 [ms]
+end  : 2284 [day] 19 [h] 12 [m] 21 [s] 723141 [ms]
+name: electric energy meter of TV, cost: 1
+276
+start: 2284 [day] 19 [h] 31 [m] 35 [s] 017841 [ms]
+end  : 2284 [day] 19 [h] 33 [m] 02 [s] 869818 [ms]
+name: electric energy meter of TV, cost: 1
+277
+start: 2291 [day] 07 [h] 03 [m] 10 [s] 707450 [ms]
+end  : 2291 [day] 13 [h] 50 [m] 29 [s] 147483 [ms]
+name: water flow sensor in bathroom, cost: 1
+278
+start: 2301 [day] 19 [h] 18 [m] 20 [s] 349403 [ms]
+end  : 2302 [day] 08 [h] 22 [m] 33 [s] 477266 [ms]
+name: water flow sensor in bathroom, cost: 1
+279
+start: 2308 [day] 09 [h] 05 [m] 38 [s] 612011 [ms]
+end  : 2308 [day] 11 [h] 22 [m] 05 [s] 524107 [ms]
+name: water flow sensor at kitchen, cost: 1
+280
+start: 2310 [day] 13 [h] 43 [m] 43 [s] 152239 [ms]
+end  : 2310 [day] 14 [h] 22 [m] 29 [s] 959594 [ms]
+name: electric energy meter of TV, cost: 1
+281
+start: 2313 [day] 06 [h] 19 [m] 45 [s] 175483 [ms]
+end  : 2313 [day] 06 [h] 46 [m] 09 [s] 748935 [ms]
+name: electric energy meter of TV, cost: 1
+282
+start: 2313 [day] 10 [h] 59 [m] 42 [s] 699306 [ms]
+end  : 2313 [day] 13 [h] 14 [m] 15 [s] 297889 [ms]
+name: electric energy meter of TV, cost: 1
+283
+start: 2313 [day] 20 [h] 01 [m] 52 [s] 946187 [ms]
+end  : 2314 [day] 18 [h] 46 [m] 56 [s] 913640 [ms]
+name: water flow sensor at kitchen, cost: 1
+284
+start: 2321 [day] 20 [h] 12 [m] 39 [s] 256090 [ms]
+end  : 2322 [day] 07 [h] 42 [m] 57 [s] 475332 [ms]
+name: electric energy meter of TV, cost: 1
+285
+start: 2322 [day] 20 [h] 34 [m] 23 [s] 325446 [ms]
+end  : 2323 [day] 06 [h] 30 [m] 42 [s] 951845 [ms]
+name: electric energy meter at kitchen, cost: 1
+286
+start: 2323 [day] 06 [h] 57 [m] 14 [s] 896168 [ms]
+end  : 2323 [day] 06 [h] 59 [m] 25 [s] 381888 [ms]
+name: electric energy meter of TV, cost: 1
+287
+start: 2325 [day] 19 [h] 44 [m] 00 [s] 253778 [ms]
+end  : 2325 [day] 20 [h] 52 [m] 56 [s] 288687 [ms]
+name: electric energy meter at kitchen, cost: 1
+288
+start: 2328 [day] 16 [h] 21 [m] 35 [s] 507025 [ms]
+end  : 2328 [day] 16 [h] 21 [m] 35 [s] 507025 [ms]
+name: electric energy meter of TV, cost: 1
+289
+start: 2329 [day] 10 [h] 40 [m] 06 [s] 083530 [ms]
+end  : 2329 [day] 13 [h] 51 [m] 47 [s] 721821 [ms]
+name: water flow sensor in bathroom, cost: 1
+290
+start: 2329 [day] 16 [h] 42 [m] 37 [s] 845443 [ms]
+end  : 2330 [day] 13 [h] 23 [m] 35 [s] 384300 [ms]
+name: electric energy meter at kitchen, cost: 1
+291
+start: 2331 [day] 11 [h] 25 [m] 07 [s] 494618 [ms]
+end  : 2331 [day] 19 [h] 43 [m] 10 [s] 650214 [ms]
+name: water flow sensor in bathroom, cost: 1
+292
+start: 2333 [day] 12 [h] 53 [m] 15 [s] 216257 [ms]
+end  : 2333 [day] 14 [h] 07 [m] 22 [s] 125630 [ms]
+name: water flow sensor in bathroom, cost: 1
+293
+start: 2336 [day] 15 [h] 51 [m] 44 [s] 032590 [ms]
+end  : 2336 [day] 16 [h] 38 [m] 10 [s] 325527 [ms]
+name: electric energy meter at kitchen, cost: 1
+294
+start: 2349 [day] 07 [h] 21 [m] 42 [s] 388961 [ms]
+end  : 2349 [day] 10 [h] 37 [m] 27 [s] 644398 [ms]
+name: electric energy meter of TV, cost: 1
+295
+start: 2352 [day] 18 [h] 43 [m] 01 [s] 987316 [ms]
+end  : 2352 [day] 18 [h] 52 [m] 45 [s] 285565 [ms]
+name: electric energy meter of TV, cost: 1
+296
+start: 2360 [day] 13 [h] 44 [m] 13 [s] 644731 [ms]
+end  : 2360 [day] 15 [h] 18 [m] 20 [s] 815718 [ms]
+name: electric energy meter at kitchen, cost: 1
+297
+start: 2370 [day] 11 [h] 24 [m] 30 [s] 634988 [ms]
+end  : 2370 [day] 13 [h] 20 [m] 16 [s] 600034 [ms]
+name: electric energy meter of TV, cost: 1
+298
+start: 2372 [day] 15 [h] 05 [m] 52 [s] 199365 [ms]
+end  : 2372 [day] 15 [h] 52 [m] 40 [s] 818166 [ms]
+name: electric energy meter of TV, cost: 1
+299
+start: 2373 [day] 16 [h] 05 [m] 09 [s] 702601 [ms]
+end  : 2373 [day] 17 [h] 01 [m] 30 [s] 562326 [ms]
+name: electric energy meter of TV, cost: 1
+300
+start: 2379 [day] 20 [h] 13 [m] 58 [s] 140584 [ms]
+end  : 2379 [day] 21 [h] 34 [m] 47 [s] 106922 [ms]
+name: water flow sensor at kitchen, cost: 1
+301
+start: 2404 [day] 21 [h] 13 [m] 10 [s] 050606 [ms]
+end  : 2405 [day] 05 [h] 48 [m] 35 [s] 290361 [ms]
+name: electric energy meter of TV, cost: 1
+302
+start: 2406 [day] 16 [h] 04 [m] 33 [s] 065991 [ms]
+end  : 2407 [day] 06 [h] 01 [m] 47 [s] 360318 [ms]
+name: water flow sensor at kitchen, cost: 1
+303
+start: 2407 [day] 11 [h] 03 [m] 39 [s] 019436 [ms]
+end  : 2407 [day] 11 [h] 37 [m] 08 [s] 752809 [ms]
+name: electric energy meter of TV, cost: 1
+304
+start: 2417 [day] 09 [h] 49 [m] 25 [s] 756287 [ms]
+end  : 2417 [day] 09 [h] 52 [m] 53 [s] 835661 [ms]
+name: water flow sensor at kitchen, cost: 1
+305
+start: 2417 [day] 17 [h] 59 [m] 51 [s] 426470 [ms]
+end  : 2417 [day] 18 [h] 19 [m] 03 [s] 424385 [ms]
+name: water flow sensor at kitchen, cost: 1
+306
+start: 2428 [day] 20 [h] 32 [m] 17 [s] 078419 [ms]
+end  : 2428 [day] 20 [h] 36 [m] 45 [s] 568462 [ms]
+name: water flow sensor at kitchen, cost: 1
+307
+start: 2446 [day] 12 [h] 16 [m] 36 [s] 235720 [ms]
+end  : 2447 [day] 10 [h] 41 [m] 04 [s] 808918 [ms]
+name: water flow sensor in bathroom, cost: 1
+308
+start: 2447 [day] 11 [h] 16 [m] 20 [s] 871940 [ms]
+end  : 2447 [day] 19 [h] 22 [m] 43 [s] 767943 [ms]
+name: electric energy meter at kitchen, cost: 1
+309
+start: 2458 [day] 07 [h] 21 [m] 52 [s] 907165 [ms]
+end  : 2458 [day] 08 [h] 45 [m] 47 [s] 333943 [ms]
+name: water flow sensor at kitchen, cost: 1
+310
+start: 2470 [day] 13 [h] 58 [m] 27 [s] 858777 [ms]
+end  : 2471 [day] 04 [h] 55 [m] 52 [s] 733835 [ms]
+name: water flow sensor in bathroom, cost: 1
+311
+start: 2473 [day] 15 [h] 19 [m] 23 [s] 388110 [ms]
+end  : 2473 [day] 16 [h] 30 [m] 30 [s] 908347 [ms]
+name: electric energy meter of TV, cost: 1
+312
+start: 2476 [day] 19 [h] 11 [m] 12 [s] 009491 [ms]
+end  : 2476 [day] 20 [h] 12 [m] 30 [s] 555203 [ms]
+name: electric energy meter of TV, cost: 1
+313
+start: 2482 [day] 10 [h] 22 [m] 20 [s] 929818 [ms]
+end  : 2482 [day] 10 [h] 23 [m] 58 [s] 042378 [ms]
+name: water flow sensor in bathroom, cost: 1
+314
+start: 2491 [day] 05 [h] 31 [m] 08 [s] 334387 [ms]
+end  : 2491 [day] 11 [h] 07 [m] 44 [s] 112879 [ms]
+name: electric energy meter at kitchen, cost: 1
+315
+start: 2501 [day] 10 [h] 06 [m] 15 [s] 990235 [ms]
+end  : 2501 [day] 12 [h] 38 [m] 53 [s] 455848 [ms]
+name: water flow sensor in bathroom, cost: 1
+316
+start: 2510 [day] 16 [h] 03 [m] 35 [s] 936542 [ms]
+end  : 2510 [day] 19 [h] 36 [m] 19 [s] 388649 [ms]
+name: water flow sensor at kitchen, cost: 1
+317
+start: 2511 [day] 07 [h] 15 [m] 32 [s] 676157 [ms]
+end  : 2511 [day] 10 [h] 06 [m] 43 [s] 919639 [ms]
+name: electric energy meter of TV, cost: 1
+318
+start: 2511 [day] 20 [h] 20 [m] 25 [s] 346647 [ms]
+end  : 2512 [day] 13 [h] 25 [m] 25 [s] 583902 [ms]
+name: water flow sensor in bathroom, cost: 1
+319
+start: 2512 [day] 22 [h] 02 [m] 57 [s] 678410 [ms]
+end  : 2512 [day] 22 [h] 05 [m] 27 [s] 384132 [ms]
+name: electric energy meter of TV, cost: 1
+320
+start: 2515 [day] 11 [h] 31 [m] 25 [s] 233405 [ms]
+end  : 2515 [day] 13 [h] 36 [m] 36 [s] 517357 [ms]
+name: water flow sensor in bathroom, cost: 1
+321
+start: 2518 [day] 17 [h] 45 [m] 02 [s] 367911 [ms]
+end  : 2518 [day] 17 [h] 45 [m] 02 [s] 367911 [ms]
+name: electric energy meter of TV, cost: 1
+322
+start: 2519 [day] 15 [h] 10 [m] 03 [s] 334514 [ms]
+end  : 2519 [day] 16 [h] 15 [m] 50 [s] 196912 [ms]
+name: water flow sensor in bathroom, cost: 1
+323
+start: 2521 [day] 15 [h] 21 [m] 51 [s] 194662 [ms]
+end  : 2521 [day] 21 [h] 09 [m] 01 [s] 613245 [ms]
+name: electric energy meter at kitchen, cost: 1
+324
+start: 2524 [day] 10 [h] 28 [m] 21 [s] 205066 [ms]
+end  : 2524 [day] 10 [h] 41 [m] 45 [s] 637911 [ms]
+name: water flow sensor in bathroom, cost: 1
+325
+start: 2527 [day] 14 [h] 51 [m] 06 [s] 449457 [ms]
+end  : 2527 [day] 15 [h] 01 [m] 07 [s] 736734 [ms]
+name: electric energy meter of TV, cost: 1
+326
+start: 2546 [day] 09 [h] 04 [m] 45 [s] 075982 [ms]
+end  : 2546 [day] 14 [h] 17 [m] 20 [s] 329492 [ms]
+name: electric energy meter of TV, cost: 1
+327
+start: 2547 [day] 06 [h] 23 [m] 39 [s] 318819 [ms]
+end  : 2547 [day] 11 [h] 33 [m] 14 [s] 987913 [ms]
+name: water flow sensor in bathroom, cost: 1
+328
+start: 2547 [day] 15 [h] 00 [m] 03 [s] 590290 [ms]
+end  : 2547 [day] 15 [h] 00 [m] 03 [s] 590290 [ms]
+name: electric energy meter of TV, cost: 1
+329
+start: 2547 [day] 17 [h] 39 [m] 57 [s] 874920 [ms]
+end  : 2547 [day] 20 [h] 17 [m] 40 [s] 005220 [ms]
+name: electric energy meter at kitchen, cost: 1
+330
+start: 2554 [day] 05 [h] 43 [m] 41 [s] 614486 [ms]
+end  : 2554 [day] 05 [h] 43 [m] 41 [s] 614486 [ms]
+name: electric energy meter of TV, cost: 1
+331
+start: 2556 [day] 13 [h] 21 [m] 23 [s] 606272 [ms]
+end  : 2556 [day] 14 [h] 55 [m] 18 [s] 171623 [ms]
+name: water flow sensor in bathroom, cost: 1
+332
+start: 2557 [day] 06 [h] 50 [m] 00 [s] 955407 [ms]
+end  : 2557 [day] 11 [h] 16 [m] 01 [s] 892872 [ms]
+name: water flow sensor in bathroom, cost: 1
+333
+start: 2559 [day] 07 [h] 29 [m] 22 [s] 154797 [ms]
+end  : 2559 [day] 08 [h] 15 [m] 10 [s] 452954 [ms]
+name: water flow sensor at kitchen, cost: 1
+334
+start: 2560 [day] 09 [h] 57 [m] 39 [s] 753728 [ms]
+end  : 2560 [day] 12 [h] 32 [m] 03 [s] 194950 [ms]
+name: water flow sensor at kitchen, cost: 1
+335
+start: 2560 [day] 15 [h] 43 [m] 34 [s] 166429 [ms]
+end  : 2560 [day] 20 [h] 00 [m] 18 [s] 333219 [ms]
+name: water flow sensor in bathroom, cost: 1
+336
+start: 2560 [day] 20 [h] 01 [m] 45 [s] 429412 [ms]
+end  : 2561 [day] 05 [h] 24 [m] 23 [s] 819174 [ms]
+name: water flow sensor in bathroom, cost: 1
+337
+start: 2571 [day] 16 [h] 47 [m] 51 [s] 959402 [ms]
+end  : 2572 [day] 14 [h] 34 [m] 06 [s] 598886 [ms]
+name: water flow sensor in bathroom, cost: 1
+338
+start: 2590 [day] 10 [h] 38 [m] 50 [s] 996274 [ms]
+end  : 2590 [day] 18 [h] 03 [m] 00 [s] 950096 [ms]
+name: electric energy meter of TV, cost: 1
+339
+start: 2595 [day] 19 [h] 02 [m] 10 [s] 103875 [ms]
+end  : 2596 [day] 08 [h] 06 [m] 29 [s] 454304 [ms]
+name: water flow sensor in bathroom, cost: 1
+340
+start: 2596 [day] 08 [h] 08 [m] 49 [s] 491415 [ms]
+end  : 2596 [day] 20 [h] 43 [m] 03 [s] 484410 [ms]
+name: water flow sensor in bathroom, cost: 1
+341
+start: 2598 [day] 20 [h] 42 [m] 22 [s] 482533 [ms]
+end  : 2599 [day] 06 [h] 09 [m] 32 [s] 048418 [ms]
+name: water flow sensor in bathroom, cost: 1
+342
+start: 2605 [day] 12 [h] 42 [m] 49 [s] 682051 [ms]
+end  : 2605 [day] 19 [h] 02 [m] 27 [s] 723539 [ms]
+name: electric energy meter at kitchen, cost: 1
+343
+start: 2610 [day] 19 [h] 41 [m] 27 [s] 393059 [ms]
+end  : 2610 [day] 22 [h] 34 [m] 55 [s] 801886 [ms]
+name: electric energy meter at kitchen, cost: 1
+344
+start: 2614 [day] 20 [h] 56 [m] 58 [s] 241350 [ms]
+end  : 2615 [day] 08 [h] 13 [m] 20 [s] 733968 [ms]
+name: electric energy meter of TV, cost: 1
+345
+start: 2619 [day] 20 [h] 33 [m] 06 [s] 311305 [ms]
+end  : 2620 [day] 04 [h] 20 [m] 38 [s] 313807 [ms]
+name: electric energy meter of TV, cost: 1
+346
+start: 2633 [day] 07 [h] 54 [m] 11 [s] 237493 [ms]
+end  : 2633 [day] 08 [h] 00 [m] 37 [s] 257591 [ms]
+name: water flow sensor at kitchen, cost: 1
+347
+start: 2635 [day] 20 [h] 48 [m] 22 [s] 515865 [ms]
+end  : 2636 [day] 09 [h] 10 [m] 18 [s] 036891 [ms]
+name: water flow sensor in bathroom, cost: 1
+348
+start: 2636 [day] 20 [h] 03 [m] 49 [s] 985168 [ms]
+end  : 2637 [day] 05 [h] 16 [m] 12 [s] 334162 [ms]
+name: electric energy meter of TV, cost: 1
+349
+start: 2637 [day] 20 [h] 37 [m] 54 [s] 096957 [ms]
+end  : 2638 [day] 07 [h] 21 [m] 13 [s] 559273 [ms]
+name: electric energy meter at kitchen, cost: 1
+350
+start: 2641 [day] 21 [h] 06 [m] 49 [s] 060890 [ms]
+end  : 2642 [day] 20 [h] 19 [m] 40 [s] 733580 [ms]
+name: water flow sensor in bathroom, cost: 1
+351
+start: 2642 [day] 05 [h] 42 [m] 40 [s] 467051 [ms]
+end  : 2642 [day] 06 [h] 11 [m] 29 [s] 665031 [ms]
+name: electric energy meter of TV, cost: 1
+352
+start: 2644 [day] 16 [h] 10 [m] 49 [s] 955047 [ms]
+end  : 2644 [day] 20 [h] 24 [m] 13 [s] 361015 [ms]
+name: electric energy meter at kitchen, cost: 1
+353
+start: 2644 [day] 20 [h] 44 [m] 45 [s] 645955 [ms]
+end  : 2645 [day] 08 [h] 29 [m] 15 [s] 452129 [ms]
+name: water flow sensor at kitchen, cost: 1
+354
+start: 2648 [day] 06 [h] 58 [m] 17 [s] 523374 [ms]
+end  : 2648 [day] 07 [h] 50 [m] 04 [s] 070124 [ms]
+name: electric energy meter of TV, cost: 1
+355
+start: 2655 [day] 11 [h] 39 [m] 33 [s] 744507 [ms]
+end  : 2655 [day] 17 [h] 22 [m] 54 [s] 782886 [ms]
+name: water flow sensor in bathroom, cost: 1
+356
+start: 2660 [day] 15 [h] 48 [m] 18 [s] 628279 [ms]
+end  : 2660 [day] 21 [h] 32 [m] 38 [s] 686918 [ms]
+name: electric energy meter at kitchen, cost: 1
+357
+start: 2664 [day] 18 [h] 30 [m] 42 [s] 004903 [ms]
+end  : 2664 [day] 21 [h] 40 [m] 11 [s] 806080 [ms]
+name: electric energy meter at kitchen, cost: 1
+358
+start: 2687 [day] 07 [h] 10 [m] 32 [s] 039709 [ms]
+end  : 2687 [day] 07 [h] 44 [m] 55 [s] 681422 [ms]
+name: electric energy meter at kitchen, cost: 1
+359
+start: 2694 [day] 11 [h] 40 [m] 03 [s] 981309 [ms]
+end  : 2694 [day] 11 [h] 47 [m] 11 [s] 393149 [ms]
+name: electric energy meter of TV, cost: 1
+360
+start: 2713 [day] 06 [h] 51 [m] 54 [s] 029780 [ms]
+end  : 2713 [day] 08 [h] 13 [m] 57 [s] 363264 [ms]
+name: water flow sensor in bathroom, cost: 1
+361
+start: 2715 [day] 06 [h] 25 [m] 40 [s] 003800 [ms]
+end  : 2715 [day] 09 [h] 04 [m] 55 [s] 572690 [ms]
+name: water flow sensor at kitchen, cost: 1
+362
+start: 2716 [day] 06 [h] 20 [m] 53 [s] 652265 [ms]
+end  : 2716 [day] 06 [h] 59 [m] 23 [s] 577994 [ms]
+name: electric energy meter of TV, cost: 1
+363
+start: 2717 [day] 04 [h] 14 [m] 48 [s] 936536 [ms]
+end  : 2717 [day] 06 [h] 02 [m] 30 [s] 669642 [ms]
+name: electric energy meter of TV, cost: 1
+364
+start: 2725 [day] 15 [h] 33 [m] 33 [s] 710750 [ms]
+end  : 2726 [day] 05 [h] 42 [m] 10 [s] 639360 [ms]
+name: electric energy meter at kitchen, cost: 1
+365
+start: 2726 [day] 06 [h] 00 [m] 08 [s] 938676 [ms]
+end  : 2726 [day] 14 [h] 18 [m] 37 [s] 093920 [ms]
+name: electric energy meter at kitchen, cost: 1
+366
+start: 2737 [day] 11 [h] 18 [m] 52 [s] 377870 [ms]
+end  : 2737 [day] 12 [h] 22 [m] 09 [s] 082729 [ms]
+name: electric energy meter of TV, cost: 1
+367
+start: 2745 [day] 16 [h] 16 [m] 14 [s] 806335 [ms]
+end  : 2745 [day] 16 [h] 20 [m] 02 [s] 430799 [ms]
+name: electric energy meter of TV, cost: 1
+368
+start: 2745 [day] 18 [h] 06 [m] 36 [s] 569592 [ms]
+end  : 2745 [day] 20 [h] 42 [m] 29 [s] 398460 [ms]
+name: electric energy meter of TV, cost: 1
+369
+start: 2752 [day] 13 [h] 00 [m] 52 [s] 938588 [ms]
+end  : 2752 [day] 17 [h] 01 [m] 24 [s] 823068 [ms]
+name: water flow sensor in bathroom, cost: 1
+370
+start: 2755 [day] 15 [h] 54 [m] 46 [s] 538051 [ms]
+end  : 2755 [day] 20 [h] 46 [m] 07 [s] 880861 [ms]
+name: water flow sensor at kitchen, cost: 1
+371
+start: 2763 [day] 05 [h] 55 [m] 57 [s] 627740 [ms]
+end  : 2763 [day] 06 [h] 32 [m] 48 [s] 862410 [ms]
+name: electric energy meter of TV, cost: 1
+372
+start: 2765 [day] 16 [h] 47 [m] 04 [s] 275919 [ms]
+end  : 2765 [day] 19 [h] 55 [m] 22 [s] 008398 [ms]
+name: water flow sensor at kitchen, cost: 1
+373
+start: 2768 [day] 21 [h] 35 [m] 26 [s] 939682 [ms]
+end  : 2769 [day] 06 [h] 11 [m] 09 [s] 388158 [ms]
+name: electric energy meter of TV, cost: 1
+374
+start: 2775 [day] 06 [h] 23 [m] 36 [s] 902822 [ms]
+end  : 2775 [day] 13 [h] 38 [m] 06 [s] 690222 [ms]
+name: water flow sensor in bathroom, cost: 1
+375
+start: 2784 [day] 13 [h] 06 [m] 07 [s] 539416 [ms]
+end  : 2784 [day] 13 [h] 38 [m] 18 [s] 424921 [ms]
+name: electric energy meter of TV, cost: 1
+376
+start: 2785 [day] 08 [h] 38 [m] 35 [s] 004366 [ms]
+end  : 2785 [day] 10 [h] 54 [m] 49 [s] 349835 [ms]
+name: water flow sensor in bathroom, cost: 1
+377
+start: 2793 [day] 09 [h] 57 [m] 43 [s] 969079 [ms]
+end  : 2793 [day] 10 [h] 39 [m] 34 [s] 399005 [ms]
+name: water flow sensor in bathroom, cost: 1
+378
+start: 2793 [day] 13 [h] 45 [m] 25 [s] 084907 [ms]
+end  : 2793 [day] 14 [h] 33 [m] 49 [s] 437590 [ms]
+name: electric energy meter of TV, cost: 1
+379
+start: 2796 [day] 12 [h] 57 [m] 38 [s] 254949 [ms]
+end  : 2796 [day] 16 [h] 09 [m] 42 [s] 610375 [ms]
+name: electric energy meter of TV, cost: 1
+380
+start: 2801 [day] 14 [h] 44 [m] 54 [s] 266954 [ms]
+end  : 2801 [day] 16 [h] 03 [m] 31 [s] 362616 [ms]
+name: water flow sensor in bathroom, cost: 1
+381
+start: 2806 [day] 17 [h] 12 [m] 14 [s] 872724 [ms]
+end  : 2806 [day] 19 [h] 36 [m] 16 [s] 612899 [ms]
+name: electric energy meter of TV, cost: 1
+382
+start: 2807 [day] 06 [h] 35 [m] 38 [s] 617753 [ms]
+end  : 2807 [day] 16 [h] 57 [m] 19 [s] 416507 [ms]
+name: water flow sensor in bathroom, cost: 1
+383
+start: 2817 [day] 08 [h] 52 [m] 19 [s] 662464 [ms]
+end  : 2817 [day] 15 [h] 52 [m] 31 [s] 179378 [ms]
+name: water flow sensor at kitchen, cost: 1
+384
+start: 2826 [day] 07 [h] 54 [m] 39 [s] 467090 [ms]
+end  : 2826 [day] 08 [h] 15 [m] 40 [s] 446847 [ms]
+name: electric energy meter of TV, cost: 1
+385
+start: 2833 [day] 16 [h] 35 [m] 11 [s] 467492 [ms]
+end  : 2833 [day] 18 [h] 22 [m] 39 [s] 265364 [ms]
+name: electric energy meter of TV, cost: 1
+386
+start: 2835 [day] 20 [h] 18 [m] 09 [s] 767844 [ms]
+end  : 2835 [day] 20 [h] 29 [m] 36 [s] 810032 [ms]
+name: electric energy meter of TV, cost: 1
+387
+start: 2839 [day] 18 [h] 58 [m] 09 [s] 738299 [ms]
+end  : 2840 [day] 06 [h] 37 [m] 37 [s] 443967 [ms]
+name: water flow sensor in bathroom, cost: 1
+388
+start: 2840 [day] 06 [h] 39 [m] 26 [s] 712678 [ms]
+end  : 2840 [day] 09 [h] 07 [m] 46 [s] 453176 [ms]
+name: water flow sensor in bathroom, cost: 1
+389
+start: 2841 [day] 03 [h] 54 [m] 34 [s] 331604 [ms]
+end  : 2841 [day] 04 [h] 35 [m] 00 [s] 408111 [ms]
+name: water flow sensor in bathroom, cost: 1
+390
+start: 2843 [day] 16 [h] 46 [m] 43 [s] 329938 [ms]
+end  : 2843 [day] 17 [h] 23 [m] 06 [s] 653267 [ms]
+name: electric energy meter of TV, cost: 1
+391
+start: 2850 [day] 09 [h] 07 [m] 26 [s] 359211 [ms]
+end  : 2850 [day] 09 [h] 58 [m] 21 [s] 463451 [ms]
+name: electric energy meter of TV, cost: 1
+392
+start: 2856 [day] 20 [h] 56 [m] 57 [s] 170066 [ms]
+end  : 2857 [day] 05 [h] 13 [m] 56 [s] 117321 [ms]
+name: electric energy meter at kitchen, cost: 1
+393
+start: 2860 [day] 16 [h] 36 [m] 29 [s] 309789 [ms]
+end  : 2860 [day] 16 [h] 51 [m] 14 [s] 360182 [ms]
+name: electric energy meter at kitchen, cost: 1
+394
+start: 2863 [day] 18 [h] 39 [m] 06 [s] 141904 [ms]
+end  : 2864 [day] 05 [h] 52 [m] 54 [s] 435365 [ms]
+name: water flow sensor in bathroom, cost: 1
+395
+start: 2870 [day] 08 [h] 24 [m] 24 [s] 176683 [ms]
+end  : 2870 [day] 10 [h] 44 [m] 32 [s] 376866 [ms]
+name: water flow sensor at kitchen, cost: 1
+396
+start: 2871 [day] 11 [h] 58 [m] 00 [s] 274090 [ms]
+end  : 2871 [day] 13 [h] 25 [m] 18 [s] 032099 [ms]
+name: water flow sensor in bathroom, cost: 1
+397
+start: 2872 [day] 09 [h] 08 [m] 05 [s] 470140 [ms]
+end  : 2872 [day] 12 [h] 58 [m] 46 [s] 905052 [ms]
+name: water flow sensor in bathroom, cost: 1
+398
+start: 2878 [day] 17 [h] 33 [m] 14 [s] 255094 [ms]
+end  : 2878 [day] 17 [h] 36 [m] 00 [s] 307749 [ms]
+name: electric energy meter of TV, cost: 1
+399
+start: 2884 [day] 06 [h] 49 [m] 56 [s] 129251 [ms]
+end  : 2884 [day] 09 [h] 35 [m] 13 [s] 819293 [ms]
+name: electric energy meter at kitchen, cost: 1
+400
+start: 2884 [day] 19 [h] 41 [m] 37 [s] 613028 [ms]
+end  : 2884 [day] 19 [h] 44 [m] 19 [s] 204098 [ms]
+name: electric energy meter at kitchen, cost: 1
+401
+start: 2886 [day] 20 [h] 59 [m] 25 [s] 338360 [ms]
+end  : 2887 [day] 06 [h] 06 [m] 21 [s] 793036 [ms]
+name: electric energy meter of TV, cost: 1
+402
+start: 2890 [day] 07 [h] 31 [m] 42 [s] 875092 [ms]
+end  : 2890 [day] 12 [h] 37 [m] 43 [s] 116058 [ms]
+name: water flow sensor in bathroom, cost: 1
+403
+start: 2890 [day] 22 [h] 13 [m] 50 [s] 687599 [ms]
+end  : 2891 [day] 06 [h] 42 [m] 53 [s] 533331 [ms]
+name: electric energy meter of TV, cost: 1
+404
+start: 2898 [day] 09 [h] 45 [m] 37 [s] 126176 [ms]
+end  : 2898 [day] 13 [h] 25 [m] 23 [s] 040686 [ms]
+name: water flow sensor in bathroom, cost: 1
+405
+start: 2898 [day] 22 [h] 00 [m] 52 [s] 028034 [ms]
+end  : 2899 [day] 07 [h] 51 [m] 44 [s] 435228 [ms]
+name: electric energy meter at kitchen, cost: 1
+406
+start: 2900 [day] 15 [h] 50 [m] 20 [s] 592100 [ms]
+end  : 2900 [day] 20 [h] 24 [m] 27 [s] 667118 [ms]
+name: electric energy meter at kitchen, cost: 1
+407
+start: 2900 [day] 21 [h] 35 [m] 49 [s] 077952 [ms]
+end  : 2901 [day] 14 [h] 08 [m] 26 [s] 475205 [ms]
+name: electric energy meter at kitchen, cost: 1
+408
+start: 2903 [day] 15 [h] 31 [m] 14 [s] 795688 [ms]
+end  : 2903 [day] 17 [h] 09 [m] 34 [s] 093001 [ms]
+name: electric energy meter of TV, cost: 1
+409
+start: 2918 [day] 05 [h] 43 [m] 31 [s] 700998 [ms]
+end  : 2918 [day] 06 [h] 19 [m] 20 [s] 066805 [ms]
+name: water flow sensor in bathroom, cost: 1
+410
+start: 2924 [day] 12 [h] 00 [m] 48 [s] 387270 [ms]
+end  : 2924 [day] 12 [h] 44 [m] 57 [s] 545245 [ms]
+name: water flow sensor at kitchen, cost: 1
+411
+start: 2929 [day] 11 [h] 26 [m] 49 [s] 947510 [ms]
+end  : 2929 [day] 12 [h] 55 [m] 38 [s] 147323 [ms]
+name: electric energy meter of TV, cost: 1
+412
+start: 2929 [day] 20 [h] 45 [m] 45 [s] 368910 [ms]
+end  : 2929 [day] 20 [h] 45 [m] 45 [s] 368910 [ms]
+name: electric energy meter of TV, cost: 1
+413
+start: 2932 [day] 08 [h] 34 [m] 07 [s] 430362 [ms]
+end  : 2932 [day] 09 [h] 37 [m] 42 [s] 182193 [ms]
+name: water flow sensor at kitchen, cost: 1
+414
+start: 2932 [day] 14 [h] 44 [m] 56 [s] 087501 [ms]
+end  : 2932 [day] 15 [h] 48 [m] 18 [s] 850394 [ms]
+name: electric energy meter of TV, cost: 1
+415
+start: 2948 [day] 17 [h] 41 [m] 00 [s] 320888 [ms]
+end  : 2948 [day] 18 [h] 03 [m] 16 [s] 591107 [ms]
+name: electric energy meter of TV, cost: 1
+416
+start: 2956 [day] 10 [h] 01 [m] 04 [s] 539835 [ms]
+end  : 2956 [day] 11 [h] 52 [m] 26 [s] 424471 [ms]
+name: electric energy meter of TV, cost: 1
+417
+start: 2957 [day] 15 [h] 04 [m] 26 [s] 168159 [ms]
+end  : 2957 [day] 15 [h] 04 [m] 26 [s] 168159 [ms]
+name: electric energy meter of TV, cost: 1
+418
+start: 2959 [day] 18 [h] 05 [m] 43 [s] 998744 [ms]
+end  : 2959 [day] 20 [h] 30 [m] 43 [s] 142120 [ms]
+name: electric energy meter of TV, cost: 1
+419
+start: 2959 [day] 20 [h] 23 [m] 19 [s] 590953 [ms]
+end  : 2960 [day] 20 [h] 46 [m] 07 [s] 148289 [ms]
+name: water flow sensor at kitchen, cost: 1
+420
+start: 2960 [day] 21 [h] 12 [m] 17 [s] 571597 [ms]
+end  : 2961 [day] 07 [h] 46 [m] 05 [s] 876285 [ms]
+name: electric energy meter at kitchen, cost: 1
+421
+start: 2964 [day] 05 [h] 54 [m] 55 [s] 308293 [ms]
+end  : 2964 [day] 08 [h] 20 [m] 38 [s] 099729 [ms]
+name: electric energy meter at kitchen, cost: 1
+422
+start: 2972 [day] 16 [h] 56 [m] 11 [s] 073624 [ms]
+end  : 2972 [day] 17 [h] 07 [m] 37 [s] 306413 [ms]
+name: water flow sensor in bathroom, cost: 1
+423
+start: 2977 [day] 09 [h] 13 [m] 47 [s] 600067 [ms]
+end  : 2977 [day] 10 [h] 18 [m] 27 [s] 052627 [ms]
+name: water flow sensor at kitchen, cost: 1
+424
+start: 2983 [day] 05 [h] 39 [m] 46 [s] 077880 [ms]
+end  : 2983 [day] 15 [h] 36 [m] 31 [s] 662194 [ms]
+name: water flow sensor at kitchen, cost: 1
+425
+start: 2983 [day] 08 [h] 23 [m] 51 [s] 472589 [ms]
+end  : 2983 [day] 09 [h] 23 [m] 22 [s] 389026 [ms]
+name: electric energy meter of TV, cost: 1
+426
+start: 2983 [day] 15 [h] 18 [m] 21 [s] 727334 [ms]
+end  : 2983 [day] 16 [h] 25 [m] 02 [s] 732745 [ms]
+name: electric energy meter of TV, cost: 1
+427
+start: 2987 [day] 20 [h] 06 [m] 15 [s] 919688 [ms]
+end  : 2987 [day] 20 [h] 13 [m] 51 [s] 357501 [ms]
+name: electric energy meter of TV, cost: 1
+428
+start: 2990 [day] 09 [h] 26 [m] 13 [s] 250404 [ms]
+end  : 2990 [day] 15 [h] 20 [m] 16 [s] 742133 [ms]
+name: electric energy meter of TV, cost: 1
+429
+start: 2990 [day] 11 [h] 39 [m] 34 [s] 999674 [ms]
+end  : 2990 [day] 13 [h] 51 [m] 17 [s] 814448 [ms]
+name: water flow sensor at kitchen, cost: 1
+430
+start: 2990 [day] 19 [h] 33 [m] 27 [s] 398163 [ms]
+end  : 2991 [day] 11 [h] 12 [m] 25 [s] 485120 [ms]
+name: water flow sensor in bathroom, cost: 1
+431
+start: 2993 [day] 04 [h] 46 [m] 57 [s] 366075 [ms]
+end  : 2993 [day] 09 [h] 20 [m] 23 [s] 156288 [ms]
+name: water flow sensor at kitchen, cost: 1
+432
+start: 2998 [day] 16 [h] 33 [m] 10 [s] 212274 [ms]
+end  : 2998 [day] 16 [h] 54 [m] 53 [s] 942050 [ms]
+name: electric energy meter of TV, cost: 1
+433
+start: 2999 [day] 20 [h] 04 [m] 26 [s] 273062 [ms]
+end  : 2999 [day] 21 [h] 04 [m] 40 [s] 624164 [ms]
+name: water flow sensor at kitchen, cost: 1
+434
+start: 3000 [day] 09 [h] 55 [m] 01 [s] 536159 [ms]
+end  : 3000 [day] 10 [h] 55 [m] 02 [s] 648524 [ms]
+name: electric energy meter of TV, cost: 1
+435
+start: 3005 [day] 17 [h] 31 [m] 10 [s] 319893 [ms]
+end  : 3006 [day] 09 [h] 39 [m] 59 [s] 987439 [ms]
+name: water flow sensor at kitchen, cost: 1
+436
+start: 3008 [day] 12 [h] 09 [m] 20 [s] 726500 [ms]
+end  : 3008 [day] 13 [h] 56 [m] 12 [s] 500129 [ms]
+name: electric energy meter of TV, cost: 1
+437
+start: 3016 [day] 06 [h] 27 [m] 40 [s] 335266 [ms]
+end  : 3016 [day] 06 [h] 45 [m] 44 [s] 007279 [ms]
+name: water flow sensor in bathroom, cost: 1
+438
+start: 3017 [day] 08 [h] 13 [m] 01 [s] 438855 [ms]
+end  : 3017 [day] 12 [h] 51 [m] 13 [s] 957810 [ms]
+name: water flow sensor at kitchen, cost: 1
+439
+start: 3018 [day] 11 [h] 14 [m] 12 [s] 637750 [ms]
+end  : 3018 [day] 16 [h] 04 [m] 38 [s] 773914 [ms]
+name: water flow sensor in bathroom, cost: 1
+440
+start: 3023 [day] 20 [h] 33 [m] 28 [s] 011337 [ms]
+end  : 3024 [day] 06 [h] 06 [m] 35 [s] 026783 [ms]
+name: electric energy meter at kitchen, cost: 1
+441
+start: 3025 [day] 17 [h] 46 [m] 34 [s] 155121 [ms]
+end  : 3025 [day] 17 [h] 46 [m] 34 [s] 155121 [ms]
+name: electric energy meter of TV, cost: 1
+442
+start: 3028 [day] 06 [h] 07 [m] 15 [s] 627539 [ms]
+end  : 3028 [day] 09 [h] 02 [m] 36 [s] 823631 [ms]
+name: water flow sensor at kitchen, cost: 1
+443
+start: 3042 [day] 06 [h] 48 [m] 50 [s] 146502 [ms]
+end  : 3042 [day] 09 [h] 04 [m] 23 [s] 351988 [ms]
+name: electric energy meter of TV, cost: 1
+444
+start: 3054 [day] 15 [h] 29 [m] 35 [s] 876151 [ms]
+end  : 3054 [day] 21 [h] 10 [m] 31 [s] 775329 [ms]
+name: water flow sensor in bathroom, cost: 1
+445
+start: 3056 [day] 12 [h] 54 [m] 53 [s] 697078 [ms]
+end  : 3056 [day] 15 [h] 23 [m] 59 [s] 365157 [ms]
+name: electric energy meter of TV, cost: 1
+446
+start: 3057 [day] 08 [h] 23 [m] 57 [s] 244844 [ms]
+end  : 3057 [day] 11 [h] 47 [m] 20 [s] 292654 [ms]
+name: water flow sensor at kitchen, cost: 1
+447
+start: 3059 [day] 18 [h] 32 [m] 32 [s] 521798 [ms]
+end  : 3059 [day] 20 [h] 32 [m] 17 [s] 191045 [ms]
+name: water flow sensor in bathroom, cost: 1
+448
+start: 3064 [day] 05 [h] 48 [m] 18 [s] 915386 [ms]
+end  : 3064 [day] 19 [h] 56 [m] 40 [s] 866309 [ms]
+name: water flow sensor in bathroom, cost: 1
+449
+start: 3065 [day] 08 [h] 50 [m] 43 [s] 791077 [ms]
+end  : 3065 [day] 09 [h] 57 [m] 38 [s] 089111 [ms]
+name: electric energy meter of TV, cost: 1
+450
+start: 3073 [day] 22 [h] 16 [m] 23 [s] 553292 [ms]
+end  : 3074 [day] 06 [h] 56 [m] 23 [s] 001375 [ms]
+name: electric energy meter of TV, cost: 1
+451
+start: 3076 [day] 13 [h] 04 [m] 32 [s] 535754 [ms]
+end  : 3077 [day] 06 [h] 11 [m] 58 [s] 021333 [ms]
+name: water flow sensor at kitchen, cost: 1
+452
+start: 3076 [day] 19 [h] 19 [m] 59 [s] 858874 [ms]
+end  : 3076 [day] 20 [h] 25 [m] 29 [s] 275949 [ms]
+name: electric energy meter of TV, cost: 1
+453
+start: 3078 [day] 18 [h] 27 [m] 56 [s] 050993 [ms]
+end  : 3078 [day] 20 [h] 47 [m] 54 [s] 517840 [ms]
+name: electric energy meter at kitchen, cost: 1
+454
+start: 3084 [day] 15 [h] 23 [m] 31 [s] 207065 [ms]
+end  : 3084 [day] 16 [h] 15 [m] 23 [s] 754759 [ms]
+name: electric energy meter of TV, cost: 1
+455
+start: 3094 [day] 15 [h] 44 [m] 37 [s] 899943 [ms]
+end  : 3094 [day] 20 [h] 49 [m] 01 [s] 115610 [ms]
+name: water flow sensor in bathroom, cost: 1
+456
+start: 3095 [day] 07 [h] 19 [m] 01 [s] 181413 [ms]
+end  : 3095 [day] 09 [h] 18 [m] 24 [s] 699679 [ms]
+name: water flow sensor in bathroom, cost: 1
+457
+start: 3101 [day] 11 [h] 37 [m] 06 [s] 323081 [ms]
+end  : 3101 [day] 14 [h] 52 [m] 17 [s] 378376 [ms]
+name: water flow sensor at kitchen, cost: 1
+458
+start: 3103 [day] 19 [h] 58 [m] 00 [s] 024990 [ms]
+end  : 3104 [day] 10 [h] 53 [m] 27 [s] 594123 [ms]
+name: electric energy meter at kitchen, cost: 1
+459
+start: 3111 [day] 17 [h] 22 [m] 13 [s] 083747 [ms]
+end  : 3111 [day] 17 [h] 57 [m] 29 [s] 568961 [ms]
+name: electric energy meter of TV, cost: 1
+460
+start: 3114 [day] 11 [h] 52 [m] 26 [s] 130825 [ms]
+end  : 3114 [day] 12 [h] 58 [m] 05 [s] 650487 [ms]
+name: electric energy meter at kitchen, cost: 1
+461
+start: 3117 [day] 19 [h] 56 [m] 42 [s] 914480 [ms]
+end  : 3118 [day] 04 [h] 37 [m] 10 [s] 259371 [ms]
+name: electric energy meter at kitchen, cost: 1
+462
+start: 3123 [day] 07 [h] 36 [m] 17 [s] 440159 [ms]
+end  : 3123 [day] 09 [h] 18 [m] 21 [s] 623456 [ms]
+name: electric energy meter at kitchen, cost: 1
+463
+start: 3134 [day] 09 [h] 28 [m] 24 [s] 020809 [ms]
+end  : 3134 [day] 14 [h] 40 [m] 16 [s] 526170 [ms]
+name: electric energy meter at kitchen, cost: 1
+464
+start: 3139 [day] 07 [h] 37 [m] 25 [s] 555672 [ms]
+end  : 3139 [day] 09 [h] 39 [m] 05 [s] 633782 [ms]
+name: electric energy meter at kitchen, cost: 1
+465
+start: 3140 [day] 05 [h] 30 [m] 28 [s] 601080 [ms]
+end  : 3140 [day] 05 [h] 44 [m] 39 [s] 464469 [ms]
+name: electric energy meter of TV, cost: 1
+466
+start: 3153 [day] 08 [h] 11 [m] 23 [s] 455970 [ms]
+end  : 3153 [day] 08 [h] 14 [m] 19 [s] 009877 [ms]
+name: water flow sensor at kitchen, cost: 1
+467
+start: 3164 [day] 06 [h] 09 [m] 23 [s] 004538 [ms]
+end  : 3164 [day] 07 [h] 56 [m] 28 [s] 192071 [ms]
+name: electric energy meter of TV, cost: 1
+468
+start: 3165 [day] 16 [h] 56 [m] 37 [s] 904815 [ms]
+end  : 3166 [day] 06 [h] 00 [m] 43 [s] 060141 [ms]
+name: water flow sensor in bathroom, cost: 1
+469
+start: 3168 [day] 04 [h] 45 [m] 46 [s] 181468 [ms]
+end  : 3168 [day] 06 [h] 45 [m] 41 [s] 239778 [ms]
+name: electric energy meter of TV, cost: 1
+470
+start: 3176 [day] 17 [h] 11 [m] 51 [s] 075672 [ms]
+end  : 3177 [day] 07 [h] 50 [m] 52 [s] 091662 [ms]
+name: electric energy meter at kitchen, cost: 1
+471
+start: 3178 [day] 09 [h] 01 [m] 03 [s] 355810 [ms]
+end  : 3179 [day] 05 [h] 14 [m] 00 [s] 373708 [ms]
+name: water flow sensor in bathroom, cost: 1
+472
+start: 3179 [day] 20 [h] 01 [m] 52 [s] 457714 [ms]
+end  : 3180 [day] 05 [h] 19 [m] 13 [s] 041435 [ms]
+name: water flow sensor in bathroom, cost: 1
+473
+start: 3194 [day] 07 [h] 26 [m] 12 [s] 869222 [ms]
+end  : 3194 [day] 09 [h] 51 [m] 55 [s] 231479 [ms]
+name: electric energy meter of TV, cost: 1
+474
+start: 3194 [day] 12 [h] 05 [m] 57 [s] 011549 [ms]
+end  : 3194 [day] 15 [h] 00 [m] 51 [s] 727523 [ms]
+name: electric energy meter of TV, cost: 1
+475
+start: 3197 [day] 16 [h] 00 [m] 13 [s] 718032 [ms]
+end  : 3197 [day] 17 [h] 31 [m] 28 [s] 860856 [ms]
+name: water flow sensor in bathroom, cost: 1
+476
+start: 3199 [day] 21 [h] 26 [m] 05 [s] 867783 [ms]
+end  : 3200 [day] 05 [h] 56 [m] 12 [s] 448892 [ms]
+name: water flow sensor at kitchen, cost: 1
+477
+start: 3202 [day] 15 [h] 03 [m] 24 [s] 856385 [ms]
+end  : 3202 [day] 15 [h] 49 [m] 34 [s] 940191 [ms]
+name: electric energy meter of TV, cost: 1
+478
+start: 3203 [day] 17 [h] 08 [m] 21 [s] 871985 [ms]
+end  : 3204 [day] 19 [h] 10 [m] 25 [s] 110215 [ms]
+name: water flow sensor in bathroom, cost: 1
+479
+start: 3205 [day] 09 [h] 43 [m] 09 [s] 253583 [ms]
+end  : 3205 [day] 11 [h] 03 [m] 50 [s] 832881 [ms]
+name: water flow sensor at kitchen, cost: 1
+480
+start: 3208 [day] 11 [h] 51 [m] 32 [s] 260159 [ms]
+end  : 3208 [day] 12 [h] 01 [m] 13 [s] 477848 [ms]
+name: water flow sensor in bathroom, cost: 1
+481
+start: 3210 [day] 19 [h] 40 [m] 46 [s] 302170 [ms]
+end  : 3211 [day] 08 [h] 22 [m] 50 [s] 364515 [ms]
+name: water flow sensor in bathroom, cost: 1
+482
+start: 3216 [day] 09 [h] 36 [m] 11 [s] 367277 [ms]
+end  : 3216 [day] 18 [h] 53 [m] 35 [s] 712355 [ms]
+name: water flow sensor at kitchen, cost: 1
+483
+start: 3219 [day] 20 [h] 40 [m] 56 [s] 153688 [ms]
+end  : 3220 [day] 07 [h] 25 [m] 07 [s] 212080 [ms]
+name: water flow sensor at kitchen, cost: 1
+484
+start: 3220 [day] 21 [h] 15 [m] 38 [s] 654830 [ms]
+end  : 3221 [day] 04 [h] 55 [m] 44 [s] 441258 [ms]
+name: electric energy meter of TV, cost: 1
+485
+start: 3224 [day] 19 [h] 37 [m] 35 [s] 666433 [ms]
+end  : 3224 [day] 20 [h] 09 [m] 33 [s] 072993 [ms]
+name: electric energy meter of TV, cost: 1
+486
+start: 3225 [day] 06 [h] 13 [m] 23 [s] 900052 [ms]
+end  : 3225 [day] 09 [h] 57 [m] 21 [s] 453174 [ms]
+name: electric energy meter of TV, cost: 1
+487
+start: 3229 [day] 19 [h] 08 [m] 30 [s] 889323 [ms]
+end  : 3229 [day] 19 [h] 17 [m] 46 [s] 426112 [ms]
+name: electric energy meter of TV, cost: 1
+488
+start: 3235 [day] 16 [h] 39 [m] 57 [s] 317223 [ms]
+end  : 3236 [day] 07 [h] 28 [m] 09 [s] 396395 [ms]
+name: water flow sensor at kitchen, cost: 1
+489
+start: 3237 [day] 07 [h] 11 [m] 11 [s] 088123 [ms]
+end  : 3237 [day] 14 [h] 13 [m] 05 [s] 986577 [ms]
+name: water flow sensor in bathroom, cost: 1
+490
+start: 3237 [day] 13 [h] 28 [m] 49 [s] 664239 [ms]
+end  : 3237 [day] 18 [h] 41 [m] 32 [s] 580013 [ms]
+name: electric energy meter of TV, cost: 1
+491
+start: 3237 [day] 20 [h] 08 [m] 59 [s] 972292 [ms]
+end  : 3237 [day] 20 [h] 14 [m] 54 [s] 193968 [ms]
+name: water flow sensor in bathroom, cost: 1
+

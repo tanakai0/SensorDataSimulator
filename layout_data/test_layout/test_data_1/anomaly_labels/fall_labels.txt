@@ -1,0 +1,230 @@
+Total number of fall while walking: 31, Total number of fall while walking: 26
+1806-th trajectory (Bed - Desk_Chair)
+fall while standing:
+0035 [day] 05 [h] 11 [m] 37 [s] 811086 [ms]
+lie down: 16.656510014769125 [sec.]
+3290-th trajectory (Sofa - Desk_Chair)
+fall while walking:
+0063 [day] 09 [h] 32 [m] 18 [s] 840071 [ms]
+lie down: 27.481110799359648 [sec.]
+4220-th trajectory (Wardrobe - Wash_Machine)
+fall while walking:
+0080 [day] 18 [h] 38 [m] 46 [s] 546874 [ms]
+lie down: 35.080925469828045 [sec.]
+6473-th trajectory (Bed - Desk_Chair)
+fall while standing:
+0123 [day] 05 [h] 58 [m] 56 [s] 303529 [ms]
+lie down: 35.76194209258959 [sec.]
+7726-th trajectory (Sofa - Toilet_Door)
+fall while walking:
+0146 [day] 16 [h] 45 [m] 57 [s] 283403 [ms]
+lie down: 29.39351294752633 [sec.]
+13958-th trajectory (Dinner_Table_Chair - Desk_Chair)
+fall while walking:
+0263 [day] 12 [h] 13 [m] 41 [s] 858059 [ms]
+lie down: 30.512393061964268 [sec.]
+15255-th trajectory (Bed - Wash_Machine)
+fall while standing:
+0289 [day] 05 [h] 50 [m] 23 [s] 971588 [ms]
+lie down: 24.331914841538364 [sec.]
+16982-th trajectory (Dinner_Table_Chair - Kitchen_Stove)
+fall while walking:
+0321 [day] 19 [h] 13 [m] 08 [s] 015908 [ms]
+lie down: 33.28755602405688 [sec.]
+21044-th trajectory (Bed - Sofa)
+fall while standing:
+0398 [day] 05 [h] 53 [m] 20 [s] 736236 [ms]
+lie down: 27.52904815415154 [sec.]
+22353-th trajectory (Trash_Bin - Toilet_Door)
+fall while walking:
+0421 [day] 08 [h] 35 [m] 02 [s] 569323 [ms]
+lie down: 31.657745520372792 [sec.]
+22686-th trajectory (Bed - Desk_Chair)
+fall while standing:
+0427 [day] 05 [h] 36 [m] 45 [s] 853655 [ms]
+lie down: 22.36541253276176 [sec.]
+28774-th trajectory (Dinner_Table_Chair - Trash_Bin)
+fall while walking:
+0541 [day] 12 [h] 38 [m] 58 [s] 413501 [ms]
+lie down: 30.061267545649255 [sec.]
+30238-th trajectory (Wardrobe - Kitchen_Stove)
+fall while walking:
+0569 [day] 05 [h] 39 [m] 52 [s] 744555 [ms]
+lie down: 29.351308072340665 [sec.]
+35938-th trajectory (Toilet_Door - Wash_Machine)
+fall while walking:
+0676 [day] 16 [h] 12 [m] 48 [s] 454083 [ms]
+lie down: 32.03239174322097 [sec.]
+37223-th trajectory (Dinner_Table_Chair - Trash_Bin)
+fall while walking:
+0701 [day] 12 [h] 47 [m] 42 [s] 774747 [ms]
+lie down: 32.779442448986046 [sec.]
+41947-th trajectory (Bed - Dinner_Table_Chair)
+fall while standing:
+0790 [day] 05 [h] 36 [m] 05 [s] 783658 [ms]
+lie down: 33.253021650087554 [sec.]
+43368-th trajectory (Dinner_Table_Chair - Sofa)
+fall while walking:
+0816 [day] 19 [h] 21 [m] 10 [s] 067333 [ms]
+lie down: 30.430288789456455 [sec.]
+43790-th trajectory (Desk_Chair - Dinner_Table_Chair)
+fall while walking:
+0824 [day] 20 [h] 08 [m] 15 [s] 615090 [ms]
+lie down: 22.490048396707323 [sec.]
+47379-th trajectory (Toilet_Door - Dinner_Table_Chair)
+fall while walking:
+0892 [day] 09 [h] 34 [m] 25 [s] 965437 [ms]
+lie down: 28.671135999976784 [sec.]
+49201-th trajectory (Wash_Machine - Desk_Chair)
+fall while walking:
+0926 [day] 10 [h] 40 [m] 17 [s] 849913 [ms]
+lie down: 19.92115307401872 [sec.]
+61380-th trajectory (Bed - Desk_Chair)
+fall while walking:
+1154 [day] 06 [h] 28 [m] 48 [s] 910922 [ms]
+lie down: 27.047888472538588 [sec.]
+64225-th trajectory (Bed - Dinner_Table_Chair)
+fall while standing:
+1208 [day] 05 [h] 28 [m] 01 [s] 560864 [ms]
+lie down: 21.077446562880013 [sec.]
+68738-th trajectory (Wash_Machine - Desk_Chair)
+fall while walking:
+1292 [day] 18 [h] 17 [m] 40 [s] 303447 [ms]
+lie down: 28.986693669313905 [sec.]
+69930-th trajectory (Entrance - Desk_Chair)
+fall while walking:
+1314 [day] 10 [h] 46 [m] 08 [s] 755536 [ms]
+lie down: 29.500162958966392 [sec.]
+71014-th trajectory (Bed - Sofa)
+fall while standing:
+1334 [day] 05 [h] 16 [m] 17 [s] 008505 [ms]
+lie down: 21.56784976286775 [sec.]
+74953-th trajectory (Bed - Entrance)
+fall while standing:
+1408 [day] 05 [h] 01 [m] 53 [s] 839550 [ms]
+lie down: 28.402519011478418 [sec.]
+78841-th trajectory (Toilet_Door - Sofa)
+fall while walking:
+1482 [day] 07 [h] 48 [m] 47 [s] 880766 [ms]
+lie down: 33.77547303588955 [sec.]
+80624-th trajectory (Bed - Wash_Machine)
+fall while standing:
+1516 [day] 03 [h] 59 [m] 32 [s] 519647 [ms]
+lie down: 24.70112757961867 [sec.]
+82901-th trajectory (Bed - Kitchen_Stove)
+fall while standing:
+1558 [day] 05 [h] 47 [m] 28 [s] 144267 [ms]
+lie down: 40.23383592181761 [sec.]
+85421-th trajectory (Toilet_Door - Kitchen_Stove)
+fall while walking:
+1605 [day] 05 [h] 38 [m] 08 [s] 802325 [ms]
+lie down: 24.322190491501452 [sec.]
+91853-th trajectory (Bed - Dinner_Table_Chair)
+fall while standing:
+1730 [day] 07 [h] 23 [m] 00 [s] 535274 [ms]
+lie down: 26.66440138078377 [sec.]
+91984-th trajectory (Bed - Wardrobe)
+fall while standing:
+1732 [day] 15 [h] 53 [m] 45 [s] 806544 [ms]
+lie down: 26.78332379904766 [sec.]
+100703-th trajectory (Bed - Wash_Machine)
+fall while standing:
+1899 [day] 05 [h] 17 [m] 58 [s] 803136 [ms]
+lie down: 31.956820440636587 [sec.]
+101372-th trajectory (Bed - Dinner_Table_Chair)
+fall while standing:
+1912 [day] 05 [h] 13 [m] 28 [s] 406829 [ms]
+lie down: 37.39599238971856 [sec.]
+101492-th trajectory (Bed - Dinner_Table_Chair)
+fall while standing:
+1914 [day] 05 [h] 15 [m] 59 [s] 620806 [ms]
+lie down: 21.119687138695042 [sec.]
+102215-th trajectory (Entrance - Wardrobe)
+fall while walking:
+1927 [day] 09 [h] 30 [m] 24 [s] 905398 [ms]
+lie down: 29.95726640033581 [sec.]
+102752-th trajectory (Sofa - Dinner_Table_Chair)
+fall while walking:
+1937 [day] 14 [h] 01 [m] 45 [s] 162721 [ms]
+lie down: 34.0092494911769 [sec.]
+102813-th trajectory (Toilet_Door - Trash_Bin)
+fall while walking:
+1938 [day] 12 [h] 15 [m] 38 [s] 780136 [ms]
+lie down: 30.368497040512846 [sec.]
+108754-th trajectory (Toilet_Door - Dinner_Table_Chair)
+fall while walking:
+2051 [day] 13 [h] 46 [m] 04 [s] 324552 [ms]
+lie down: 31.76675626268593 [sec.]
+112429-th trajectory (Dinner_Table_Chair - Desk_Chair)
+fall while walking:
+2119 [day] 15 [h] 56 [m] 41 [s] 224210 [ms]
+lie down: 27.773401513131528 [sec.]
+119998-th trajectory (Bed - Desk_Chair)
+fall while standing:
+2260 [day] 03 [h] 53 [m] 34 [s] 027612 [ms]
+lie down: 22.3491136613494 [sec.]
+122000-th trajectory (Bathroom_Door - Wash_Machine)
+fall while walking:
+2296 [day] 12 [h] 47 [m] 01 [s] 976302 [ms]
+lie down: 31.39234248880161 [sec.]
+127297-th trajectory (Toilet_Door - Dinner_Table_Chair)
+fall while walking:
+2394 [day] 07 [h] 35 [m] 16 [s] 772106 [ms]
+lie down: 33.68247566508811 [sec.]
+130742-th trajectory (Bed - Kitchen_Stove)
+fall while standing:
+2458 [day] 05 [h] 40 [m] 43 [s] 413615 [ms]
+lie down: 27.914955855385415 [sec.]
+131283-th trajectory (Sofa - Dinner_Table_Chair)
+fall while walking:
+2467 [day] 17 [h] 58 [m] 27 [s] 949255 [ms]
+lie down: 14.207126642851154 [sec.]
+134977-th trajectory (Kitchen_Stove - Trash_Bin)
+fall while walking:
+2537 [day] 06 [h] 46 [m] 55 [s] 573739 [ms]
+lie down: 31.62327288565951 [sec.]
+139093-th trajectory (Bed - Wash_Machine)
+fall while standing:
+2614 [day] 17 [h] 10 [m] 20 [s] 812625 [ms]
+lie down: 28.224863023106327 [sec.]
+141650-th trajectory (Bed - Desk_Chair)
+fall while standing:
+2664 [day] 05 [h] 59 [m] 06 [s] 809338 [ms]
+lie down: 45.16103319197495 [sec.]
+142346-th trajectory (Bed - Dinner_Table_Chair)
+fall while standing:
+2678 [day] 05 [h] 39 [m] 44 [s] 043763 [ms]
+lie down: 35.56312606020509 [sec.]
+145429-th trajectory (Kitchen_Stove - Wardrobe)
+fall while walking:
+2736 [day] 19 [h] 23 [m] 00 [s] 490228 [ms]
+lie down: 29.923995686837703 [sec.]
+146407-th trajectory (Bed - Entrance)
+fall while standing:
+2755 [day] 05 [h] 08 [m] 20 [s] 783494 [ms]
+lie down: 30.54344355689028 [sec.]
+147489-th trajectory (Entrance - Bathroom_Door)
+fall while walking:
+2774 [day] 18 [h] 22 [m] 09 [s] 792569 [ms]
+lie down: 39.850082838980306 [sec.]
+151226-th trajectory (Bed - Desk_Chair)
+fall while standing:
+2845 [day] 05 [h] 15 [m] 44 [s] 081098 [ms]
+lie down: 30.32626950000566 [sec.]
+155069-th trajectory (Entrance - Dinner_Table_Chair)
+fall while walking:
+2914 [day] 17 [h] 31 [m] 37 [s] 316877 [ms]
+lie down: 23.074103527899467 [sec.]
+158769-th trajectory (Bed - Sofa)
+fall while standing:
+2984 [day] 05 [h] 28 [m] 19 [s] 721493 [ms]
+lie down: 38.034712722523125 [sec.]
+166651-th trajectory (Bed - Entrance)
+fall while standing:
+3132 [day] 04 [h] 36 [m] 19 [s] 126697 [ms]
+lie down: 33.22596913691125 [sec.]
+172396-th trajectory (Bed - Wash_Machine)
+fall while standing:
+3239 [day] 05 [h] 35 [m] 46 [s] 164360 [ms]
+lie down: 26.47025072893446 [sec.]
+
