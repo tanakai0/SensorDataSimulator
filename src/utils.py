@@ -3152,9 +3152,10 @@ def save_layout(
             ax.plot(x, y, "--", c=cm[i])
 
     if mark_point is not None:
-        for p in mark_point:
-            # plt.scatter(p[0], p[1], marker="v", color="black")
-            ax.scatter(p[0], p[1], marker="o", color="red")
+        mark_x = [p[0] for p in mark_point]
+        mark_y = [p[1] for p in mark_point]
+        # plt.scatter(mark_x, mark_y, marker="v", color="black")
+        ax.scatter(mark_x, mark_y, marker="o", color="red")
 
     if return_ax:
         return ax
