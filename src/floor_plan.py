@@ -13,6 +13,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
+# self-made
+import src.constants as constants
+
 all_furniture = [[1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1]]
 
 
@@ -3993,9 +3996,9 @@ class FloorPlan:
             max_diss_d[key] = max_dis
             f_name = key + "_distance.csv"
             save_filed(folder_path, f_name, "%7.2f", distance)
-        save_filed(folder_path, "Discomfortable_value.csv", "%5.2f", discom)
-        save_normaljson(folder_path, destinations, "Destinations")
-        save_normaljson(folder_path, max_diss_d, "Max_Distances")
+        save_filed(folder_path, constants.DISCOMFORTABLE_VALUE + ".csv", "%5.2f", discom)
+        save_normaljson(folder_path, destinations, constants.DESTINATIONS)
+        save_normaljson(folder_path, max_diss_d, constants.MAX_DISTANCE)
 
     def load_file(self, layout_path, name, extension):
         """

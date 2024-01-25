@@ -7,10 +7,11 @@ import src.anomaly_model as anomaly_model
 import src.floor_plan as floor_plan
 import src.sensor_model as sensor_model
 import src.utils as utils
+import src.constants as constants
 
 working_path = Path().resolve()
 # layout_data_path has the layouts
-layout_data_path = working_path / "layout_data"
+layout_data_path = working_path / constants.LAYOUT_DATA_FOLDER
 # path has the layout data
 path = Path(layout_data_path / "test_layout")
 # data_save_path saves the data
@@ -26,7 +27,7 @@ temp_time = time.time()
 # floor plan (FP)
 FP = floor_plan.FloorPlan()
 FP.load_layout(path)
-utils.pickle_dump(data_save_path, "FP", FP)
+utils.pickle_dump(data_save_path, constants.FLOOR_PLAN, FP)
 
 
 # models for Anomaly labels (AL)
@@ -53,7 +54,7 @@ AL_model = {
     "fall_s_parameters": fall_s_parameters,
     "forgetting_num": anomaly_info["forgetting_num"],
 }
-utils.pickle_dump(data_save_path, "AL_model", AL_model)
+utils.pickle_dump(data_save_path, constants.ANOMALY_MODEL, AL_model)
 
 # Activity sequence (AS)
 state_anomaly_labels = {
@@ -61,7 +62,7 @@ state_anomaly_labels = {
     anomaly_model.BEING_SEMI_BEDRIDDEN: anomaly_info["semi_bedridden_labels"],
 }
 AS_model = activity_model.basic_activity_model
-utils.pickle_dump(data_save_path, "AS_model", AS_model)
+utils.pickle_dump(data_save_path, constants.ACTIVITY_MODEL, AS_model)
 AS = utils.generate_activity_sequence(
     start_days,
     end_days,
@@ -71,13 +72,13 @@ AS = utils.generate_activity_sequence(
     anomaly_parameters=AL_model,
 )
 utils.save_activity_sequence(data_save_path, AS, file_name="AS")
-utils.pickle_dump(data_save_path, "AS", AS)
+utils.pickle_dump(data_save_path, constants.ACTIVITY_SEQUENCE, AS)
 print("An activity sequence was generated. {} [s]".format(time.time() - temp_time))
 
 
 # Walking trajectories (WT)
 WT_model = activity_model.indoor_movement  # parameters about walking
-utils.pickle_dump(data_save_path, "WT_model", WT_model)
+utils.pickle_dump(data_save_path, constants.WALKING_MODEL, WT_model)
 WT = utils.generate_walking_trajectories(
     path,
     AS,
@@ -87,14 +88,14 @@ WT = utils.generate_walking_trajectories(
     fall_w_parameters=AL_model["fall_w_parameters"],
     fall_s_parameters=AL_model["fall_s_parameters"],
 )
-utils.pickle_dump(data_save_path, "WT", WT)
-utils.save_walking_trajectoires(data_save_path, WT, "WT")
+utils.pickle_dump(data_save_path, constants.WALKING_TRAJECTORY, WT)
+utils.save_walking_trajectoires(data_save_path, WT, constants.WALKING_TRAJECTORY)
 print("Walking trajectories were generated. {} [s]".format(time.time() - temp_time))
 
 
 # sensor data (SD)
 sensors = sensor_model.test_sensors  # for test_layout
-utils.pickle_dump(data_save_path, "SD_model", sensors)
+utils.pickle_dump(data_save_path, constants.SENSOR_MODEL, sensors)
 utils.save_layout(data_save_path, path, sensors=sensors, show=False)
 
 motion_SD = utils.generate_motion_sensor_data(
@@ -121,9 +122,9 @@ print("Cost sensor data was simulated. {}[s]".format(time.time() - temp_time))
 
 sorted_sensor_data = sorted(motion_SD + cost_SD, key=lambda x: x[0])
 utils.save_binary_sensor_data(
-    data_save_path, sensors, sorted_sensor_data, filename="SD"
+    data_save_path, sensors, sorted_sensor_data, filename=constants.SENSOR_DATA
 )
-utils.pickle_dump(data_save_path, "SD", sorted_sensor_data)
+utils.pickle_dump(data_save_path, constants.SENSOR_DATA, sorted_sensor_data)
 print("All sensor data was simulated. {}[s]".format(time.time() - temp_time))
 
 # Anomaly labels (AL)
@@ -145,6 +146,6 @@ for i, wt in enumerate(WT):
 AL[anomaly_model.WANDERING] = wandering_labels
 AL[anomaly_model.FALL_WHILE_WALKING] = fall_w_labels
 AL[anomaly_model.FALL_WHILE_STANDING] = fall_s_labels
-utils.pickle_dump(data_save_path, "AL", AL)
+utils.pickle_dump(data_save_path, constants.ANOMALY, AL)
 
 print("Finished. {}[s]".format(time.time() - temp_time))

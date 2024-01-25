@@ -7,11 +7,8 @@ from scipy.spatial import distance
 
 # self-made
 import src.floor_plan as floor_plan
+import src.constants as constants
 
-FLOW_KITCHEN = "water flow sensor at kitchen"
-FLOW_BATHROOM = "water flow sensor in bathroom"
-POWER_TV = "electric energy meter of TV"
-POWER_KITCHEN = "electric energy meter at kitchen"
 
 
 def generate_test_sensor_arrange(
@@ -86,7 +83,7 @@ def generate_test_sensor_arrange(
     for i, p in enumerate(positions):
         if i < num_PIR:
             sensors.append(
-                CircularPIRSensor("normal PIR", i, p[0], p[1], "#ff0000", 50)
+                CircularPIRSensor("normal PIR", i, p[0], p[1], constants.LIGHT_RED, 50)
             )
         else:
             sensors.append(
@@ -95,7 +92,7 @@ def generate_test_sensor_arrange(
                     i,
                     p[0] - 50,
                     p[1] - 50,
-                    "#696969",
+                    constants.LIGHT_GRAY,
                     100,
                     100,
                     0,
@@ -912,81 +909,81 @@ def check_indexes_of_sensors(sensors):
 
 # test sensor model of test_layout
 test_sensors = [
-    CircularPIRSensor("normal PIR", 0, 150, 150, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 1, 400, 120, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 2, 100, 55, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 3, 200, 55, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 4, 300, 40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 5, 400, 40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 6, 100, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 7, 200, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 8, 450, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 9, 550, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 10, 650, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 11, -10, -70, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 12, 200, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 13, 300, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 14, 400, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 15, 500, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 16, 610, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 17, 670, 70, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 18, 750, 80, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 19, 850, 90, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 20, 850, 10, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 21, 920, 50, "#ff0000", 50),
-    SquarePressureSensor("vertical oblong pressure", 22, -30, 0, "#696969", 200, 50, 0),
+    CircularPIRSensor("normal PIR", 0, 150, 150, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 1, 400, 120, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 2, 100, 55, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 3, 200, 55, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 4, 300, 40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 5, 400, 40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 6, 100, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 7, 200, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 8, 450, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 9, 550, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 10, 650, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 11, -10, -70, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 12, 200, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 13, 300, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 14, 400, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 15, 500, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 16, 610, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 17, 670, 70, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 18, 750, 80, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 19, 850, 90, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 20, 850, 10, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 21, 920, 50, constants.LIGHT_RED, 50),
+    SquarePressureSensor("vertical oblong pressure", 22, -30, 0, constants.LIGHT_GRAY, 200, 50, 0),
     SquarePressureSensor(
-        "horizontal oblong pressure", 23, -160, -60, "#696969", 50, 150, 0
+        "horizontal oblong pressure", 23, -160, -60, constants.LIGHT_GRAY, 50, 150, 0
     ),
-    CostSensor(FLOW_BATHROOM, 24, 600, -310, "#0000ff"),
-    CostSensor(FLOW_KITCHEN, 25, 990, 60, "#0000ff"),
-    CostSensor(POWER_TV, 26, 320, 160, "#ffa500"),
-    CostSensor(POWER_KITCHEN, 27, 985, 180, "#ffa500"),
-    DoorSensor("door", 28, 195, 205, "#D3E173", "Entrance"),
+    CostSensor(constants.FLOW_BATHROOM, 24, 600, -310, constants.BLUE),
+    CostSensor(constants.FLOW_KITCHEN, 25, 990, 60, constants.BLUE),
+    CostSensor(constants.POWER_TV, 26, 320, 160, constants.YELLOW),
+    CostSensor(constants.POWER_KITCHEN, 27, 985, 180, constants.YELLOW),
+    DoorSensor("door", 28, 195, 205, constants.LIGHT_GREEN, "Entrance"),
 ]
 
 test_sensors2 = [
-    CircularPIRSensor("normal PIR", 0,  60, 140, "#ff0000", 60),
-    CircularPIRSensor("normal PIR", 1, 110, 140, "#ff0000", 60),
-    CircularPIRSensor("normal PIR", 2, 160, 140, "#ff0000", 60),
-    CircularPIRSensor("normal PIR", 3, 210, 140, "#ff0000", 60),
-    CircularPIRSensor("normal PIR", 4,  60,  90, "#ff0000", 60),
-    CircularPIRSensor("normal PIR", 5, 110,  90, "#ff0000", 60),
-    CircularPIRSensor("normal PIR", 6, 160,  90, "#ff0000", 60),
-    CircularPIRSensor("normal PIR", 7, 210,  90, "#ff0000", 60),
+    CircularPIRSensor("normal PIR", 0,  60, 140, constants.LIGHT_RED, 60),
+    CircularPIRSensor("normal PIR", 1, 110, 140, constants.LIGHT_RED, 60),
+    CircularPIRSensor("normal PIR", 2, 160, 140, constants.LIGHT_RED, 60),
+    CircularPIRSensor("normal PIR", 3, 210, 140, constants.LIGHT_RED, 60),
+    CircularPIRSensor("normal PIR", 4,  60,  90, constants.LIGHT_RED, 60),
+    CircularPIRSensor("normal PIR", 5, 110,  90, constants.LIGHT_RED, 60),
+    CircularPIRSensor("normal PIR", 6, 160,  90, constants.LIGHT_RED, 60),
+    CircularPIRSensor("normal PIR", 7, 210,  90, constants.LIGHT_RED, 60),
 
     
-    CircularPIRSensor("normal PIR", 71, 400, 120, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 72, 100, 55, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 73, 200, 55, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 74, 300, 40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 75, 400, 40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 76, 100, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 77, 200, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 78, 450, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 79, 550, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 80, 650, -40, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 81, -10, -70, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 82, 200, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 83, 300, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 84, 400, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 85, 500, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 86, 610, -140, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 87, 670, 70, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 88, 750, 80, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 89, 850, 90, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 90, 850, 10, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 91, 920, 50, "#ff0000", 50),
-    CircularPIRSensor("normal PIR", 92, 930, 55, "#ff0000", 50),
-    SquarePressureSensor("vertical oblong pressure", 100, -30, 0, "#696969", 200, 80, 0),
+    CircularPIRSensor("normal PIR", 71, 400, 120, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 72, 100, 55, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 73, 200, 55, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 74, 300, 40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 75, 400, 40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 76, 100, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 77, 200, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 78, 450, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 79, 550, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 80, 650, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 81, -10, -70, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 82, 200, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 83, 300, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 84, 400, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 85, 500, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 86, 610, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 87, 670, 70, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 88, 750, 80, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 89, 850, 90, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 90, 850, 10, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 91, 920, 50, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 92, 930, 55, constants.LIGHT_RED, 50),
+    SquarePressureSensor("vertical oblong pressure", 100, -30, 0, constants.LIGHT_GRAY, 200, 80, 0),
     SquarePressureSensor(
-        "horizontal oblong pressure", 101, -160, -90, "#696969", 80, 150, 0
+        "horizontal oblong pressure", 101, -160, -90, constants.LIGHT_GRAY, 80, 150, 0
     ),
-    CostSensor(FLOW_BATHROOM, 201, 600, -310, "#0000ff"),
-    CostSensor(FLOW_KITCHEN, 202, 990, 60, "#0000ff"),
-    CostSensor(POWER_TV, 203, 320, 160, "#ffa500"),
-    CostSensor(POWER_KITCHEN, 204, 985, 180, "#ffa500"),
-    DoorSensor("door", 301, 195, 205, "#D3E173", "Entrance"),
+    CostSensor(constants.FLOW_BATHROOM, 201, 600, -310, constants.BLUE),
+    CostSensor(constants.FLOW_KITCHEN, 202, 990, 60, constants.BLUE),
+    CostSensor(constants.POWER_TV, 203, 320, 160, constants.YELLOW),
+    CostSensor(constants.POWER_KITCHEN, 204, 985, 180, constants.YELLOW),
+    DoorSensor("door", 301, 195, 205, constants.LIGHT_GREEN, "Entrance"),
 ]
 
 check_indexes_of_sensors(test_sensors)
