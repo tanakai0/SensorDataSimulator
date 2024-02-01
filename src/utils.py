@@ -1983,7 +1983,7 @@ def sample_walking_trajectories(
     return WT
 
 
-def print_progress_bar(n, i, text):
+def print_progress_bar(n, i, text, step = None):
     """
     This prints a message text for progress bar.
 
@@ -1995,11 +1995,19 @@ def print_progress_bar(n, i, text):
         Current index.
     text : str
         Header text.
+    step : int
+        Step to print.
     """
+    width = len(str(n))
+    print_text = f"{text} {i:>{width}} / {n}."
     if i == n:
-        return print("{} {} / {}.".format(text, i, n) + "Completed!")
+        print(print_text + " Completed!")
     else:
-        return print("{} {} / {}.\r".format(text, i, n), end="")
+        if step is None:   
+            print(print_text + "\r", end="")
+        else:
+            if i % step == 0:
+                print(print_text + "\r", end="")
 
 
 def sample_path(
