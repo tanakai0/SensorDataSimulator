@@ -6,4 +6,4 @@ Levenshtein
 black
 isort
 flake8
-# ace-sklearn-crfsuite
+ace-sklearn-crfsuite
