@@ -2513,7 +2513,7 @@ def generate_motion_sensor_data(
     go_out_name=constants.GO_OUT_NAME,
 ):
     """
-    This simulates sensor data with or withour anomalies, that is related with resident's motion.
+    This simulates sensor data with anomalies, that is related with the resident's motion.
     For now, the all sensors share the same sampling rate.
 
     Parameters
@@ -2552,8 +2552,8 @@ def generate_motion_sensor_data(
     Assuming that there is always an entry and exit from the house before and after 'Go out' (go_out_name).
     """
     sensor_data = []
-    # If the sensor is sensor_model.CircularPIRSensor or sensor_model.SquarePressureSensor, first sensor state is initialized as False.
-    # States of other kinds of sensors are initialized as None (that is not updated in this function).
+    # The state of the motion sensors are initialized as False.
+    # The states of the other kinds of sensors are initialized as None, so those are not updated in this function.
     sensor_states = {}
     for s in sensors:
         if (
@@ -2568,7 +2568,7 @@ def generate_motion_sensor_data(
     _max_len = len(WT) - 1
     # update states of door sensors
     for i, wt in enumerate(WT):
-        print_progress_bar(_max_len, i, "Making motion sensor data (door)", 100)
+        print_progress_bar(_max_len, i, "Making door sensor data", 100)
         act = AS[i]
         if act.activity.name == go_out_name:
             update_states_of_door_sensors(
@@ -2596,7 +2596,7 @@ def generate_motion_sensor_data(
     # update states of motion sensors
     for i, wt in enumerate(WT):
         print_progress_bar(
-                _max_len, i, "Making motion sensor data (PIR / pressure)", 10
+                _max_len, i, "Making PIR / pressure sensor data", 10
             )
         if wt.centers != []:
             update_states_of_motion_sensors(
