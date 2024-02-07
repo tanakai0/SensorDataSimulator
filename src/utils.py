@@ -2565,12 +2565,10 @@ def generate_motion_sensor_data(
         else:
             sensor_states[s.index] = None
 
-    _step = 100
-    _max_len = len(WT)
+    _max_len = len(WT) - 1
     # update states of door sensors
     for i, wt in enumerate(WT):
-        if i % _step == 0:
-            print_progress_bar(_max_len, i, "Making motion sensor data (door)")
+        print_progress_bar(_max_len, i, "Making motion sensor data (door)", 100)
         act = AS[i]
         if act.activity.name == go_out_name:
             update_states_of_door_sensors(
@@ -2594,14 +2592,11 @@ def generate_motion_sensor_data(
             sync_reference_point,
             act,
         )
-    print("")
 
-    _step = 10
     # update states of motion sensors
     for i, wt in enumerate(WT):
-        if i % _step == 0:
-            print_progress_bar(
-                _max_len, i, "Making motion sensor data (PIR / pressure)"
+        print_progress_bar(
+                _max_len, i, "Making motion sensor data (PIR / pressure)", 10
             )
         if wt.centers != []:
             update_states_of_motion_sensors(
@@ -2613,7 +2608,6 @@ def generate_motion_sensor_data(
                 sync_reference_point,
                 body_radius,
             )
-    print("")
     return sensor_data
 
 
@@ -2727,7 +2721,7 @@ def update_states_of_motion_sensors(
     Update states of sensors related with resident's walking.
     For now, we treat with PIR motion sensors and pressure sensors.
     For now, the all sensors share the same sampling rate.
-    If the resident does not move in PIR motion sensors for sampling_seconds, seconds, then PIR sensor does not be activated.
+    If the resident does not move in PIR motion sensors for sampling seconds, then PIR sensor does not be activated.
     Pressure sensors can be activated while the resident does not move (like falling).
     For now, the pressure sensor does not be activated after the resident reaches the goal point.
 
