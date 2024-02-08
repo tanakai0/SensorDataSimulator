@@ -7,3 +7,4 @@ black
 isort
 flake8
 ace-sklearn-crfsuite
+pandas
