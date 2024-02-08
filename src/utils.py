@@ -2511,6 +2511,7 @@ def generate_motion_sensor_data(
     sync_reference_point=timedelta(days=0),
     body_radius=10,
     go_out_name=constants.GO_OUT_NAME,
+    move_in_act = True
 ):
     """
     This simulates sensor data with anomalies, that is related with the resident's motion.
@@ -2533,6 +2534,8 @@ def generate_motion_sensor_data(
         Radius[cm] of resident's body on floor.
     go_out_name : str
         Name of the activity the resident leave their home.
+    move_in_act : bool
+        Whether the resident moves in activities.
 
     Returns
     -------
@@ -2593,13 +2596,13 @@ def generate_motion_sensor_data(
             act,
         )
 
-    # update states of motion sensors
+    # update states of motion sensors in walks
     for i, wt in enumerate(WT):
         print_progress_bar(
-                _max_len, i, "Making PIR / pressure sensor data", 10
+                _max_len, i, "Making PIR / pressure sensor data in walks", 10
             )
         if wt.centers != []:
-            update_states_of_motion_sensors(
+            update_states_of_motion_sensors_in_walks(
                 sensors,
                 sensor_data,
                 sensor_states,
@@ -2608,6 +2611,24 @@ def generate_motion_sensor_data(
                 sync_reference_point,
                 body_radius,
             )
+
+    # update states of motion sensors in activities
+    _max_len = len(AS) - 1
+    if move_in_act:
+        for i, act in enumerate(AS):
+            print_progress_bar(_max_len, i, "Making PIR / pressure sensor data in activities", 100)
+            update_states_of_motion_sensors_in_activities(
+                sensors,
+                sensor_data,
+                sensor_states,
+                act,
+                wt.start_time,
+                sampling_seconds,
+                sync_reference_point,
+                body_radius
+            )
+
+
     return sensor_data
 
 
@@ -2708,7 +2729,7 @@ def update_states_of_door_sensors(
             )
 
 
-def update_states_of_motion_sensors(
+def update_states_of_motion_sensors_in_walks(
     sensors,
     sensor_data,
     sensor_states,
@@ -2741,8 +2762,8 @@ def update_states_of_motion_sensors(
     sensor_states : dict
         Present states of sensors.
         Keys are indexes of sensors that are recorded in sensor_model.Sensor.index, not indexes in input's 'sensors'.
-        Value are states of sensors.
-        If the corresponded sensor of the index is sensor_model.CircularPIRSensor or sensor_model.SquarePressureSensor, the value is boolean, else None.
+        Value are states of sensors. If the corresponded sensors of the indexes are sensor_model.CircularPIRSensor
+        or sensor_model.SquarePressureSensor, the values are boolean, else None.
     wt : list of WalkingTrajectory
         Walking trajectories.
     sampling_seconds : float
@@ -2768,6 +2789,126 @@ def update_states_of_motion_sensors(
     sampling_start = define_synchronous_sampling_point(
         sync_reference_point, wt.start_time, sampling_seconds
     )
+    past_p = wt.centers[0]  # past 2d coordinate of the resident
+    # calculate the 2d coordinate ot the resident using the interpolation between wt.centers[i] and wt.centers[i+1]
+    for t in date_generator(
+        sampling_start, wt.end_time, step=timedelta(seconds=sampling_seconds)
+    ):
+        p = None
+        if t == wt.end_time:
+            p = wt.centers[-1]
+        else:
+            i = find_less_than_or_equal(wt.timestamp, t)
+            t_i = wt.timestamp[i]
+            # i, t_i = [(j, t_j) for (j, t_j) in enumerate(wt.timestamp) if t_j <= t][-1]
+            t_ii = wt.timestamp[i + 1]
+            c_i, c_ii = wt.centers[i], wt.centers[i + 1]
+            p = tuple(
+                np.array(c_i)
+                + (np.array(c_ii) - np.array(c_i)) * (t - t_i) / (t_ii - t_i)
+            )
+
+        temp_body_radius = body_radius
+        if wt.fall_w and i == wt.fall_w_index:
+            temp_body_radius = wt.fall_w_body_range
+        if wt.fall_s and i == wt.fall_s_index:
+            temp_body_radius = wt.fall_s_body_range
+
+        for s in sensors:
+            # for PIR sensor
+            if isinstance(s, sensor_model.CircularPIRSensor):
+                min_d = 1  # min_d [cm] is a minimum distance between p and past_p to be activated.
+                state = s.is_activated(p, past_p, temp_body_radius, min_d)
+                update_state_of_binary_sensor(sensor_data, sensor_states, s, state, t)
+            # for pressure sensor
+            elif isinstance(s, sensor_model.SquarePressureSensor):
+                state = s.collide(p, temp_body_radius)
+                update_state_of_binary_sensor(sensor_data, sensor_states, s, state, t)
+            else:
+                continue
+
+        past_p = p
+
+    # When the resident reaches a goal point after wt.end.
+    # Suppose next path does not start immidiately.
+
+    t += timedelta(seconds=sampling_seconds)
+    for s in sensors:
+        # States of PIR sensors are False
+        if isinstance(s, sensor_model.CircularPIRSensor):
+            state = False
+            update_state_of_binary_sensor(sensor_data, sensor_states, s, state, t)
+        # States of pressure sensors are False
+        elif isinstance(s, sensor_model.SquarePressureSensor):
+            state = False
+            update_state_of_binary_sensor(sensor_data, sensor_states, s, state, t)
+        else:
+            continue
+
+
+def update_states_of_motion_sensors_in_activities(
+    sensors,
+    sensor_data,
+    sensor_states,
+    act,
+    next_walk_start_time,
+    sampling_seconds,
+    sync_reference_point,
+    body_radius,
+):
+    """
+    Update states of sensors related with activities.
+
+    Parameters
+    ----------
+    sensors : list of sensor_model.Sensor
+        Target sensors.
+    sensor_data : list of tuple
+        sensor_data[i] = (time, sensor_index, sensor_state),
+            time : datetime.timedelta
+                Time the sensor changes its state.
+            sensor_index : int
+                Index of the sensor. This is the number of Sensor.index, not the index in 'sensors'.
+            sensor_state : boolean
+                Sensor state.
+                For now, binary sensors are considered.
+    sensor_states : dict
+        Present states of sensors.
+        Keys are indexes of sensors that are recorded in sensor_model.Sensor.index, not indexes in input's 'sensors'.
+        Value are states of sensors. If the corresponded sensors of the indexes are sensor_model.CircularPIRSensor
+        or sensor_model.SquarePressureSensor, the values are boolean, else None.
+    act : ActivityDataPoint
+        Target activity.
+    next_walk_start_time : datetime.timedelta
+        Time of the next walk.
+    sampling_seconds : float
+        Sampling duration [second] of sensors.
+    sync_reference_point : datetime.timedelta, default timedelta(days = 0)
+        Start time of the all activities.
+        This is used to adjust the sampling time.
+    body_radius : float
+        Radius [cm] of resident's body on floor.
+
+    Notes
+    -----
+    Suppose that the resident moves straight on a line (= between centers[i] and centers[i+1]).
+    Calculate the 2d coordinate ot the resident using the interpolation between wt.centers[i] and wt.centers[i+1], e.g.,
+
+    -------.------------------------------.------
+           |                  |           |
+           c_i                p           c_{i+1}    2d coordinate,
+           t_i               t_p          t_{i+1}    time,
+
+    p = c_i + (c_{i+1} - c_i) * (t_p - t_i) /(t_{i+1} - t_i).
+    """
+    if act.activity.name == constants.WANDERING_NAME:
+        return
+    
+    sampling_start = define_synchronous_sampling_point(
+        sync_reference_point, act.start, sampling_seconds
+    )
+
+    
     past_p = wt.centers[0]  # past 2d coordinate of the resident
     # calculate the 2d coordinate ot the resident using the interpolation between wt.centers[i] and wt.centers[i+1]
     for t in date_generator(
@@ -3031,11 +3172,8 @@ def generate_cost_sensor_data(
             forgetting_act[i].append(x[2])
 
     progress_bar_step = 10000 * sampling_step
-    temp_t = sampling_start
     for t in date_generator(sampling_start, sampling_end, sampling_step):
-        if (t - temp_t) > progress_bar_step:
-            temp_t = t
-            print_progress_bar(sampling_end, t, "Making cost sensor data")
+        print_progress_bar(sampling_end, t, "Making cost sensor data", progress_bar_step)
         while act.end < t:
             act_index += 1
             act = AS[act_index]
