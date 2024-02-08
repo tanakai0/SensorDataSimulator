@@ -282,6 +282,26 @@ class CircularPIRSensor(Sensor):
             return False
         else:
             return self.collide(p, body_radius=body_radius)
+        
+    @staticmethod
+    def duration_time_in_activity(mean, std):
+        """
+        Sampling duration time of sensor activations in an activity.
+        This follows a log normal distribution.
+        The time units are seconds.
+
+        Parameters
+        ----------
+        mean : float
+        std : float
+
+        Returns
+        -------
+        seconds : float
+            Duration time.
+        """
+
+        
 
     def draw(self, ax):
         """
