@@ -300,8 +300,8 @@ class CircularPIRSensor(Sensor):
         seconds : float
             Duration time.
         """
+        pass
 
-        
 
     def draw(self, ax):
         """
