@@ -284,23 +284,53 @@ class CircularPIRSensor(Sensor):
             return self.collide(p, body_radius=body_radius)
         
     @staticmethod
-    def duration_time_in_activity(mean, std):
+    def duration_time_in_activity(mean, std, log_scale = False):
         """
-        Sampling duration time of sensor activations in an activity.
+        Sampling duration time of sensor activation in an activity.
         This follows a log normal distribution.
         The time units are seconds.
 
         Parameters
         ----------
         mean : float
+            Mean.
         std : float
+            Standard deviantion.
+        scale : bool, default False
+            Whether the parameter is log scale.
+            False : mean of the data
+            True : mean of the log(data)
 
         Returns
         -------
         seconds : float
             Duration time.
         """
-        pass
+        if not(log_scale):
+            mean2 = np.log(mean**2/np.sqrt(mean**2+std**2))
+            std2 = np.sqrt(np.log(1 + std**2/mean**2))
+            mean, std = mean2, std2
+        return np.random.lognormal(mean, std)
+
+
+    def interval_time_in_activity(mean):
+        """
+        Sampling interval time between sensor activations in an activity.
+        This follows an exponential distribution.
+        The time units are seconds.
+
+        Parameters
+        ----------
+        mean : float
+            Mean of the data.
+
+        Returns
+        -------
+        seconds : float
+            Duration time.
+        """
+        # scale = 1/lambda
+        return np.random.exponential(scale = mean)
 
 
     def draw(self, ax):

@@ -247,7 +247,7 @@ class FloorPlan:
         return n_furs
 
     def existing_places(self):
-        # return the names of places (furniture, door, toilet, bathroom) that exist in the target layoutret
+        # return the names of places (furniture, door, toilet, bathroom) that exist in the target layout
         ret = []
         for room in self.Furnitures:
             for f in room:

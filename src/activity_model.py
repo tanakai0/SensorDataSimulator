@@ -1156,7 +1156,7 @@ class MetaRandomActivity(MetaActivity):
 
 def determine_activity_set(path, original_act_model):
     """
-    Thie checks the presence or absence of activities based on the presence or absence of furniture.
+    This checks the presence or absence of activities based on the presence or absence of furniture.
 
     Parameters
     ----------

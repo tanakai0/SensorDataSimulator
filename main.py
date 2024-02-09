@@ -99,6 +99,7 @@ utils.pickle_dump(data_save_path, constants.SENSOR_MODEL, sensors)
 utils.save_layout(data_save_path, path, sensors=sensors, show=False)
 
 motion_SD = utils.generate_motion_sensor_data(
+    FP,
     sensors,
     AS,
     WT,

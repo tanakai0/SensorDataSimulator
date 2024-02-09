@@ -2502,16 +2502,46 @@ def save_walking_trajectoires(path, WT, file_name=constants.WALKING_TRAJECTORY):
     with open(file_path, "w") as f:
         f.write(text)
 
+def place_centers_dict(FP):
+    """
+    Create a dictionary for the centroids of each location or furniture.
+
+    Parameters
+    ----------
+    FP : FloorPlan
+
+    Retruns
+    -------
+    centers : dict of list of tuple of float
+         centers[place] = list of center points
+         centers[place][i] = i-th center points like (x, y)
+    """
+    def calculate_center(place):
+        return (place[0] + place[2] / 2, place[1] + place[3] / 2)
+    def add_centers_dict(centerse, key, value):
+        if key not in centers:
+            centers[key] = [value]
+        else:
+            centers[key].append(value)
+    centers = {}  # center points of places
+    for room in FP.Furnitures:
+        for f in room:
+            add_centers_dict(centers, f[4], calculate_center(f))
+    for d in FP.Doors:
+        add_centers_dict(centers, d[4], calculate_center(d))
+    for tb in FP.Toil_Bath:
+        add_centers_dict(centers, tb[4], calculate_center(tb))
+    return centers
 
 def generate_motion_sensor_data(
+    FP,
     sensors,
     AS,
     WT,
     sampling_seconds=0.1,
     sync_reference_point=timedelta(days=0),
     body_radius=10,
-    go_out_name=constants.GO_OUT_NAME,
-    move_in_act = True
+    go_out_name=constants.GO_OUT_NAME
 ):
     """
     This simulates sensor data with anomalies, that is related with the resident's motion.
@@ -2519,6 +2549,7 @@ def generate_motion_sensor_data(
 
     Parameters
     ----------
+    FP : FloorPlan
     sensors : list of sensor_model.Sensor
         Target sensors.
     AS : list of ActivityDataPoint
@@ -2534,8 +2565,6 @@ def generate_motion_sensor_data(
         Radius[cm] of resident's body on floor.
     go_out_name : str
         Name of the activity the resident leave their home.
-    move_in_act : bool
-        Whether the resident moves in activities.
 
     Returns
     -------
@@ -2568,10 +2597,12 @@ def generate_motion_sensor_data(
         else:
             sensor_states[s.index] = None
 
-    _max_len = len(WT) - 1
+    place_centers = place_centers_dict(FP)
+
+    _max_index = len(WT) - 1
     # update states of door sensors
     for i, wt in enumerate(WT):
-        print_progress_bar(_max_len, i, "Making door sensor data", 100)
+        print_progress_bar(_max_index, i, "Making door sensor data", 100)
         act = AS[i]
         if act.activity.name == go_out_name:
             update_states_of_door_sensors(
@@ -2599,7 +2630,7 @@ def generate_motion_sensor_data(
     # update states of motion sensors in walks
     # for i, wt in enumerate(WT):
     #     print_progress_bar(
-    #             _max_len, i, "Making PIR / pressure sensor data in walks", 10
+    #             _max_index, i, "Making PIR / pressure sensor data in walks", 10
     #         )
     #     if wt.centers != []:
     #         update_states_of_motion_sensors_in_walks(
@@ -2613,25 +2644,48 @@ def generate_motion_sensor_data(
     #         )
 
     # update states of motion sensors
-    _max_len = len(AS) - 1
+    _max_index = len(AS) - 1
     for i in range(len(AS)):
-        print_progress_bar(_max_len, i, "Making PIR / pressure sensor data", 100)
+        print_progress_bar(_max_index, i, "Making PIR / pressure sensor data", 100)
         act = AS[i]
-        if i==_max_len:
+        if i==_max_index:
             wt = None
             next_walk_start_time = None
         else:
             wt = WT[i]
             next_walk_start_time = wt.start_time
+
+        # determine place center
+        candidates = place_centers[act.place]
+        place_center = None
+        if len(candidates) == 1:
+            place_center = candidates[0]
+        else:
+            # nearest point from the place
+            if i == 0:
+                resident_center = WT[0].centers[0]
+            else:
+                resident_center = WT[i-1].centers[-1]
+            min_distance = None
+            for i, c in candidates:
+                distance = (resident_center[0] - c[0])**2 + (resident_center[1] - c[1])**2
+                if min_distance is None:
+                    place_center = c
+                    min_distance = distance
+                elif distance < min_distance:
+                    place_center = c
+                    min_distance = distance
+        
         update_states_of_motion_sensors_in_activities(
             sensors,
             sensor_data,
             sensor_states,
-            AS[i],
+            act,
             next_walk_start_time,
             sampling_seconds,
             sync_reference_point,
-            body_radius
+            body_radius,
+            place_center
         )
         update_states_of_motion_sensors_in_walks(
             sensors,
@@ -2640,6 +2694,7 @@ def generate_motion_sensor_data(
             wt,
             sampling_seconds,
             sync_reference_point,
+            body_radius
         )
 
 
@@ -2875,6 +2930,8 @@ def update_states_of_motion_sensors_in_activities(
     next_walk_start_time,
     sampling_seconds,
     sync_reference_point,
+    body_radius,
+    place_center
 ):
     """
     Update states of sensors related with activities.
@@ -2906,6 +2963,10 @@ def update_states_of_motion_sensors_in_activities(
     sync_reference_point : datetime.timedelta, default timedelta(days = 0)
         Start time of the all activities.
         This is used to adjust the sampling time.
+    body_radius : float
+        Radius [cm] of resident's body on floor.
+    place_center : tuple of float
+        Center points like (x, y).
 
     Notes
     -----
