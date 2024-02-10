@@ -2989,23 +2989,49 @@ def update_states_of_motion_sensors_in_activities(
     -----
 
     """
-    sampling_start = define_synchronous_sampling_point(
+    start = define_synchronous_sampling_point(
         sync_reference_point, act.start, sampling_seconds
     )
+    end = define_synchronous_sampling_point(
+        sync_reference_point, next_walk_start_time, sampling_seconds
+    ) - sampling_seconds
     # When the activity is wandering, the whole path is calculated in WalkingTrajectory
     # When the activity is go out, any sensor in the house cannot be activated.
     if act.activity.name in [constants.WANDERING_NAME, constants.GO_OUT_NAME]:
         for s in sensors:
             if sensor_states(s.index):
-                update_state_of_binary_sensor(sensor_data, sensor_states, s, False, sampling_start)
+                update_state_of_binary_sensor(sensor_data, sensor_states, s, False, start)
         return
-    
-    start = act.start
-    end = next_walk_start_time
-    t = start
+
+    # Remaining sensors will be OFF
+    remaining_indexes = set(range(len(sensors))) - set(possible_PIR_sensors) - set(possible_pressure_sensors)
+    for i, s in enumerate(sensors):
+        if i in remaining_indexes:
+            update_state_of_binary_sensor(sensor_data, sensor_states, s, False, start)
+
     # all possible sensors are activated when the activity is started
-    while t < end:
-        pass
+    for ind in possible_PIR_sensors + possible_pressure_sensors:
+        s = sensors[ind]
+        update_state_of_binary_sensor(sensor_data, sensor_states, s, True, start)
+        t = start
+        duration_mean, duration_std = 1, 1  # ! adjust place
+        interval_mean = 20  # ! adjust place
+        t += timedelta(seconds = sensor_model.duration_time_in_activity(duration_mean, duration_std))
+        t = define_synchronous_sampling_point(sync_reference_point, t, sampling_seconds)
+        if end < t:
+            t = end
+        update_state_of_binary_sensor(sensor_data, sensor_states, s, False, t)
+        
+        while t < end:
+            t +=  timedelta(seconds = sensor_model.interval_time_in_activity(interval_mean))
+            t = define_synchronous_sampling_point(sync_reference_point, t, sampling_seconds)
+            temp_start = t
+            t += timedelta(seconds = sensor_model.interval_time_in_activity(interval_mean))
+            t = define_synchronous_sampling_point(sync_reference_point, t, sampling_seconds)
+            if t <= end:
+                update_state_of_binary_sensor(sensor_data, sensor_states, s, True, temp_start)
+                update_state_of_binary_sensor(sensor_data, sensor_states, s, False, t)
+
 
 
 
