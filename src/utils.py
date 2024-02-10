@@ -2597,8 +2597,6 @@ def generate_motion_sensor_data(
         else:
             sensor_states[s.index] = None
 
-    place_centers = place_centers_dict(FP)
-
     _max_index = len(WT) - 1
     # update states of door sensors
     for i, wt in enumerate(WT):
@@ -2642,6 +2640,23 @@ def generate_motion_sensor_data(
     #             sync_reference_point,
     #             body_radius,
     #         )
+        
+    place_centers = place_centers_dict(FP)  # Center points of places
+    # sensors_in_activities are motion sensors that can be activated in acitivites
+    # key: 2d coordinates like (x, y), value: list of indexes of sensors
+    sensors_in_activities_PIR = {}
+    sensors_in_activities_pressure = {}
+    activity_radius = 20  # Resident's activity radius
+    for c in place_centers:
+        sensors_in_activities_PIR[c] = []
+        sensors_in_activities_pressure[c] = []
+        for i, s in enumerate(sensors):
+            if isinstance(s, sensor_model.CircularPIRSensor):
+                if s.collide(c, activity_radius):
+                    sensors_in_activities_PIR[c].append(i)
+            if isinstance(s, sensor_model.SquarePressureSensor):
+                if s.collide(c, activity_radius):
+                    sensors_in_activities_pressure[c].append(i)
 
     # update states of motion sensors
     _max_index = len(AS) - 1
@@ -2658,6 +2673,8 @@ def generate_motion_sensor_data(
         # determine place center
         candidates = place_centers[act.place]
         place_center = None
+        # Determine which sensors can be activated while activity
+        
         if len(candidates) == 1:
             place_center = candidates[0]
         else:
@@ -2684,8 +2701,8 @@ def generate_motion_sensor_data(
             next_walk_start_time,
             sampling_seconds,
             sync_reference_point,
-            body_radius,
-            place_center
+            sensors_in_activities_PIR[place_center],
+            sensors_in_activities_pressure[place_center]
         )
         update_states_of_motion_sensors_in_walks(
             sensors,
@@ -2930,8 +2947,8 @@ def update_states_of_motion_sensors_in_activities(
     next_walk_start_time,
     sampling_seconds,
     sync_reference_point,
-    body_radius,
-    place_center
+    sensors_indexes_PIR,
+    sensors_indexes_pressure
 ):
     """
     Update states of sensors related with activities.
@@ -2963,10 +2980,10 @@ def update_states_of_motion_sensors_in_activities(
     sync_reference_point : datetime.timedelta, default timedelta(days = 0)
         Start time of the all activities.
         This is used to adjust the sampling time.
-    body_radius : float
-        Radius [cm] of resident's body on floor.
-    place_center : tuple of float
-        Center points like (x, y).
+    sensors_indexes_PIR : list of int
+        Indexes of PIR sensors that can be activated while the activity.
+    sensors_indexes_pressure : list of int
+        Indexes of pressure sensors that can be activated while the activity.
 
     Notes
     -----
@@ -2981,7 +2998,11 @@ def update_states_of_motion_sensors_in_activities(
         for s in sensors:
             if sensor_states(s.index):
                 update_state_of_binary_sensor(sensor_data, sensor_states, s, False, sampling_start)
-    
+    start = act.start
+    end = next_walk_start_time
+    t = start
+    while t < end:
+
 
 
 
