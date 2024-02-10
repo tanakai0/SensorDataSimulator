@@ -2644,19 +2644,19 @@ def generate_motion_sensor_data(
     place_centers = place_centers_dict(FP)  # Center points of places
     # sensors_in_activities are motion sensors that can be activated in acitivites
     # key: 2d coordinates like (x, y), value: list of indexes of sensors
-    sensors_in_activities_PIR = {}
-    sensors_in_activities_pressure = {}
+    possible_PIR_sensors = {}
+    possible_pressure_sensors = {}
     activity_radius = 20  # Resident's activity radius
     for c in place_centers:
-        sensors_in_activities_PIR[c] = []
-        sensors_in_activities_pressure[c] = []
+        possible_PIR_sensors[c] = []
+        possible_pressure_sensors[c] = []
         for i, s in enumerate(sensors):
             if isinstance(s, sensor_model.CircularPIRSensor):
                 if s.collide(c, activity_radius):
-                    sensors_in_activities_PIR[c].append(i)
+                    possible_PIR_sensors[c].append(i)
             if isinstance(s, sensor_model.SquarePressureSensor):
                 if s.collide(c, activity_radius):
-                    sensors_in_activities_pressure[c].append(i)
+                    possible_pressure_sensors[c].append(i)
 
     # update states of motion sensors
     _max_index = len(AS) - 1
@@ -2701,8 +2701,8 @@ def generate_motion_sensor_data(
             next_walk_start_time,
             sampling_seconds,
             sync_reference_point,
-            sensors_in_activities_PIR[place_center],
-            sensors_in_activities_pressure[place_center]
+            possible_PIR_sensors[place_center],
+            possible_pressure_sensors[place_center]
         )
         update_states_of_motion_sensors_in_walks(
             sensors,
@@ -2947,8 +2947,8 @@ def update_states_of_motion_sensors_in_activities(
     next_walk_start_time,
     sampling_seconds,
     sync_reference_point,
-    sensors_indexes_PIR,
-    sensors_indexes_pressure
+    possible_PIR_sensors,
+    possible_pressure_sensors
 ):
     """
     Update states of sensors related with activities.
@@ -2980,9 +2980,9 @@ def update_states_of_motion_sensors_in_activities(
     sync_reference_point : datetime.timedelta, default timedelta(days = 0)
         Start time of the all activities.
         This is used to adjust the sampling time.
-    sensors_indexes_PIR : list of int
+    possible_PIR_sensors : list of int
         Indexes of PIR sensors that can be activated while the activity.
-    sensors_indexes_pressure : list of int
+    possible_pressure_sensors : list of int
         Indexes of pressure sensors that can be activated while the activity.
 
     Notes
@@ -2998,11 +2998,14 @@ def update_states_of_motion_sensors_in_activities(
         for s in sensors:
             if sensor_states(s.index):
                 update_state_of_binary_sensor(sensor_data, sensor_states, s, False, sampling_start)
+        return
+    
     start = act.start
     end = next_walk_start_time
     t = start
+    # all possible sensors are activated when the activity is started
     while t < end:
-
+        pass
 
 
 
