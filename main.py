@@ -18,7 +18,7 @@ path = Path(layout_data_path / "test_layout")
 data_save_path = utils.generate_data_folder(path, utils.present_date_and_time())
 
 start_days = 0
-end_days = 30
+end_days = 7
 # end_days = 9 * 360
 
 temp_time = time.time()
@@ -94,9 +94,9 @@ print("Walking trajectories were generated. {} [s]".format(time.time() - temp_ti
 
 
 # sensor data (SD)
-sensors = sensor_model.test_sensors  # for test_layout
+sensors = sensor_model.test_sensors2  # for test_layout
 utils.pickle_dump(data_save_path, constants.SENSOR_MODEL, sensors)
-utils.save_layout(data_save_path, path, sensors=sensors, show=False)
+utils.save_layout(data_save_path, path, sensors=sensors, show=False, with_name_furniture_place=False)
 
 motion_SD = utils.generate_motion_sensor_data(
     FP,
@@ -138,7 +138,7 @@ wandering_labels = []
 fall_w_labels = []
 fall_s_labels = []
 for i, wt in enumerate(WT):
-    if wt.walking_type == utils.WANDERING_WALKING:
+    if wt.walking_type == constants.WANDERING_WALKING:
         wandering_labels.append((i, wt.start_time, wt.end_time))
     if wt.fall_w:
         fall_w_labels.append(((wt.timestamp[wt.fall_w_index]), wt.lie_down_seconds_w))

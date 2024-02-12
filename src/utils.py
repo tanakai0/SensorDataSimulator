@@ -2515,6 +2515,11 @@ def place_centers_dict(FP):
     centers : dict of list of tuple of float
          centers[place] = list of center points
          centers[place][i] = i-th center points like (x, y)
+
+    Notes
+    -----
+    Toilet_Door -> Toilet
+    Bathroom_Door -> Bath
     """
     def calculate_center(place):
         return (place[0] + place[2] / 2, place[1] + place[3] / 2)
@@ -2531,6 +2536,8 @@ def place_centers_dict(FP):
         add_centers_dict(centers, d[4], calculate_center(d))
     for tb in FP.Toil_Bath:
         add_centers_dict(centers, tb[4], calculate_center(tb))
+    centers[FP.toilet_door.name] = centers[FP.toilet.name]
+    centers[FP.bathroom_door.name] = centers[FP.bathroom.name]
     return centers
 
 def generate_motion_sensor_data(
@@ -2641,22 +2648,38 @@ def generate_motion_sensor_data(
     #             body_radius,
     #         )
         
+    def determine_place_center(candidates, WT, i):
+        # Determine which sensors can be activated while activity
+        
+        if len(candidates) == 1:
+            return candidates[0]
+        else:
+            # nearest point from the place
+            if i == 0:
+                if len(WT[0].centers) == 0:
+                    return candidates[0]
+                else:
+                    resident_center = WT[0].centers[0]
+            else:
+                if len(WT[i-1].centers) == 0:
+                    return candidates[0]
+                else:
+                    resident_center = WT[i-1].centers[-1]
+            min_distance = None
+            for c in candidates:
+                distance = (resident_center[0] - c[0])**2 + (resident_center[1] - c[1])**2
+                if min_distance is None:
+                    place_center = c
+                    min_distance = distance
+                elif distance < min_distance:
+                    place_center = c
+                    min_distance = distance
+            return place_center
+
+        
     place_centers = place_centers_dict(FP)  # Center points of places
     # sensors_in_activities are motion sensors that can be activated in acitivites
     # key: 2d coordinates like (x, y), value: list of indexes of sensors
-    possible_PIR_sensors = {}
-    possible_pressure_sensors = {}
-    activity_radius = 20  # Resident's activity radius
-    for c in place_centers:
-        possible_PIR_sensors[c] = []
-        possible_pressure_sensors[c] = []
-        for i, s in enumerate(sensors):
-            if isinstance(s, sensor_model.CircularPIRSensor):
-                if s.collide(c, activity_radius):
-                    possible_PIR_sensors[c].append(i)
-            if isinstance(s, sensor_model.SquarePressureSensor):
-                if s.collide(c, activity_radius):
-                    possible_pressure_sensors[c].append(i)
 
     # update states of motion sensors
     _max_index = len(AS) - 1
@@ -2665,33 +2688,25 @@ def generate_motion_sensor_data(
         act = AS[i]
         if i==_max_index:
             wt = None
-            next_walk_start_time = None
+            next_walk_start_time = act.end
         else:
             wt = WT[i]
             next_walk_start_time = wt.start_time
 
         # determine place center
         candidates = place_centers[act.place]
-        place_center = None
-        # Determine which sensors can be activated while activity
-        
-        if len(candidates) == 1:
-            place_center = candidates[0]
-        else:
-            # nearest point from the place
-            if i == 0:
-                resident_center = WT[0].centers[0]
-            else:
-                resident_center = WT[i-1].centers[-1]
-            min_distance = None
-            for i, c in candidates:
-                distance = (resident_center[0] - c[0])**2 + (resident_center[1] - c[1])**2
-                if min_distance is None:
-                    place_center = c
-                    min_distance = distance
-                elif distance < min_distance:
-                    place_center = c
-                    min_distance = distance
+        place_center = determine_place_center(candidates, WT, i)
+
+        possible_PIR_sensors = []
+        possible_pressure_sensors = []
+        activity_radius = 30  # Resident's activity radius
+        for i, s in enumerate(sensors):
+            if isinstance(s, sensor_model.CircularPIRSensor):
+                if s.collide(place_center, activity_radius):
+                    possible_PIR_sensors.append(i)
+            if isinstance(s, sensor_model.SquarePressureSensor):
+                if s.collide(place_center, activity_radius):
+                    possible_pressure_sensors.append(i)
         
         update_states_of_motion_sensors_in_activities(
             sensors,
@@ -2701,8 +2716,8 @@ def generate_motion_sensor_data(
             next_walk_start_time,
             sampling_seconds,
             sync_reference_point,
-            possible_PIR_sensors[place_center],
-            possible_pressure_sensors[place_center]
+            possible_PIR_sensors,
+            possible_pressure_sensors
         )
         update_states_of_motion_sensors_in_walks(
             sensors,
@@ -2973,7 +2988,7 @@ def update_states_of_motion_sensors_in_activities(
         or sensor_model.SquarePressureSensor, the values are boolean, else None.
     act : ActivityDataPoint
         Target activity.
-    next_walk_start_time : datetime.timedelta or None
+    next_walk_start_time : datetime.timedelta
         Time of the next walk.
     sampling_seconds : float
         Sampling duration [second] of sensors.
@@ -2994,28 +3009,36 @@ def update_states_of_motion_sensors_in_activities(
     )
     end = define_synchronous_sampling_point(
         sync_reference_point, next_walk_start_time, sampling_seconds
-    ) - sampling_seconds
+    ) - timedelta(seconds = sampling_seconds)
     # When the activity is wandering, the whole path is calculated in WalkingTrajectory
     # When the activity is go out, any sensor in the house cannot be activated.
     if act.activity.name in [constants.WANDERING_NAME, constants.GO_OUT_NAME]:
         for s in sensors:
-            if sensor_states(s.index):
+            if sensor_states[s.index]:
                 update_state_of_binary_sensor(sensor_data, sensor_states, s, False, start)
         return
 
     # Remaining sensors will be OFF
     remaining_indexes = set(range(len(sensors))) - set(possible_PIR_sensors) - set(possible_pressure_sensors)
     for i, s in enumerate(sensors):
-        if i in remaining_indexes:
+        if (i in remaining_indexes) and sensor_states[s.index]:
             update_state_of_binary_sensor(sensor_data, sensor_states, s, False, start)
 
-    # all possible sensors are activated when the activity is started
-    for ind in possible_PIR_sensors + possible_pressure_sensors:
+    duration_mean, duration_std, interval_mean = None, None, None 
+    if act.activity.name in activity_model.sensor_duration_sec_PIR:
+        duration_mean, duration_std = activity_model.sensor_duration_sec_PIR[act.activity.name]
+    else:
+        duration_mean, duration_std = activity_model.sensor_duration_sec_PIR["Other"]
+    if act.activity.name in activity_model.sensor_interval_sec_PIR:
+        interval_mean = activity_model.sensor_interval_sec_PIR[act.activity.name]
+    else:
+        interval_mean = activity_model.sensor_interval_sec_PIR["Other"]
+
+    for ind in possible_PIR_sensors:
         s = sensors[ind]
         update_state_of_binary_sensor(sensor_data, sensor_states, s, True, start)
         t = start
-        duration_mean, duration_std = 1, 1  # ! adjust place
-        interval_mean = 20  # ! adjust place
+        # all possible sensors are activated when the activity is started
         t += timedelta(seconds = sensor_model.duration_time_in_activity(duration_mean, duration_std))
         t = define_synchronous_sampling_point(sync_reference_point, t, sampling_seconds)
         if end < t:
@@ -3026,12 +3049,16 @@ def update_states_of_motion_sensors_in_activities(
             t +=  timedelta(seconds = sensor_model.interval_time_in_activity(interval_mean))
             t = define_synchronous_sampling_point(sync_reference_point, t, sampling_seconds)
             temp_start = t
-            t += timedelta(seconds = sensor_model.interval_time_in_activity(interval_mean))
+            t += timedelta(seconds = sensor_model.duration_time_in_activity(duration_mean, duration_std))
             t = define_synchronous_sampling_point(sync_reference_point, t, sampling_seconds)
             if t <= end:
                 update_state_of_binary_sensor(sensor_data, sensor_states, s, True, temp_start)
                 update_state_of_binary_sensor(sensor_data, sensor_states, s, False, t)
 
+    for ind in possible_pressure_sensors:
+        s = sensors[ind]
+        update_state_of_binary_sensor(sensor_data, sensor_states, s, True, start)
+        update_state_of_binary_sensor(sensor_data, sensor_states, s, False, end)
 
 
 
@@ -3240,9 +3267,10 @@ def generate_cost_sensor_data(
         for i in range(x[0], x[1]):
             forgetting_act[i].append(x[2])
 
-    progress_bar_step = 10000 * sampling_step
+    progress_bar_step = (10000 * sampling_step).total_seconds()
+    _max_ind = sampling_end.total_seconds()
     for t in date_generator(sampling_start, sampling_end, sampling_step):
-        print_progress_bar(sampling_end, t, "Making cost sensor data", progress_bar_step)
+        print_progress_bar(_max_ind, t.total_seconds(), "Making cost sensor data", progress_bar_step)
         while act.end < t:
             act_index += 1
             act = AS[act_index]
@@ -3277,7 +3305,9 @@ def save_layout(
     filename="",
     dpi=400,
     mark_point=None,
-    return_ax=False
+    return_ax=False,
+    with_name_furniture_place = True,
+    with_name_sensors = True
 ):
     """
     This saves a layout data as a figure with walking trajectories and sensors.
@@ -3310,6 +3340,10 @@ def save_layout(
     return_ax : bool
         Whether to return ax of the plot.
         If this is True, then plt will not be closed and saved.
+    with_name_furniture_place : boolean, default True
+        Whether to show names of furniture or places.
+    with_name_sensors : boolean, default True
+        Whether to show names of sensors.
 
     See Also
     --------
@@ -3335,11 +3369,11 @@ def save_layout(
     # draw layout
     fp = floor_plan.FloorPlan()
     fp.load_layout(layout_path)
-    ax = fp.save_layout_figure("", "", show=False, save=False, close=False)
+    ax = fp.save_layout_figure("", "", show=False, save=False, close=False, with_name=with_name_furniture_place)
 
     # draw sensors
     for s in sensors:
-        s.draw(ax)
+        s.draw(ax, with_name_sensors)
 
     # draw walking trajectories
     if WT != []:

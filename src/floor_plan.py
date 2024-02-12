@@ -3248,7 +3248,7 @@ class FloorPlan:
         save_normaljson(str(abs_path), fur_Hs, "Height_Function")
 
     def save_layout_figure(
-        self, folder_path, file_name="Layout", show=False, save=True, close=True
+        self, folder_path, file_name="Layout", show=False, save=True, close=True, with_name = True
     ):
         """
         This function saves the layout data as a figure.
@@ -3265,6 +3265,8 @@ class FloorPlan:
             whther plt.savefig() will be done
         close : boolean
             whether plt.close() will be done
+        with_name : boolean, default True
+            Whether to show names of furniture or places.
 
         Returns
         -------
@@ -3294,19 +3296,7 @@ class FloorPlan:
             [x, y, L, W, name] = room
             rect = plt.Rectangle((x, y), L, W, edgecolor="k", facecolor="none")
             ax.add_patch(rect)
-            ax.text(
-                x + L // 2,
-                y + W // 2,
-                self.Code[name],
-                fontsize=10,
-                va="center",
-                ha="center",
-            )
-        for room in Furnitures:
-            for furniture in room:
-                [x, y, L, W, name] = furniture
-                rect = plt.Rectangle((x, y), L, W, edgecolor="k", facecolor="none")
-                ax.add_patch(rect)
+            if with_name:
                 ax.text(
                     x + L // 2,
                     y + W // 2,
@@ -3315,6 +3305,20 @@ class FloorPlan:
                     va="center",
                     ha="center",
                 )
+        for room in Furnitures:
+            for furniture in room:
+                [x, y, L, W, name] = furniture
+                rect = plt.Rectangle((x, y), L, W, edgecolor="k", facecolor="none")
+                ax.add_patch(rect)
+                if with_name:
+                    ax.text(
+                        x + L // 2,
+                        y + W // 2,
+                        self.Code[name],
+                        fontsize=10,
+                        va="center",
+                        ha="center",
+                    )
         for wall in Walls:
             x = [wall[0][0], wall[1][0]]
             y = [wall[0][1], wall[1][1]]

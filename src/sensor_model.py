@@ -284,7 +284,7 @@ class CircularPIRSensor(Sensor):
             return self.collide(p, body_radius=body_radius)
 
 
-    def draw(self, ax):
+    def draw(self, ax, with_text = True):
         """
         This plots the figure of this sensor.
 
@@ -292,6 +292,8 @@ class CircularPIRSensor(Sensor):
         ----------
         ax : matplotlib.pyplot.gca
             Current axes on this figure.
+        with_text : bool, default True
+            Whether to draw text.
         """
         circle = patches.Circle(
             xy=(self.x, self.y),
@@ -301,14 +303,15 @@ class CircularPIRSensor(Sensor):
             alpha=0.2,
         )
         ax.add_patch(circle)
-        ax.text(
-            self.x,
-            self.y,
-            "{}".format(self.index),
-            fontsize=10,
-            va="center",
-            ha="center",
-        )
+        if with_text:
+            ax.text(
+                self.x,
+                self.y,
+                "{}".format(self.index),
+                fontsize=10,
+                va="center",
+                ha="center",
+            )
 
     def canvas(self, canvas, point2canvas):
         """
@@ -574,7 +577,7 @@ class SquarePressureSensor(Sensor):
                 return False
         return True
 
-    def draw(self, ax):
+    def draw(self, ax, with_text = True):
         """
         This plots the figure of this sensor.
 
@@ -582,6 +585,8 @@ class SquarePressureSensor(Sensor):
         ----------
         ax : matplotlib.pyplot.gca
             Current axes on this figure.
+        with_text : bool, default True
+            Whether to draw text.
         """
         rectangle = patches.Rectangle(
             xy=(self.x, self.y),
@@ -596,7 +601,8 @@ class SquarePressureSensor(Sensor):
         x, y = self.x + self.horizontal / 2, self.y + self.vertical / 2
         if self.angle != 0:
             (x, y) = self.rotate((x, y), (self.x, self.y), self.angle)
-        ax.text(x, y, "{}".format(self.index), fontsize=10, va="center", ha="center")
+        if with_text:
+            ax.text(x, y, "{}".format(self.index), fontsize=10, va="center", ha="center")
 
     def canvas(self, canvas, point2canvas):
         """
@@ -703,7 +709,7 @@ class CostSensor(Sensor):
         """
         super().__init__(name, index, x, y, color)
 
-    def draw(self, ax):
+    def draw(self, ax, with_text = True):
         """
         This plots the figure of this sensor.
 
@@ -711,6 +717,8 @@ class CostSensor(Sensor):
         ----------
         ax : matplotlib.pyplot.gca
             Current axes on this figure.
+        with_text : bool, default True
+            Whether to draw text.
         """
         ax.scatter(
             self.x,
@@ -720,14 +728,15 @@ class CostSensor(Sensor):
             alpha=0.6,
             s=(plt.rcParams["lines.markersize"] ** 2) * 4,
         )
-        ax.text(
-            self.x,
-            self.y,
-            "{}".format(self.index),
-            fontsize=10,
-            va="center",
-            ha="center",
-        )
+        if with_text:
+            ax.text(
+                self.x,
+                self.y,
+                "{}".format(self.index),
+                fontsize=10,
+                va="center",
+                ha="center",
+            )
 
     def canvas(self, canvas, point2canvas):
         """
@@ -816,7 +825,7 @@ class DoorSensor(Sensor):
         super().__init__(name, index, x, y, color)
         self.door_name = door_name
 
-    def draw(self, ax):
+    def draw(self, ax, with_text = True):
         """
         This plots the figure of this sensor.
 
@@ -824,6 +833,8 @@ class DoorSensor(Sensor):
         ----------
         ax : matplotlib.pyplot.gca
             Current axes on this figure.
+        with_text : bool, default True
+            Whether to draw text.
         """
         ax.scatter(
             self.x,
@@ -833,14 +844,15 @@ class DoorSensor(Sensor):
             alpha=0.5,
             s=(plt.rcParams["lines.markersize"] ** 2) * 4,
         )
-        ax.text(
-            self.x,
-            self.y,
-            "{}".format(self.index),
-            fontsize=10,
-            va="center",
-            ha="center",
-        )
+        if with_text:
+            ax.text(
+                self.x,
+                self.y,
+                "{}".format(self.index),
+                fontsize=10,
+                va="center",
+                ha="center",
+            )
 
     def canvas(self, canvas, point2canvas):
         """
@@ -944,47 +956,49 @@ test_sensors = [
 ]
 
 test_sensors2 = [
-    CircularPIRSensor("normal PIR", 0,  60, 140, constants.LIGHT_RED, 60),
-    CircularPIRSensor("normal PIR", 1, 110, 140, constants.LIGHT_RED, 60),
-    CircularPIRSensor("normal PIR", 2, 160, 140, constants.LIGHT_RED, 60),
-    CircularPIRSensor("normal PIR", 3, 210, 140, constants.LIGHT_RED, 60),
-    CircularPIRSensor("normal PIR", 4,  60,  90, constants.LIGHT_RED, 60),
-    CircularPIRSensor("normal PIR", 5, 110,  90, constants.LIGHT_RED, 60),
-    CircularPIRSensor("normal PIR", 6, 160,  90, constants.LIGHT_RED, 60),
-    CircularPIRSensor("normal PIR", 7, 210,  90, constants.LIGHT_RED, 60),
-
-    
-    CircularPIRSensor("normal PIR", 71, 400, 120, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 72, 100, 55, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 73, 200, 55, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 74, 300, 40, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 75, 400, 40, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 76, 100, -40, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 77, 200, -40, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 78, 450, -40, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 79, 550, -40, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 80, 650, -40, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 81, -10, -70, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 82, 200, -140, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 83, 300, -140, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 84, 400, -140, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 85, 500, -140, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 86, 610, -140, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 87, 670, 70, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 88, 750, 80, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 89, 850, 90, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 90, 850, 10, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 91, 920, 50, constants.LIGHT_RED, 50),
-    CircularPIRSensor("normal PIR", 92, 930, 55, constants.LIGHT_RED, 50),
-    SquarePressureSensor("vertical oblong pressure", 100, -30, 0, constants.LIGHT_GRAY, 200, 80, 0),
+    CircularPIRSensor("normal PIR", 0, 150, 150, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 1, 400, 120, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 2, 90, 55, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 3, 190, 55, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 4, 290, 40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 5, 390, 40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 6, 490, 40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 7, 100, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 8, 200, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 9, 450, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 10, 550, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 11, 650, -40, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 12, -10, -70, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 13, 200, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 14, 300, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 15, 400, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 16, 500, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 17, 610, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 18, 660, 60, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 19, 750, 80, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 20, 850, 90, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 21, 850, 10, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 22, 920, 50, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 23, -115, 105, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 24, -130, -135, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 25, 65, -140, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 26, 320, -50, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 27, 625, 150, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 28, 555, 60, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 29, 735, 180, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 30, 860, 180, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 31, 980, 120, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 32, 465, -270, constants.LIGHT_RED, 50),
+    CircularPIRSensor("normal PIR", 33, 600, -270, constants.LIGHT_RED, 50),
+    SquarePressureSensor("vertical oblong pressure", 34, -30, 0, constants.LIGHT_GRAY, 200, 60, 0),
     SquarePressureSensor(
-        "horizontal oblong pressure", 101, -160, -90, constants.LIGHT_GRAY, 80, 150, 0
+        "horizontal oblong pressure", 35, -160, -70, constants.LIGHT_GRAY, 60, 150, 0
     ),
-    CostSensor(constants.FLOW_BATHROOM, 201, 600, -310, constants.BLUE),
-    CostSensor(constants.FLOW_KITCHEN, 202, 990, 60, constants.BLUE),
-    CostSensor(constants.POWER_TV, 203, 320, 160, constants.YELLOW),
-    CostSensor(constants.POWER_KITCHEN, 204, 985, 180, constants.YELLOW),
-    DoorSensor("door", 301, 195, 205, constants.LIGHT_GREEN, "Entrance"),
+    CostSensor(constants.FLOW_BATHROOM, 36, 600, -310, constants.BLUE),
+    CostSensor(constants.FLOW_KITCHEN, 37, 990, 60, constants.BLUE),
+    CostSensor(constants.POWER_TV, 38, 320, 160, constants.YELLOW),
+    CostSensor(constants.POWER_KITCHEN, 39, 985, 180, constants.YELLOW),
+    DoorSensor("door", 40, 195, 205, constants.LIGHT_GREEN, "Entrance"),
 ]
 
 check_indexes_of_sensors(test_sensors)

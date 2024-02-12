@@ -1527,3 +1527,9 @@ applied_activity_model_2 = {
     "fundamental_activity_order": [have_breakfast, have_lunch, have_dinner, sleep],
     "sleep": [sleep],
 }
+
+sensor_duration_sec_PIR = {"Other": (5, 5)}
+sensor_interval_sec_PIR = {"Sleep": 600,
+                           "Nap": 600,
+                           "Rest": 60,
+                           "Other": 20}
