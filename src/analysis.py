@@ -773,11 +773,9 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
     len_AL = len(AL)
     reach_last_SD, reach_last_AL = False, False  # whether to reach the last indexes
 
-    _max_num = (end - start) // duration
-    diff = 100000
+    _max_num = (end - start) // duration - 1
     for i, t in enumerate(utils.date_generator(start, end, duration)):
-        if i % diff == 0:
-            utils.print_progress_bar(_max_num, i, "Making the sensor matrix.")
+        utils.print_progress_bar(_max_num, i, "Making the sensor matrix.", step = 100000)
         tt = t + duration
         if not (reach_last_SD):
             while t <= SD[SD_i][0] < tt:
