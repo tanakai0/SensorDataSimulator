@@ -122,6 +122,7 @@ cost_SD = utils.generate_cost_sensor_data(
 print("Cost sensor data was simulated. {}[s]".format(time.time() - temp_time))
 
 sorted_sensor_data = sorted(motion_SD + cost_SD, key=lambda x: x[0])
+print("Sort sensor data.")
 utils.save_binary_sensor_data(
     data_save_path, sensors, sorted_sensor_data, filename=constants.SENSOR_DATA
 )
