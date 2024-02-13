@@ -18,7 +18,7 @@ path = Path(layout_data_path / "test_layout")
 data_save_path = utils.generate_data_folder(path, utils.present_date_and_time())
 
 start_days = 0
-end_days = 7
+end_days = 30
 # end_days = 9 * 360
 
 temp_time = time.time()
@@ -32,6 +32,13 @@ utils.pickle_dump(data_save_path, constants.FLOOR_PLAN, FP)
 
 # models for Anomaly labels (AL)
 anomaly_info = utils.generate_six_anomalies(path, data_save_path, end_days, show=False)
+
+# Increase of fall frequency
+# print(anomaly_info["fall_w_num"])  
+# a = anomaly_info["fall_w_num"][0]  
+# anomaly_info["fall_w_num"][0] = (a[0], a[1], a[2] + 200)  
+# print(anomaly_info["fall_w_num"])  
+
 fall_s_place_bed = ["Bed"]
 fall_w_parameters = {"num": anomaly_info["fall_w_num"], "mean_lie_down_seconds": 30}
 fall_s_parameters = {
