@@ -181,7 +181,7 @@ def generate_on_seconds_histogram(data, ha_index, step, start=None, end=None):
 
     seconds = []
 
-    _max_num = len(list(utils.date_generator(start, end, step)))
+    _max_num = (end - start) // step + 1
     diff = 1
     for i, t in enumerate(utils.date_generator(start, end, step)):
         if i % diff == 0:
@@ -756,7 +756,7 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
             AD.append((x[1], a, False))
     AL = sorted(AD, key=lambda x: x[0])
 
-    mat_len = len(list(utils.date_generator(start, end, duration)))
+    mat_len = (end - start) // duration + 1
     SD_mat = np.zeros((mat_len, len(SD_names)), dtype=bool)
     AL_mat = np.zeros((mat_len, len(AL_names)), dtype=bool)
 
