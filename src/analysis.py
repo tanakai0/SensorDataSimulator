@@ -1888,6 +1888,37 @@ def find_true_regions_in_ndarray(arr):
     return start_end_indices
 
 
+def seq2interval(seq):
+    """
+    Parameters
+    ----------
+    seq : numpy.ndarray of bool
+        Labels.
+
+    Returns
+    -------
+    intervals : list of tuple of int
+        Intervals of consecutive True regions.
+    """
+    # Take the difference, indicating places of True as 1 and places of False as 0
+    diff = np.diff(seq.astype(int))
+    # Detect where True begins (where it becomes 1)
+    starts = np.where(diff == 1)[0] + 1
+    # Detect where True ends (where it becomes -1)
+    ends = np.where(diff == -1)[0] + 1
+    
+    # If the sequence starts with True
+    if seq[0]:
+        starts = np.insert(starts, 0, 0)
+    # If the sequence ends with True
+    if seq[-1]:
+        ends = np.append(ends, len(seq))
+    
+    # Pair the start and end points to form a list
+    intervals = list(zip(starts, ends))
+    
+    return intervals
+
 def nonresponse_time(mat, time_step, window_len, _type = "max_time"):
     """
     Calculate nonresponse time in time windows.
