@@ -2196,3 +2196,71 @@ def nonresponse_time_sliding(mat, time_step, window_len, _type = "max_time"):
     nrt *= time_step
     return nrt
 
+def original_metrics(y_true, y_pred, threshold = 5, use_fixed_alarm = False, alarm_length = 5 * 60):
+    """
+    Parameters
+    ----------
+    y_true : numpy.ndarray
+        True labels
+    y_pred : numpy.ndarray
+        Predicted labels.
+    threshold : int, default 5
+        Predicted label intervals whose length is less than the threshold will be deleted.
+    use_fixed_alarm : bool, default False
+        Whether to use fixed alarm.
+    alarm_length : int, default 5 * 60
+        Length of the alarm.
+
+    Returns
+    -------
+    (sensitivity, false_alarm, mean_alarm_length)
+    sensitivity : float
+        The number of true label interval that is overlapped with a predicted label interval.
+    false_alarm : float
+        The number of predicted labels that is not overlapped with any true label intervals.
+    mean_alarm_length : float
+        The mean length of predicted label interval.
+        
+    Notes
+    -----
+    Label interval is a consecutive labels which continues to be True.
+    Label intervals whose length is less than threshold are replaced 0s.
+    """
+
+    true_intervals = seq2interval(y_true)
+    pred_intervals = seq2interval(y_pred)
+    pred_intervals = [x for x in pred_intervals if x[1] - x[0] >= threshold]
+    if use_fixed_alarm:
+        filtered_y_pred = np.zeros(y_pred.shape)
+        for start, end in pred_intervals:
+            filtered_y_pred[start:end] = True
+        i = 0
+        _max = filtered_y_pred.shape[0]
+        while i < _max:
+            if filtered_y_pred[i]:
+                filtered_y_pred[i:min(i+alarm_length, _max)] = True
+                i += alarm_length
+            else:
+                i += 1
+        pred_intervals = seq2interval(filtered_y_pred)
+ 
+    overlapping_count = 0
+    for true_start, true_end in true_intervals:
+        for pred_start, pred_end in pred_intervals:
+            if true_start <= pred_end and pred_start <= true_end:
+                overlapping_count += 1
+                break
+    sensitivity = overlapping_count / len(true_intervals)
+
+    false_alarm = 0
+    for pred_start, pred_end in pred_intervals:
+        overlap = False
+        for true_start, true_end in true_intervals:
+            if pred_start <= true_end and true_start <= pred_end:
+                overlap = True
+                break
+        if not overlap:
+            false_alarm += 1
+ 
+    mean_alarm_length = sum([x[1] - x[0] for x in pred_intervals]) / len(pred_intervals)
+    return (sensitivity, false_alarm, mean_alarm_length)
