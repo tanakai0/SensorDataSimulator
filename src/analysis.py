@@ -1,3 +1,4 @@
+import copy
 import math
 import sys
 from datetime import timedelta
@@ -2264,3 +2265,195 @@ def original_metrics(y_true, y_pred, threshold = 5, use_fixed_alarm = False, ala
  
     mean_alarm_length = sum([x[1] - x[0] for x in pred_intervals]) / len(pred_intervals)
     return (sensitivity, false_alarm, mean_alarm_length)
+
+
+def print_decision_path(dt, data, marge_rules=True):
+    """
+    Print the decision path for given data using a trained DecisionTreeClassifier.
+
+    Parameters
+    ----------
+    dt : DecisionTreeClassifier
+        A trained DecisionTreeClassifier.
+    data : numpy.ndarray
+        Data to determine the decision path for.
+    marge_rules : bool, default True
+        Whether to merge rules for readability.
+
+    Examples
+    --------
+    from sklearn.datasets import load_iris
+    from sklearn.tree import DecisionTreeClassifier
+    iris = load_iris()
+    X, y = iris.data, iris.target
+    dt = DecisionTreeClassifier()
+    dt.fit(X, y)
+    print_decision_path(dt, X, marge_rules=False)
+    print("")
+    print_decision_path(dt, X)
+    """
+    feature = dt.tree_.feature
+    threshold = dt.tree_.threshold
+    node_indicator = dt.decision_path(data)
+    leaf_id = dt.apply(data)
+    label = dt.predict(data)
+
+    for sample_id in range(data.shape[0]):
+        # Get node index path for the sample
+        node_index = node_indicator.indices[node_indicator.indptr[sample_id]:node_indicator.indptr[sample_id + 1]]
+        rules = {}
+        
+        for node_id in node_index:
+            if leaf_id[sample_id] == node_id:
+                break
+
+            # Feature and threshold for the current node
+            f = feature[node_id]
+            t = threshold[node_id]
+            condition = data[sample_id, f]
+
+            if f not in rules:
+                rules[f] = []
+            
+            # Update rule based on the condition
+            if condition <= t:
+                rules[f].append(f"(X[{f}] <= {t:.2f})")
+            else:
+                rules[f].append(f"({t:.2f} < X[{f}])")
+
+        # Simplify and print rules
+        if marge_rules:
+            simplified_rules = {}
+            for f, conditions in rules.items():
+                v = data[sample_id, f]
+                # Find range for conditions if mergeable
+
+                if len(conditions) == 1:
+                    c = conditions[0]
+                    if "<=" in c:
+                        th = float(c.split(" ")[-1][:-1])
+                        simplified_rules[f] = f"(X[{f}]({v:.2f}) <= {th})"
+                    elif ("<" in c) and ("=" not in c):
+                        th = float(c.split(" ")[0][1:])
+                        simplified_rules[f] = f"({th} < X[{f}]({v:.2f}))"
+                else:
+                    # Find min and max threshold for the feature
+                    upper_bounds = [float(c.split(" ")[-1][:-1]) for c in conditions if "<=" in c]
+                    lower_bounds = [float(c.split(" ")[0][1:]) for c in conditions if ("<" in c) and ("=" not in c)]
+                    if lower_bounds:
+                        min_threshold = max(lower_bounds)
+                    if upper_bounds:
+                        max_threshold = min(upper_bounds)
+                    if lower_bounds and upper_bounds:
+                        simplified_rules[f] = f"({min_threshold} < X[{f}]({v:.2f}) <= {max_threshold})"
+                    elif lower_bounds:
+                        simplified_rules[f] = f"({min_threshold} < X[{f}]({v:.2f}))"
+                    elif upper_bounds:
+                        simplified_rules[f] = f"(X[{f}]({v:.2f}) <= {max_threshold})"
+            simplified_rules = {k: simplified_rules[k] for k in sorted(simplified_rules)}
+            rule_str = ' and '.join(simplified_rules.values())
+        else:
+            # Print without merging
+            rule_str = " and ".join([cond for rule in rules.values() for cond in rule])
+        print(f"Sample {sample_id}: {rule_str}, predict {label[sample_id]}")
+
+
+def print_positive_path(dt, marge_rules = True):
+    """
+    Print the decision rules to classify data into positive class for a binary classification decision tree.
+
+    Parameters
+    ----------
+    dt : DecisionTreeClassifier
+        A trained DecisionTreeClassifier.
+    marge_rules : bool, default True
+        Whether to marge rules.
+        For example, 
+        False: (X[19] > 10.50) and (X[29] > 11.50) and (X[19] > 13.50) and (X[29] > 14.50) and (X[19] > 16.50) and (X[29] <= 17.50)
+        True: (13.50 < X[19]) and (16.50 < X[29] <= 17.50)
+
+    Examples
+    --------
+    from sklearn.datasets import load_iris
+    from sklearn.tree import DecisionTreeClassifier
+
+    iris = load_iris()
+    For now, class 1 is regarded as a positive class
+    X, y = iris.data, iris.target == 1
+    dt = DecisionTreeClassifier()
+    dt.fit(X, y)
+    print_positive_path(dt, marge_rules=False)
+    print("")
+    print_positive_path(dt)
+    """
+    children_left = dt.tree_.children_left
+    children_right = dt.tree_.children_right
+    features = dt.tree_.feature
+    thresholds = dt.tree_.threshold
+    
+    # key: node ID, value: all path to the node
+    
+    if not marge_rules:
+        def recurse(node, rules):
+            """
+            Search nodes to leaf nodes recursively
+            """
+            if children_left[node] == children_right[node]:  # leaf node
+                if dt.tree_.value[node].argmax():  # When the positive class
+                    print(" and ".join(rules))
+            else:
+                # add a rule to the left node
+                left_rule = f"(X[{features[node]}] <= {thresholds[node]:.2f})"
+                recurse(children_left[node], rules + [left_rule])
+                
+                # add a rule to the right node
+                right_rule = f"({thresholds[node]:.2f} < X[{features[node]}])"
+                recurse(children_right[node], rules + [right_rule])
+        
+        recurse(0, [])
+
+    else:
+        def recurse(node, rules):
+            """
+            Search nodes to leaf nodes recursively and simplify rules.
+            """
+            if children_left[node] == children_right[node]:  # leaf node
+                # Simplify rules
+                simplified_rules = {}
+                for feature, rule in rules.items():
+                    if len(rule) == 1:
+                        simplified_rules[feature] = rule[0]
+                    else:
+                        # Find min and max threshold for the feature
+                        upper_bounds = [float(r.split(" ")[-1][:-1]) for r in rule if "<=" in r]
+                        lower_bounds = [float(r.split(" ")[0][1:]) for r in rule if ("<" in r) and ("=" not in r)]
+                        if lower_bounds:
+                            min_threshold = max(lower_bounds)
+                        if upper_bounds:
+                            max_threshold = min(upper_bounds)
+                        if lower_bounds and upper_bounds:
+                            simplified_rules[feature] = f"({min_threshold} < X[{feature}] <= {max_threshold})"
+                        elif lower_bounds:
+                            simplified_rules[feature] = f"({min_threshold} < X[{feature}])"
+                        elif upper_bounds:
+                            simplified_rules[feature] = f"(X[{feature}] <= {max_threshold})"
+                
+                simplified_rules = {k: simplified_rules[k] for k in sorted(simplified_rules)}
+                # Print simplified rules for positive class leaves
+                if dt.tree_.value[node].argmax() == 1:  # positive class
+                    print(" and ".join(simplified_rules.values()))
+                return
+            
+            # Rule for left child
+            feature = features[node]
+            threshold = f"{thresholds[node]:.2f}"
+            if feature not in rules:
+                rules[feature] = []
+            rules[feature].append(f"(X[{feature}] <= {threshold})")
+            recurse(children_left[node], copy.deepcopy(rules))  # Use copy of rules for branching
+            
+            # Rule for right child
+            rules[feature][-1] = f"({threshold} < X[{feature}])"
+            recurse(children_right[node], copy.deepcopy(rules))
+
+        recurse(0, {})
