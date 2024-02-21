@@ -2332,10 +2332,10 @@ def print_decision_path(dt, data, marge_rules=True):
                     c = conditions[0]
                     if "<=" in c:
                         th = float(c.split(" ")[-1][:-1])
-                        simplified_rules[f] = f"(X[{f}]({v:.2f}) <= {th})"
+                        simplified_rules[f] = f"(X[{f}]({v:.2f}) <= {th:.2f})"
                     elif ("<" in c) and ("=" not in c):
                         th = float(c.split(" ")[0][1:])
-                        simplified_rules[f] = f"({th} < X[{f}]({v:.2f}))"
+                        simplified_rules[f] = f"({th:.2f} < X[{f}]({v:.2f}))"
                 else:
                     # Find min and max threshold for the feature
                     upper_bounds = [float(c.split(" ")[-1][:-1]) for c in conditions if "<=" in c]
@@ -2345,11 +2345,11 @@ def print_decision_path(dt, data, marge_rules=True):
                     if upper_bounds:
                         max_threshold = min(upper_bounds)
                     if lower_bounds and upper_bounds:
-                        simplified_rules[f] = f"({min_threshold} < X[{f}]({v:.2f}) <= {max_threshold})"
+                        simplified_rules[f] = f"({min_threshold:.2f} < X[{f}]({v:.2f}) <= {max_threshold:.2f})"
                     elif lower_bounds:
-                        simplified_rules[f] = f"({min_threshold} < X[{f}]({v:.2f}))"
+                        simplified_rules[f] = f"({min_threshold:.2f} < X[{f}]({v:.2f}))"
                     elif upper_bounds:
-                        simplified_rules[f] = f"(X[{f}]({v:.2f}) <= {max_threshold})"
+                        simplified_rules[f] = f"(X[{f}]({v:.2f}) <= {max_threshold:.2f})"
             simplified_rules = {k: simplified_rules[k] for k in sorted(simplified_rules)}
             rule_str = ' and '.join(simplified_rules.values())
         else:
@@ -2432,11 +2432,11 @@ def print_positive_path(dt, marge_rules = True):
                         if upper_bounds:
                             max_threshold = min(upper_bounds)
                         if lower_bounds and upper_bounds:
-                            simplified_rules[feature] = f"({min_threshold} < X[{feature}] <= {max_threshold})"
+                            simplified_rules[feature] = f"({min_threshold:.2f} < X[{feature}] <= {max_threshold:.2f})"
                         elif lower_bounds:
-                            simplified_rules[feature] = f"({min_threshold} < X[{feature}])"
+                            simplified_rules[feature] = f"({min_threshold:.2f} < X[{feature}])"
                         elif upper_bounds:
-                            simplified_rules[feature] = f"(X[{feature}] <= {max_threshold})"
+                            simplified_rules[feature] = f"(X[{feature}] <= {max_threshold:.2f})"
                 
                 simplified_rules = {k: simplified_rules[k] for k in sorted(simplified_rules)}
                 # Print simplified rules for positive class leaves
