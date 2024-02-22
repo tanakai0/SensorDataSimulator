@@ -18,7 +18,7 @@ path = Path(layout_data_path / "test_layout")
 data_save_path = utils.generate_data_folder(path, utils.present_date_and_time())
 
 start_days = 0
-end_days = 30
+end_days = 100
 # end_days = 9 * 360
 
 temp_time = time.time()
@@ -37,7 +37,12 @@ anomaly_info = utils.generate_six_anomalies(path, data_save_path, end_days, show
 # print(anomaly_info["fall_w_num"])  
 # a = anomaly_info["fall_w_num"][0]  
 # anomaly_info["fall_w_num"][0] = (a[0], a[1], a[2] + 200)  
-# print(anomaly_info["fall_w_num"])  
+# print(anomaly_info["fall_w_num"])
+
+# print(anomaly_info["fall_s_num"])  
+# a = anomaly_info["fall_s_num"][0]  
+# anomaly_info["fall_s_num"][0] = (a[0], a[1], a[2] + 100)  
+# print(anomaly_info["fall_s_num"])  
 
 fall_s_place_bed = ["Bed"]
 fall_w_parameters = {"num": anomaly_info["fall_w_num"], "mean_lie_down_seconds": 30}
