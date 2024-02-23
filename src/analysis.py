@@ -2358,7 +2358,7 @@ def print_decision_path(dt, data, marge_rules=True):
         print(f"Sample {sample_id}: {rule_str}, predict {label[sample_id]}")
 
 
-def print_positive_path(dt, marge_rules = True):
+def print_positive_path(dt, marge_rules = True, name_dict = None, target_class = 1):
     """
     Print the decision rules to classify data into positive class for a binary classification decision tree.
 
@@ -2371,6 +2371,12 @@ def print_positive_path(dt, marge_rules = True):
         For example, 
         False: (X[19] > 10.50) and (X[29] > 11.50) and (X[19] > 13.50) and (X[29] > 14.50) and (X[19] > 16.50) and (X[29] <= 17.50)
         True: (13.50 < X[19]) and (16.50 < X[29] <= 17.50)
+    name_dict : dict, default None
+        Convert the name of the features.
+        keys: the index of the feature
+        values: name str
+    target_class : int
+        
 
     Examples
     --------
@@ -2391,6 +2397,10 @@ def print_positive_path(dt, marge_rules = True):
     features = dt.tree_.feature
     thresholds = dt.tree_.threshold
     
+    if name_dict is None:
+        name_dict = dict()
+        for i in range(max(features) + 1):
+            name_dict[i] = f"X[{i}]"
     # key: node ID, value: all path to the node
     
     if not marge_rules:
@@ -2403,11 +2413,11 @@ def print_positive_path(dt, marge_rules = True):
                     print(" and ".join(rules))
             else:
                 # add a rule to the left node
-                left_rule = f"(X[{features[node]}] <= {thresholds[node]:.2f})"
+                left_rule = f"({name_dict[features[node]]} <= {thresholds[node]:.2f})"
                 recurse(children_left[node], rules + [left_rule])
                 
                 # add a rule to the right node
-                right_rule = f"({thresholds[node]:.2f} < X[{features[node]}])"
+                right_rule = f"({thresholds[node]:.2f} < {name_dict[features[node]]})"
                 recurse(children_right[node], rules + [right_rule])
         
         recurse(0, [])
@@ -2432,16 +2442,16 @@ def print_positive_path(dt, marge_rules = True):
                         if upper_bounds:
                             max_threshold = min(upper_bounds)
                         if lower_bounds and upper_bounds:
-                            simplified_rules[feature] = f"({min_threshold:.2f} < X[{feature}] <= {max_threshold:.2f})"
+                            simplified_rules[feature] = f"({min_threshold:.2f} < {name_dict[feature]} <= {max_threshold:.2f})"
                         elif lower_bounds:
-                            simplified_rules[feature] = f"({min_threshold:.2f} < X[{feature}])"
+                            simplified_rules[feature] = f"({min_threshold:.2f} < {name_dict[feature]})"
                         elif upper_bounds:
-                            simplified_rules[feature] = f"(X[{feature}] <= {max_threshold:.2f})"
+                            simplified_rules[feature] = f"({name_dict[feature]} <= {max_threshold:.2f})"
                 
                 simplified_rules = {k: simplified_rules[k] for k in sorted(simplified_rules)}
                 # Print simplified rules for positive class leaves
-                if dt.tree_.value[node].argmax() == 1:  # positive class
-                    print(" and ".join(simplified_rules.values()))
+                if dt.tree_.value[node].argmax() == target_class:  # positive class
+                    print(" and ".join(simplified_rules.values()) + "\n")
                 return
             
             # Rule for left child
@@ -2449,11 +2459,11 @@ def print_positive_path(dt, marge_rules = True):
             threshold = f"{thresholds[node]:.2f}"
             if feature not in rules:
                 rules[feature] = []
-            rules[feature].append(f"(X[{feature}] <= {threshold})")
+            rules[feature].append(f"({name_dict[feature]} <= {threshold})")
             recurse(children_left[node], copy.deepcopy(rules))  # Use copy of rules for branching
             
             # Rule for right child
-            rules[feature][-1] = f"({threshold} < X[{feature}])"
+            rules[feature][-1] = f"({threshold} < {name_dict[feature]})"
             recurse(children_right[node], copy.deepcopy(rules))
 
         recurse(0, {})

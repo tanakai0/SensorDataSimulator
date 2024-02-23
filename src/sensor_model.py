@@ -284,7 +284,7 @@ class CircularPIRSensor(Sensor):
             return self.collide(p, body_radius=body_radius)
 
 
-    def draw(self, ax, with_text = True):
+    def draw(self, ax, with_text = True, custom_text = ""):
         """
         This plots the figure of this sensor.
 
@@ -302,12 +302,16 @@ class CircularPIRSensor(Sensor):
             ec=self.color,
             alpha=0.2,
         )
+        if custom_text != "":
+            text = custom_text
+        else:
+            text = "{}".format(self.index)
         ax.add_patch(circle)
         if with_text:
             ax.text(
                 self.x,
                 self.y,
-                "{}".format(self.index),
+                text,
                 fontsize=10,
                 va="center",
                 ha="center",
@@ -577,7 +581,7 @@ class SquarePressureSensor(Sensor):
                 return False
         return True
 
-    def draw(self, ax, with_text = True):
+    def draw(self, ax, with_text = True, custom_text = ""):
         """
         This plots the figure of this sensor.
 
@@ -597,12 +601,16 @@ class SquarePressureSensor(Sensor):
             ec=self.color,
             alpha=0.2,
         )
+        if custom_text != "":
+            text = custom_text
+        else:
+            text = "{}".format(self.index)
         ax.add_patch(rectangle)
         x, y = self.x + self.horizontal / 2, self.y + self.vertical / 2
         if self.angle != 0:
             (x, y) = self.rotate((x, y), (self.x, self.y), self.angle)
         if with_text:
-            ax.text(x, y, "{}".format(self.index), fontsize=10, va="center", ha="center")
+            ax.text(x, y, text, fontsize=10, va="center", ha="center")
 
     def canvas(self, canvas, point2canvas):
         """
@@ -709,7 +717,7 @@ class CostSensor(Sensor):
         """
         super().__init__(name, index, x, y, color)
 
-    def draw(self, ax, with_text = True):
+    def draw(self, ax, with_text = True, custom_text = ""):
         """
         This plots the figure of this sensor.
 
@@ -728,11 +736,15 @@ class CostSensor(Sensor):
             alpha=0.6,
             s=(plt.rcParams["lines.markersize"] ** 2) * 4,
         )
+        if custom_text != "":
+            text = custom_text
+        else:
+            text = "{}".format(self.index)
         if with_text:
             ax.text(
                 self.x,
                 self.y,
-                "{}".format(self.index),
+                text,
                 fontsize=10,
                 va="center",
                 ha="center",
@@ -825,7 +837,7 @@ class DoorSensor(Sensor):
         super().__init__(name, index, x, y, color)
         self.door_name = door_name
 
-    def draw(self, ax, with_text = True):
+    def draw(self, ax, with_text = True, custom_text = ""):
         """
         This plots the figure of this sensor.
 
@@ -844,11 +856,15 @@ class DoorSensor(Sensor):
             alpha=0.5,
             s=(plt.rcParams["lines.markersize"] ** 2) * 4,
         )
+        if custom_text != "":
+            text = custom_text
+        else:
+            text = "{}".format(self.index)
         if with_text:
             ax.text(
                 self.x,
                 self.y,
-                "{}".format(self.index),
+                text,
                 fontsize=10,
                 va="center",
                 ha="center",
