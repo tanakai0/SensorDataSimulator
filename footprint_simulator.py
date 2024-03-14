@@ -353,10 +353,14 @@ class FootprintSimulator:
 
         if self.center_id is not None:
             self.figure.delete(self.center_id)
-        # if self.left_step_id != None:
-        #     self.figure.delete(self.left_step_id)
-        # if self.right_step_id != None:
-        #     self.figure.delete(self.right_step_id)
+
+        # to delete previous step
+        if self.left_step_id != None:
+            self.figure.delete(self.left_step_id)
+        if self.right_step_id != None:
+            self.figure.delete(self.right_step_id)
+
+        
         while self.WT[self.WT_i].end_time <= self.simulation_time:
             self.WT_i += 1
         if self.WT[self.WT_i].start_time <= self.simulation_time:
