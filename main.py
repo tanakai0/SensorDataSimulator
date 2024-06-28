@@ -2,12 +2,12 @@ import time
 from pathlib import Path
 
 # self-made
-import src.activity_model as activity_model
-import src.anomaly_model as anomaly_model
-import src.floor_plan as floor_plan
-import src.sensor_model as sensor_model
-import src.utils as utils
-import src.constants as constants
+from src import activity_model
+from src import anomaly_model
+from src import floor_plan
+from src import sensor_model
+from src import utils
+from src import constants
 
 working_path = Path().resolve()
 # layout_data_path has the layouts
