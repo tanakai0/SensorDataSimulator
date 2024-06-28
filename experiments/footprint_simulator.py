@@ -1,3 +1,10 @@
+# use this in this folder
+# >>> python footprint_simulator.py
+
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join('..')))
+
 import bisect
 import re
 import tkinter
@@ -6,8 +13,8 @@ from pathlib import Path
 from tkinter import ttk
 
 # New pickled data can be loaded as below.
-import src.floor_plan as floor_plan
-import src.utils as utils
+from src import floor_plan
+from src import utils
 
 # Old pickled sensor_model are made when the sensor_model.py was located in the same folder hierarchy as main.py.
 # New sensor_model.py is located in the src/sensor_model.py, that is different from the folder hierarchy of main.py.
@@ -420,8 +427,7 @@ class FootprintSimulator:
     def interpolate_positions(self):
         pass
 
-
 root = tkinter.Tk()
-path = Path("./layout_data")
+path = Path("../layout_data")
 FootprintSimulator(root, path)
 root.mainloop()
