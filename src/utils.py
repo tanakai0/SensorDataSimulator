@@ -3400,6 +3400,7 @@ def save_layout(
     if return_ax:
         return ax
     # save
+    os.makedirs(output_path, exist_ok=True)
     plt.savefig(str(output_path) + "/" + filename, dpi=dpi, bbox_inches="tight")
     if show:
         plt.show()
