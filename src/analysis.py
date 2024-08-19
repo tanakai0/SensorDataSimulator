@@ -8,8 +8,7 @@ from hmmlearn import hmm
 from PIL import Image
 
 # self-made
-import src.anomaly_model as anomaly_model
-import src.utils as utils
+from src import anomaly_model, sensor_model, utils
 
 
 def generate_block_time_histogram_of_activities(
@@ -2467,3 +2466,248 @@ def print_positive_path(dt, marge_rules = True, name_dict = None, target_class =
             recurse(children_right[node], copy.deepcopy(rules))
 
         recurse(0, {})
+
+
+def estimate_sleep_duration(data, bed_sensor_id_list, sensors, step=timedelta(seconds=1)):
+    """
+    Parameters
+    ----------
+    data : numpy.ndarray
+    bed_sensor_id_list : list of int
+    sensors : list of Sensor
+    step : datetime.timedelta
+        Length of time interval in data.
+
+    Returns
+    -------
+    counts : list of float
+        counts[i] is the duration time [hour] of sleep in the ith day.
+    """
+
+    def ind2day(i, step):
+        return timedelta(seconds=i * (step / timedelta(seconds=1))).days
+
+    cost_sensor_id = []
+    for s in sensors:
+        if isinstance(s, sensor_model.CostSensor):
+            cost_sensor_id.append(s.index)
+
+    _day = 0
+    max_day = ind2day(data.shape[0], step)
+    counts = []
+    past_time = None
+    _time = timedelta(days=0)
+    for i, x in enumerate(data):
+        detected = False
+        for _id in bed_sensor_id_list:
+            detected = detected or x[_id]
+        if detected:
+            present_time = timedelta(seconds=i * (step / timedelta(seconds=1)))
+            if past_time is not None:
+                diff = present_time - past_time
+                if diff > timedelta(minutes=1):
+                    _time += diff
+            past_time = present_time
+        else:
+            other_sensors = x.copy()
+            for _id in bed_sensor_id_list:
+                other_sensors[_id] = False
+            for _id in cost_sensor_id:
+                other_sensors[_id] = False
+            if np.any(other_sensors):
+                past_time = None
+        new_day = ind2day(i, step)
+
+        if new_day != _day:
+            utils.print_progress_bar(max_day, new_day, "estimate sleep duration a day")
+            if past_time is not None:
+                present_time = timedelta(seconds=i * (step / timedelta(seconds=1)))
+                _time += present_time - past_time
+                past_time = present_time
+            counts.append(_time)
+            _time = timedelta(days=0)
+            for _ in range(_day, new_day - 1):
+                counts.append(_time)
+            _day = new_day
+
+    if _day != max_day:
+        counts.append(_time)
+
+    counts = [d / timedelta(hours=1) for d in counts]
+    return counts
+
+
+def estimate_go_out_freq(data, door_sensor_id, sensors, step=timedelta(seconds=1)):
+    """
+    Parameters
+    ----------
+    data : numpy.ndarray
+    door_sensor_id : int
+    sensors : list of Sensor
+    step : datetime.timedelta
+        Length of time interval in data.
+
+    Returns
+    -------
+    counts : list of int
+        Counts[i] is the number of go out in ith day.
+    """
+
+    def ind2day(i, step):
+        return timedelta(seconds=i * (step / timedelta(seconds=1))).days
+
+    _day = 0
+    max_day = ind2day(data.shape[0], step)
+    counts = []
+    past_time = None
+    num = 0
+
+    cost_sensor_id = []
+    for s in sensors:
+        if isinstance(s, sensor_model.CostSensor):
+            cost_sensor_id.append(s.index)
+
+    for i, x in enumerate(data):
+        if x[door_sensor_id]:
+            present_time = timedelta(seconds=i * (step / timedelta(seconds=1)))
+            if past_time != None:
+                if present_time - past_time > timedelta(minutes=1):
+                    num += 1
+            past_time = present_time
+        else:
+            other_sensors = x.copy()
+            other_sensors[door_sensor_id] = False
+            for _id in cost_sensor_id:
+                other_sensors[_id] = False
+            if np.any(other_sensors):
+                past_time = None
+        new_day = ind2day(i, step)
+        if new_day != _day:
+            utils.print_progress_bar(
+                max_day, new_day, "estimate go out frequency a day"
+            )
+            counts.append(num)
+            num = 0
+            for _ in range(_day, new_day - 1):
+                counts.append(num)
+            _day = new_day
+
+    if _day != max_day:
+        counts.append(num)
+
+    return counts
+
+
+def detect_subregions_via_threshold(data, threshold, _len, _type="below"):
+    """
+    Detect subregions in a list of numerical data where values are continuously below
+    the threshold 'threhold' for at least '_len' consecutive times.
+
+    Parameters
+    ----------
+    data : list
+        List of numerical data.
+    threshold : float
+        Threshold value for comparison.
+    _len : int
+        Minimum consecutive times below threshold to consider a subregion.
+    _type : str
+        'below' :
+        'above' :
+
+    Returns
+    -------
+    ret : list
+        A list of lists containing the indices of detected subregions.
+
+    Examples
+    --------
+    >>> data = [2, 3, 1, 0, 4, 5, 0, 0, 0, 6, 7, 8, 0, 9, 0, 1, 2, 0]
+    >>> threshold = 3
+    >>> min_length = 3
+    >>> result = detect_subregions_below_threshold(data, threshold, min_length)
+    >>> for region in result:
+    >>>     print(region)  # Print indices of detected subregions
+
+    [6, 7, 8]
+    [14, 15, 16, 17]
+    """
+    subregions = []
+    current_subregion = []
+
+    if _type == "below":
+        for i, value in enumerate(data):
+            if value < threshold:
+                current_subregion.append(i)
+            else:
+                if len(current_subregion) >= _len:
+                    subregions.append(current_subregion)
+                current_subregion = []
+
+        if len(current_subregion) >= _len:
+            subregions.append(current_subregion)
+
+    if _type == "above":
+        for i, value in enumerate(data):
+            if value > threshold:
+                current_subregion.append(i)
+            else:
+                if len(current_subregion) >= _len:
+                    subregions.append(current_subregion)
+                current_subregion = []
+
+        if len(current_subregion) >= _len:
+            subregions.append(current_subregion)
+
+    return subregions
+
+
+def extract_semibedridden_and_housebound(days, AL_periods):
+    # daily labels of semi bedridden
+    true_housebound_labels = [False for _ in range(days)]
+    true_semi_bedridden_labels = [False for _ in range(days)]
+    true_housebound_days = []
+    true_semi_bedridden_days = []
+    for period in AL_periods[anomaly_model.BEING_HOUSEBOUND]:
+        true_housebound_days += list(range(period[0].days, period[1].days + 1))
+    for period in AL_periods[anomaly_model.BEING_SEMI_BEDRIDDEN]:
+        true_semi_bedridden_days += list(range(period[0].days, period[1].days + 1))
+    for i in range(days):
+        if i in true_housebound_days:
+            true_housebound_labels[i] = True
+        if i in true_semi_bedridden_days:
+            true_semi_bedridden_labels[i] = True
+    return true_semi_bedridden_labels, true_housebound_labels
+
+
+def labeling_semi_bedridden(sleep_duration, threshold):
+    days = len(sleep_duration)
+    estimated_semi_bedridden_labels = [False for _ in range(days)]
+    estimated_semi_bedridden_days = []
+    # estimate semi bedridden
+    regions = detect_subregions_via_threshold(
+        sleep_duration, threshold, 7, _type="above"
+    )
+    for region in regions:
+        estimated_semi_bedridden_days += region
+    for i in range(days):
+        if i in estimated_semi_bedridden_days:
+            estimated_semi_bedridden_labels[i] = True
+    return estimated_semi_bedridden_labels
+
+
+def labeling_housebound(go_out_counts, semi_bedridden_labels, threshold):
+    days = len(go_out_counts)
+    estimated_housebound_labels = [False for _ in range(days)]
+    estimated_housebound_days = []
+    regions = detect_subregions_via_threshold(
+        go_out_counts, threshold, 7, _type="below"
+    )
+    for region in regions:
+        for r in region:
+            if not semi_bedridden_labels[r]:
+                estimated_housebound_days.append(r)
+    for i in range(days):
+        if i in estimated_housebound_days:
+            estimated_housebound_labels[i] = True
+    return estimated_housebound_labels
