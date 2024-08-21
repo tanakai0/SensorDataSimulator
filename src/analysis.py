@@ -799,6 +799,7 @@ def matrix_with_discretized_time_interval(SD, AL, start, end, duration, _type="r
         for x in AL_names:
             if AL_states[x]:
                 AL_mat[i][AL_name2index[x]] = True
+    print()
 
     return (SD_mat, SD_names, AL_mat, AL_names)
 
