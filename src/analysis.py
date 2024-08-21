@@ -1005,14 +1005,12 @@ class NaiveBayes:
         self.P = np.zeros((self.n, self.m))
         len_o = len(observations)
         for seq, s in zip(observations, states):
-            seq = seq.astype(int)
-            s = s.astype(int)
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
             self.C += counts / seq.shape[0]
             for i in range(self.n):
                 for j in range(self.m):
-                    self.P[i][j] += (s == i) @ seq[:, j] / counts[i]
+                    self.P[i][j] += (s == i).astype(np.uint32) @ seq[:, j].astype(np.uint32) / counts[i]
         self.C /= len_o
         self.P /= len_o
         return
@@ -1030,8 +1028,6 @@ class NaiveBayes:
         self.logP = np.full((self.n, self.m), -float("inf"))
         len_o = len(observations)
         for seq, s in zip(observations, states):
-            seq = seq.astype(int)
-            s = s.astype(int)
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
             self.logC = np.logaddexp(self.logC, np.log(counts) - np.log(seq.shape[0]))
@@ -1039,7 +1035,7 @@ class NaiveBayes:
                 for j in range(self.m):
                     self.logP[i][j] = np.logaddexp(
                         self.logP[i][j],
-                        np.log((s == i) @ seq[:, j]) - np.log(counts[i]),
+                        np.log((s == i).astype(np.uint32) @ seq[:, j].astype(np.uint32)) - np.log(counts[i]),
                     )
         self.logC -= np.log(len_o)
         self.logP -= np.log(len_o)
@@ -1076,7 +1072,6 @@ class NaiveBayes:
 
     def _predict_states(self, observation):
         len_o = len(observation)
-        observation = observation.astype(int)
         ret = np.zeros(len_o)
         prob = np.zeros(len_o)
 
@@ -1087,7 +1082,7 @@ class NaiveBayes:
         for t in range(len_o):
             if t % diff == 0:
                 utils.print_progress_bar(len_o, t, "prediction in dynamic naive Bayes.")
-            o_t = observation[t].astype(int)
+            o_t = observation[t].astype(np.uint32)
             # p = [self.C[i] * np.prod(self.P[i]*o_t + (ones_vec - self.P[i])*(ones_vec - o_t)) for i in range(self.n)]
             p = self.C * np.prod(
                 np.where(np.repeat(o_t[np.newaxis, :], self.n, axis=0), self.P, oP),
@@ -1100,7 +1095,6 @@ class NaiveBayes:
 
     def _predict_states_log(self, observation):
         len_o = len(observation)
-        observation = observation.astype(int)
         ret = np.zeros(len_o)
         prob = np.zeros(len_o)
         # ones_vec = np.ones(self.m)
@@ -1117,7 +1111,7 @@ class NaiveBayes:
         for t in range(len_o):
             if t % diff == 0:
                 utils.print_progress_bar(len_o, t, "prediction in dynamic naive Bayes.")
-            o_t = observation[t].astype(int)
+            o_t = observation[t].astype(np.uint32)
             # logp = [self.logC[i] + np.sum(self.logP[i]*o_t + log1P[i]*(ones_vec - o_t)) for i in range(self.n)]
             # logp = self.logC + np.sum(self.logP*o_t + log1P*(ones_vec - o_t), axis = 1)  # can't work if prob = 0
             # logp = [self.logC[i] + np.sum([self.logP[i][j] if o_t[j] else log1P[i][j] for j in range(self.m)]) for i in range(self.n)] # can't work if prob = 0
@@ -1272,8 +1266,7 @@ class HMM4binary_sensors:
         self.P = np.zeros((self.n, self.m))
 
         for seq, s in zip(observations, states):
-            seq = seq.astype(int)
-            s = s.astype(int)
+            s = s.astype(np.uint8)
             self.C[s[0]] += 1
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
@@ -1283,7 +1276,7 @@ class HMM4binary_sensors:
                 for j in range(self.n):
                     self.A[i][j] += pairs.count((i, j)) / (counts[i] - (s[-1] == i))
                 for j in range(self.m):
-                    self.P[i][j] += (s == i) @ seq[:, j] / counts[i]
+                    self.P[i][j] += (s == i) @ seq[:, j].astype(np.uint32) / counts[i]
         len_o = len(observations)
         self.C /= len_o
         self.A /= len_o
@@ -1323,8 +1316,7 @@ class HMM4binary_sensors:
         self.logP = np.full((self.n, self.m), -float("inf"))
 
         for seq, s in zip(observations, states):
-            seq = seq.astype(int)
-            s = s.astype(int)
+            s = s.astype(np.uint8)
             self.logC[s[0]] = np.logaddexp(self.logC[s[0]], 0)
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
@@ -1340,7 +1332,7 @@ class HMM4binary_sensors:
                 for j in range(self.m):
                     self.logP[i][j] = np.logaddexp(
                         self.logP[i][j],
-                        np.log((s == i) @ seq[:, j]) - np.log(counts[i]),
+                        np.log((s == i) @ seq[:, j].astype(np.uint32)) - np.log(counts[i]),
                     )
         len_o = len(observations)
         self.logC -= np.log(len_o)
@@ -1402,7 +1394,6 @@ class HMM4binary_sensors:
         """
 
         len_o = len(observation)
-        observation = observation.astype(int)
 
         # delta records the quantity.
         # Let O_t be the observed value at time t.
@@ -1419,7 +1410,7 @@ class HMM4binary_sensors:
         ones_vec = np.ones(self.m)
         for i in range(self.n):
             delta[0][i] = self.C[i] * np.prod(
-                np.abs((ones_vec - observation[0]) - self.P[i])
+                np.abs((ones_vec - observation[0].astype(np.uint32)) - self.P[i])
             )
             psi[0][i] = 0
 
@@ -1431,7 +1422,7 @@ class HMM4binary_sensors:
             for j in range(self.n):
                 score_vec = delta[t - 1] * self.A[:, j]
                 delta[t][j] = np.max(score_vec) * np.prod(
-                    np.abs((ones_vec - observation[t]) - self.P[j])
+                    np.abs((ones_vec - observation[t].astype(np.uint32)) - self.P[j])
                 )
                 psi[t][j] = np.argmax(score_vec)
 
@@ -1471,7 +1462,6 @@ class HMM4binary_sensors:
         """
 
         len_o = len(observation)
-        observation = observation.astype(int)
 
         # delta records the quantity.
         # Let O_t be the observed value at time t.
@@ -1501,7 +1491,7 @@ class HMM4binary_sensors:
         #     psi[0][i] = 0
         logdelta[0] = self.logC + np.sum(
             np.where(
-                np.repeat(observation[0][np.newaxis, :], self.n, axis=0),
+                np.repeat(observation[0].astype(np.uint32)[np.newaxis, :], self.n, axis=0),
                 self.logP,
                 log1P,
             ),
@@ -1522,7 +1512,7 @@ class HMM4binary_sensors:
             score_mat = logdelta[t - 1].reshape((self.n, 1)) + self.logA
             logdelta[t] = np.max(score_mat, axis=0) + np.sum(
                 np.where(
-                    np.repeat(observation[t][np.newaxis, :], self.n, axis=0),
+                    np.repeat(observation[t].astype(np.uint32)[np.newaxis, :], self.n, axis=0),
                     self.logP,
                     log1P,
                 ),
@@ -2711,3 +2701,114 @@ def labeling_housebound(go_out_counts, semi_bedridden_labels, threshold):
         if i in estimated_housebound_days:
             estimated_housebound_labels[i] = True
     return estimated_housebound_labels
+
+
+def extract_forgetting_features_of_a_cost_sensor(path, sensor_index, seconds_of_step = 60 * 60 * 2):
+    """
+    Parameters
+    ----------
+    path: str
+        Path to data
+    sensor_index: int
+        Index of the cost sensor
+    seconds_of_step: int
+        Time interval for measuring appliance sensor usage.
+
+    Returns
+    -------
+    (X_normal, X_anomaly): tuple of numpy.ndarray
+    X_normal: numpy.ndarray
+        Normal data of the sensor activation.
+        The matrix size is (number of time intervals, number of features).
+        There are three features for now;
+        (1) Total duration time [minutes] of the sensor activation in the time interval.
+        (2) Maximum distance between the sensor and another sensor activated during the time interval.
+        (3) Midtime of the time interval.
+    X_anomaly: numpy.ndarray
+        Anomaly data of the sensor activation during anomaly 'forgetting'.
+    """
+
+    def find_true_sequences(arr):
+        start = None
+        intervals = []
+
+        for i, val in enumerate(arr):
+            if val and start is None:
+                start = i
+            elif not val and start is not None:
+                intervals.append((start, i))
+                start = None
+
+        if start is not None:
+            intervals.append((start, len(arr)))
+
+        return intervals
+
+    SD = utils.pickle_load(path / "experiment", "SD_mat_raw_1")
+    cost_sensor_data = SD[:, sensor_index]
+    SD_model = utils.pickle_load(path, "SD_model")
+    AL = utils.pickle_load(path, "AL")
+    sensor_name = SD_model[sensor_index].name
+    sensor_x, sensor_y = SD_model[sensor_index].x, SD_model[sensor_index].y
+    
+
+    distance_dict = {}  # distance from other sensors
+    for s in SD_model:
+        distance_dict[s.index] = np.sqrt((s.x - sensor_x) ** 2 + (s.y - sensor_y) ** 2)
+    forgetting = []
+    for f in AL[anomaly_model.FORGETTING]:
+        if f[2] == sensor_name:
+            forgetting.append(utils.TimeInterval(f[4], f[5]))
+
+    
+    seconds_of_day = 24 * 60 * 60
+    end_seconds = cost_sensor_data.shape[0]
+
+    normal_data_minutes = []
+    normal_data_distance = []
+    normal_data_mid_time = []
+    anomaly_data_minutes = []
+    anomaly_data_distance = []
+    anomaly_data_mid_time = []
+    for i in range(0, end_seconds, seconds_of_step):
+        j = i + seconds_of_step
+        hour_interval = cost_sensor_data[i:j]
+        minutes = np.sum(hour_interval) / 60
+        first_true_index = np.argmax(hour_interval)
+        last_true_index = len(hour_interval) - np.argmax(hour_interval[::-1]) - 1
+        mid_index = int((first_true_index + last_true_index) / 2)
+        mid_time = (i + mid_index) % seconds_of_day
+        present_interval = utils.TimeInterval(
+            timedelta(seconds=i), timedelta(seconds=j)
+        )
+
+        true_intervals = find_true_sequences(hour_interval)
+        max_distance = 0
+        for interval in true_intervals:
+            sensor_mat = SD[i + interval[0] : i + interval[1]]
+            sensor_has_true = np.any(sensor_mat, axis=0)
+            sensor_indices_with_true = np.where(sensor_has_true)[0]
+            for k in sensor_indices_with_true:
+                if distance_dict[k] > max_distance:
+                    max_distance = distance_dict[k]
+        anomaly_flag = False
+        for f in forgetting:
+            if f.overlap(present_interval):
+                anomaly_flag = True
+                break
+        if anomaly_flag:
+            anomaly_data_minutes.append(minutes)
+            anomaly_data_mid_time.append(mid_time)
+            anomaly_data_distance.append(max_distance)
+        else:
+            normal_data_minutes.append(minutes)
+            normal_data_mid_time.append(mid_time)
+            normal_data_distance.append(max_distance)
+
+    X_normal = np.column_stack(
+        (normal_data_minutes, normal_data_distance, normal_data_mid_time)
+    )
+    X_anomaly = np.column_stack(
+        (anomaly_data_minutes, anomaly_data_distance, anomaly_data_mid_time)
+    )
+    return X_normal, X_anomaly
