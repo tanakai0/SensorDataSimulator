@@ -3307,7 +3307,8 @@ def save_layout(
     mark_point=None,
     return_ax=False,
     with_name_furniture_place = True,
-    with_name_sensors = True
+    with_name_sensors = True,
+    save = True
 ):
     """
     This saves a layout data as a figure with walking trajectories and sensors.
@@ -3342,8 +3343,10 @@ def save_layout(
         If this is True, then plt will not be closed and saved.
     with_name_furniture_place : boolean, default True
         Whether to show names of furniture or places.
-    with_name_sensors : boolean, default True
+    with_name_sensors : bool, default True
         Whether to show names of sensors.
+    save : bool, default True
+        Whether to save the figure.
 
     See Also
     --------
@@ -3400,8 +3403,9 @@ def save_layout(
     if return_ax:
         return ax
     # save
-    os.makedirs(output_path, exist_ok=True)
-    plt.savefig(str(output_path) + "/" + filename, dpi=dpi, bbox_inches="tight")
+    if save:
+        os.makedirs(output_path, exist_ok=True)
+        plt.savefig(str(output_path) + "/" + filename, dpi=dpi, bbox_inches="tight")
     if show:
         plt.show()
     plt.close()
