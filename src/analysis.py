@@ -1011,7 +1011,8 @@ class NaiveBayes:
             self.C += counts / seq.shape[0]
             for i in range(self.n):
                 for j in range(self.m):
-                    self.P[i][j] += (s == i).astype(np.uint32) @ seq[:, j].astype(np.uint32) / counts[i]
+                    # The value of P[i][j] is bounded up to 2^32 for now
+                    self.P[i][j] += (s == i).astype(np.uint32) @ seq[:, j] / counts[i]
         self.C /= len_o
         self.P /= len_o
         return
@@ -1036,7 +1037,7 @@ class NaiveBayes:
                 for j in range(self.m):
                     self.logP[i][j] = np.logaddexp(
                         self.logP[i][j],
-                        np.log((s == i).astype(np.uint32) @ seq[:, j].astype(np.uint32)) - np.log(counts[i]),
+                        np.log((s == i).astype(np.uint32) @ seq[:, j]) - np.log(counts[i]),
                     )
         self.logC -= np.log(len_o)
         self.logP -= np.log(len_o)
@@ -1267,17 +1268,17 @@ class HMM4binary_sensors:
         self.P = np.zeros((self.n, self.m))
 
         for seq, s in zip(observations, states):
-            s = s.astype(np.uint8)
-            self.C[s[0]] += 1
+            self.C[int(s[0])] += 1
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
-            # pairs[i] = (s_{t}, s_{t+1}), 1<= t <= T-1, T: total length of the obsevation
-            pairs = [(s[t - 1], s[t]) for t in range(1, len(s))]
+            # pairs[i] = [s_{t}, s_{t+1}], 1<= t <= T-1, T: total length of the observation
+            pairs = np.column_stack((s[:-1], s[1:]))
             for i in range(self.n):
                 for j in range(self.n):
-                    self.A[i][j] += pairs.count((i, j)) / (counts[i] - (s[-1] == i))
+                    self.A[i][j] += np.sum((pairs[:, 0] == i) & (pairs[:, 1] == j)) / (counts[i] - (int(s[-1]) == i))
                 for j in range(self.m):
-                    self.P[i][j] += (s == i) @ seq[:, j].astype(np.uint32) / counts[i]
+                    # The value of P[i][j] is bounded up to 2^32 for now
+                    self.P[i][j] += (s == i).astype(np.uint32) @ seq[:, j] / counts[i]
         len_o = len(observations)
         self.C /= len_o
         self.A /= len_o
@@ -1317,23 +1318,22 @@ class HMM4binary_sensors:
         self.logP = np.full((self.n, self.m), -float("inf"))
 
         for seq, s in zip(observations, states):
-            s = s.astype(np.uint8)
-            self.logC[s[0]] = np.logaddexp(self.logC[s[0]], 0)
+            self.logC[int(s[0])] = np.logaddexp(self.logC[int(s[0])], 0)
             # counts[i] = the total number of occurrences of state i in the sequence
             counts = np.bincount(s)
-            # pairs[i] = (s_{t}, s_{t+1}), 1<= t <= T-1, T: total length of the obsevation
-            pairs = [(s[t - 1], s[t]) for t in range(1, len(s))]
+            # pairs[i] = [s_{t}, s_{t+1}], 1<= t <= T-1, T: total length of the observation
+            pairs = np.column_stack((s[:-1], s[1:]))
             for i in range(self.n):
                 for j in range(self.n):
                     self.logA[i][j] = np.logaddexp(
                         self.logA[i][j],
-                        np.log(pairs.count((i, j)))
+                        np.log(np.sum((pairs[:, 0] == i) & (pairs[:, 1] == j)))
                         - np.log((counts[i] - (s[-1] == i))),
                     )
                 for j in range(self.m):
                     self.logP[i][j] = np.logaddexp(
                         self.logP[i][j],
-                        np.log((s == i) @ seq[:, j].astype(np.uint32)) - np.log(counts[i]),
+                        np.log((s == i).astype(np.uint32) @ seq[:, j]) - np.log(counts[i]),
                     )
         len_o = len(observations)
         self.logC -= np.log(len_o)
@@ -1408,10 +1408,10 @@ class HMM4binary_sensors:
         # Viterbi algorithm
 
         # Initialization
-        ones_vec = np.ones(self.m)
+        ones_vec = np.ones(self.m).astype(np.uint32)
         for i in range(self.n):
             delta[0][i] = self.C[i] * np.prod(
-                np.abs((ones_vec - observation[0].astype(np.uint32)) - self.P[i])
+                np.abs((ones_vec - observation[0]) - self.P[i])
             )
             psi[0][i] = 0
 
@@ -1423,7 +1423,7 @@ class HMM4binary_sensors:
             for j in range(self.n):
                 score_vec = delta[t - 1] * self.A[:, j]
                 delta[t][j] = np.max(score_vec) * np.prod(
-                    np.abs((ones_vec - observation[t].astype(np.uint32)) - self.P[j])
+                    np.abs((ones_vec - observation[t]) - self.P[j])
                 )
                 psi[t][j] = np.argmax(score_vec)
 
@@ -1492,7 +1492,7 @@ class HMM4binary_sensors:
         #     psi[0][i] = 0
         logdelta[0] = self.logC + np.sum(
             np.where(
-                np.repeat(observation[0].astype(np.uint32)[np.newaxis, :], self.n, axis=0),
+                np.repeat(observation[0][np.newaxis, :], self.n, axis=0),
                 self.logP,
                 log1P,
             ),
@@ -1513,7 +1513,7 @@ class HMM4binary_sensors:
             score_mat = logdelta[t - 1].reshape((self.n, 1)) + self.logA
             logdelta[t] = np.max(score_mat, axis=0) + np.sum(
                 np.where(
-                    np.repeat(observation[t].astype(np.uint32)[np.newaxis, :], self.n, axis=0),
+                    np.repeat(observation[t][np.newaxis, :], self.n, axis=0),
                     self.logP,
                     log1P,
                 ),
@@ -2561,7 +2561,7 @@ def estimate_go_out_freq(data, door_sensor_id, sensors, step=timedelta(seconds=1
     for i, x in enumerate(data):
         if x[door_sensor_id]:
             present_time = timedelta(seconds=i * (step / timedelta(seconds=1)))
-            if past_time != None:
+            if past_time is not None:
                 if present_time - past_time > timedelta(minutes=1):
                     num += 1
             past_time = present_time
