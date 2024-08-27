@@ -2060,7 +2060,75 @@ def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "p
         if print_progress_bar:
             print("")
         return nrd
+    
 
+
+def gen_nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "present", print_progress_bar = True):
+    """
+    Generator of nonresponse duration in time windows.
+
+    Parameters
+    ----------
+    mat : numpy.ndarray of bool
+        Raw sensor data matrix.
+        mat[i][j] = j-th sensor state at i-th time.
+    pressure_indexes : list of int
+        Indexes of pressure sensors.
+    time_step : float, default 1
+        Time step length [seconds] of mat (= mat[1][0] - mat[0][0]).
+    _type : str, default "max"
+        Type of nonresponse duration.
+        "present" : present nonresponse duration without window. 
+        "sum" : total duration the sensor is last fired sensor within the time window. 
+        "max" : maximum nonresponse duration at any time point within the time window.
+    window_len : int
+        Length of each window.
+        window_len is the number of columns in mat.
+        If time_step = 1 [sec.] and window_len = 60 [sec.] = 1[min.], a day is divided into 60*24 time windows.
+    print_progress_bar : bool
+    
+    Yields
+    ------
+    nrd
+    nrd : numpy.ndarray
+        "present": nrd = nonresponse duration
+    """
+    if _type not in ["present", "max", "sum"]:
+        raise ValueError("_type error!")
+    if _type in ["max", "sum"]:
+        raise ValueError("No implementation")
+    elif _type == "present":
+        # Initialize the output array
+        sensor_num = mat.shape[1]
+        last_fired_time = -1
+        last_fired_sensors = np.ones(sensor_num, dtype = bool)
+        pressure_v = np.zeros(len(pressure_sensor_indexes), dtype = np.uint16)
+        ret = np.zeros(mat.shape[1], dtype = np.uint16)
+
+        for (i, sd) in enumerate(mat):
+            if print_progress_bar:
+                utils.print_progress_bar(mat.shape[0] - 1, i, "Extract fall features.", step = 100000)
+            
+            for j, si in enumerate(pressure_sensor_indexes):
+                if sd[si]:
+                    pressure_v[j] += 1
+                else:
+                    pressure_v[j] = 0
+            if np.any(sd):
+                last_fired_sensors = sd
+                last_fired_time = i
+                ret *= 0
+                for j, si in enumerate(pressure_sensor_indexes):
+                    ret[si] = pressure_v[j]
+                yield ret
+            else:
+                ret =  (i - last_fired_time) * time_step * last_fired_sensors
+                for j, si in enumerate(pressure_sensor_indexes):
+                    ret[si] = pressure_v[j]
+                yield ret
+        if print_progress_bar:
+            print("")
+        return
 
 def plot_nonresponse_duration(ax, nrt, window_duration, extra_x = None, extra_y = None):
     """
