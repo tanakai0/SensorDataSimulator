@@ -1911,7 +1911,7 @@ def seq2interval(seq):
     return intervals
 
 
-def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "present", window_len = None):
+def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "present", window_len = None, print_progress_bar = True):
     """
     Calculate nonresponse duration in time windows.
     A day is exclusively divided into time windows with a window's length.
@@ -1940,7 +1940,7 @@ def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "p
         Length of each window.
         window_len is the number of columns in mat.
         If time_step = 1 [sec.] and window_len = 60 [sec.] = 1[min.], a day is divided into 60*24 time windows.
-
+    print_progress_bar : bool
     
     Returns
     -------
@@ -2037,7 +2037,8 @@ def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "p
         ret = np.zeros(mat.shape[1], dtype = np.uint16)
 
         for (i, sd) in enumerate(mat):
-            utils.print_progress_bar(mat.shape[0] - 1, i, "Extract fall features.", step = 100000)
+            if print_progress_bar:
+                utils.print_progress_bar(mat.shape[0] - 1, i, "Extract fall features.", step = 100000)
             
             for j, si in enumerate(pressure_sensor_indexes):
                 if sd[si]:
@@ -2056,7 +2057,8 @@ def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "p
                 for j, si in enumerate(pressure_sensor_indexes):
                     ret[si] = pressure_v[j]
                 nrd[i] = ret
-        print("")
+        if print_progress_bar:
+            print("")
         return nrd
 
 
