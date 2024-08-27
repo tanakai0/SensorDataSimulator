@@ -1910,42 +1910,44 @@ def seq2interval(seq):
     
     return intervals
 
-def nonresponse_time(mat, time_step, window_len, _type = "max_time"):
+
+def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "present", window_len = None):
     """
-    Calculate nonresponse time in time windows.
-    A day is divided into time windows with a windows length exclusively.
+    Calculate nonresponse duration in time windows.
+    A day is exclusively divided into time windows with a window's length.
     Last fired sensors at time t are last activated sensors of all sensors before time t.
-    Time since last activation (last fired elapsed time) of sensor s at time t is the time [sec.]
-    during which sensor s continues to be the last fired sensor.
+    Time since the last activation (last fired elapsed time) of a sensor s at time t is the time [seconds] during which sensor s continues to be the last fired sensor.
     If the sensor s is not last fired at time t, then the elapsed time is 0.
-    Based on the last fired elapsed time, nonresponse time of sensor s in each time window of the day
-    is defined in the following two ways;
-    (NRT1) The sum of the last fired elapsed time of s which elapsed within that time window.
-    So the NRT1 of each time window cannot exceed windows length.
-    (NRT2) Maximum last fired elapsed time at any point within that time window.
+    Based on the last fired elapsed time, nonresponse duration of sensor s in each time window is defined in the following two ways;
+    sum: the sum of the last fired elapsed time of s which elapsed within that time window. So the value cannot exceed the window's length, and
+    max: maximum last fired elapsed time at any point within that time window.
 
     Parameters
     ----------
-    mat : nummpy.ndarray of bool
+    mat : numpy.ndarray of bool
         Raw sensor data matrix.
         mat[i][j] = j-th sensor state at i-th time.
-    time_step : float
-        Time step length [seconds] of mat = mat[1][0] - mat[0][0].
+    pressure_indexes : list of int
+        Indexes of pressure sensors.
+    time_step : float, default 1
+        Time step length [seconds] of mat (= mat[1][0] - mat[0][0]).
+    _type : str, default "max"
+        Type of nonresponse duration.
+        "present" : present nonresponse duration without window. 
+        "sum" : total duration the sensor is last fired sensor within the time window. 
+        "max" : maximum nonresponse duration at any time point within the time window.
     window_len : int
-        Length of window that divide time exclusively.
+        Length of each window.
         window_len is the number of columns in mat.
         If time_step = 1 [sec.] and window_len = 60 [sec.] = 1[min.], a day is divided into 60*24 time windows.
-    _type : str, default "max_time"
-        Type of nonresponse time.
-        "sum_in_window" : total nonresponse time within the time window. Max = window_len.
-        "max_time"      : maximum nonresponse time at any time point within the time window.
+
     
     Returns
     -------
-    nrt
-    nrt : numpy.ndarray
-        nrt[s][i] = nonresponse time [seconds] of the s-th sensor of the i-th time window.
-        nrt.shape[0] does not equal to mat.shape[1] because cost sensors are removed.
+    nrd
+    nrd : numpy.ndarray
+        "present": nrd[i][s] = nonresponse duration [seconds] of the s-th sensor of the i-th index.
+        "max" or "sum": nrd[s][i] = nonresponse duration [seconds] of the s-th sensor of the i-th time window.
 
     Examples
     --------
@@ -1959,18 +1961,15 @@ def nonresponse_time(mat, time_step, window_len, _type = "max_time"):
     sensor1              +++++++++++++  ++   
     sensor2      ++++++++       ++++++++  +++++++++++
 
-    NRT1 : _type = "sum_in_window"
-    NRT2 : _type = "max_time"
-
-    NRT1
+    _type = "sum"
     sensor1        0    20    30    20     5     0
     sensor2       30    10    15    25    25    30  
 
-    NRT2
+    _type = "max"
     sensor1        0    20    50    65    10     0
     sensor2       30    40    15    40    25    55
 
-    Check examples by this program
+    Check examples
     >>> test_SD = np.zeros((180, 2), dtype=bool)
     >>> sensor1_true = [40, 55, 75, 115]
     >>> sensor2_true = [0, 20, 75, 105, 125]
@@ -1978,50 +1977,90 @@ def nonresponse_time(mat, time_step, window_len, _type = "max_time"):
     >>>     test_SD[ind][0] = True
     >>> for ind in sensor2_true:
     >>>     test_SD[ind][1] = True
-    >>> NRT1 = non_response_time(test_SD, 1, 30, "sum_in_window")
-    >>> NRT2 = non_response_time(test_SD, 1, 30, "max_time")
-    >>> print(NRT1)
-    >>> print(NRT2)
+    >>> nrd1 = nonresponse_duration(test_SD, [], 1, "sum", 30)
+    >>> nrd2 = nonresponse_duration(test_SD, [], 1, "max", 30)
+    >>> print(nrd1)
+    >>> print(nrd2)
+
+    [[ 0 20 30 20  5  0]
+     [30 10 15 25 25 30]]
+    [[ 0 20 50 65 10  0]
+     [30 40 15 40 25 55]]
     """
-    if _type not in ["max_time", "sum_in_window"]:
+    if _type not in ["present", "max", "sum"]:
         raise ValueError("_type error!")
-    num_time_points = mat.shape[0]
-    num_windows = num_time_points // window_len
+    if _type in ["max", "sum"]:
+        if window_len is None:
+            raise ValueError("This needs the parameter: window_len.")
+        
+        num_time_points = mat.shape[0]
+        num_windows = num_time_points // window_len
 
-    # Initialize the output array
-    sensor_num = mat.shape[1]
-    nrt = np.zeros((sensor_num, num_windows))
-    last_fired_time = np.full((sensor_num,), -1)
-    last_fired_sensors = np.zeros(sensor_num, dtype = bool)
+        # Initialize the output array
+        sensor_num = mat.shape[1]
+        nrd = np.zeros((sensor_num, num_windows), dtype = np.uint16)  # uint16
+        last_fired_time = np.full((sensor_num,), -1)
+        last_fired_sensors = np.zeros(sensor_num, dtype = bool)
 
-    for w in range(num_windows):
-        window_start = w * window_len
-        window_end = (w + 1) * window_len
-        window_data = mat[window_start:window_end, :]
+        for w in range(num_windows):
+            window_start = w * window_len
+            window_end = (w + 1) * window_len
+            window_data = mat[window_start:window_end, :]
 
-        for t in range(window_len):
-            # Update last fired sensors
-            if np.any(window_data[t]):
+            for t in range(window_len):
+                # Update last fired sensors
+                if np.any(window_data[t]):
+                    for s, _id in enumerate(range(sensor_num)):
+                        if not last_fired_sensors[s] and window_data[t][s]:
+                            last_fired_time[s] = window_start + t
+                        if last_fired_sensors[s] and not window_data[t][s]:
+                            last_fired_time[s] = -1
+                    last_fired_sensors = window_data[t]
+
+                # Calculate elapsed time for each sensor
                 for s, _id in enumerate(range(sensor_num)):
-                    if not last_fired_sensors[s] and window_data[t][s]:
-                        last_fired_time[s] = window_start + t
-                    if last_fired_sensors[s] and not window_data[t][s]:
-                        last_fired_time[s] = -1
-                last_fired_sensors = window_data[t]
+                    if _type == "sum":
+                        nrd[s][w] += (last_fired_time[s] != -1)
+                    elif _type == "max":
+                        elapsed = (window_start + t - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0
+                        nrd[s][w] = max(nrd[s][w], elapsed)
+                        
+        nrd *= time_step
+        return nrd
+    elif _type == "present":
+        nrd = np.zeros((mat.shape[0], mat.shape[1]), dtype = np.uint16)  # uint16
+        # Initialize the output array
+        sensor_num = mat.shape[1]
+        last_fired_time = -1
+        last_fired_sensors = np.ones(sensor_num, dtype = bool)
+        pressure_v = np.zeros(len(pressure_sensor_indexes), dtype = np.uint16)
+        ret = np.zeros(mat.shape[1], dtype = np.uint16)
 
-            # Calculate elapsed time for each sensor
-            for s, _id in enumerate(range(sensor_num)):
-                if _type == "sum_in_window":
-                    nrt[s][w] += (last_fired_time[s] != -1)
-                elif _type == "max_time":
-                    elapsed = (window_start + t - last_fired_time[s] + 1) if last_fired_time[s] != -1 else 0
-                    nrt[s][w] = max(nrt[s][w], elapsed)
-                    
-    nrt *= time_step
-    return nrt
+        for (i, sd) in enumerate(mat):
+            utils.print_progress_bar(mat.shape[0] - 1, i, "Extract fall features.", step = 100000)
+            
+            for j, si in enumerate(pressure_sensor_indexes):
+                if sd[si]:
+                    pressure_v[j] += 1
+                else:
+                    pressure_v[j] = 0
+            if np.any(sd):
+                last_fired_sensors = sd
+                last_fired_time = i
+                ret *= 0
+                for j, si in enumerate(pressure_sensor_indexes):
+                    ret[si] = pressure_v[j]
+                nrd[i] = ret
+            else:
+                ret =  (i - last_fired_time) * time_step * last_fired_sensors
+                for j, si in enumerate(pressure_sensor_indexes):
+                    ret[si] = pressure_v[j]
+                nrd[i] = ret
+        print("")
+        return nrd
 
 
-def plot_nonresponse_time(ax, nrt, window_duration, extra_x = None, extra_y = None):
+def plot_nonresponse_duration(ax, nrt, window_duration, extra_x = None, extra_y = None):
     """
     Plot scatter plot of nonresponse time.
     x-axis : time of day
@@ -2044,7 +2083,7 @@ def plot_nonresponse_time(ax, nrt, window_duration, extra_x = None, extra_y = No
     Examples
     --------
     >>> fig, ax = plt.subplots()
-    >>> plot_nonresponse_time(ax, nrt, 60)
+    >>> plot_nonresponse_duration(ax, nrt, 60)
     """
     sec_of_day = 86400
     if sec_of_day % window_duration !=0:
@@ -2071,7 +2110,7 @@ def plot_nonresponse_time(ax, nrt, window_duration, extra_x = None, extra_y = No
     ax.set_ylim(bottom=0)
 
 
-def nonresponse_time_sliding(mat, time_step, window_len, _type = "max_time"):
+def nonresponse_duration_sliding(mat, time_step, window_len, _type = "max"):
     """
     Calculate nonresponse time in time windows.
     A day is divided into time windows with a sliding window.
@@ -2096,10 +2135,10 @@ def nonresponse_time_sliding(mat, time_step, window_len, _type = "max_time"):
         Length of window that divide time exclusively.
         window_len is the number of columns in mat.
         window_len must be an odd number.
-    _type : str, default "max_time"
+    _type : str, default "max"
         Type of nonresponse time.
-        "sum_in_window" : total nonresponse time within the time window. Max = window_len.
-        "max_time"      : maximum nonresponse time at any time point within the time window.
+        "sum" : total nonresponse time within the time window. Max = window_len.
+        "max"      : maximum nonresponse time at any time point within the time window.
     
     Returns
     -------
@@ -2115,12 +2154,12 @@ def nonresponse_time_sliding(mat, time_step, window_len, _type = "max_time"):
     """
 
     def summarize_sliding_window(window_data, nrt_type):
-        if nrt_type == "sum_in_window":
+        if nrt_type == "sum":
             return np.count_nonzero(window_data, axis=1)
-        elif nrt_type == "max_time":
+        elif nrt_type == "max":
             return np.max(window_data, axis = 1)
         
-    if _type not in ["max_time", "sum_in_window"]:
+    if _type not in ["max", "sum"]:
         raise ValueError("_type error!")
     if window_len % 2 == 0:
         raise ValueError("window_len must be an odd number!")
