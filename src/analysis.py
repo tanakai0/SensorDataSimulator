@@ -2035,7 +2035,7 @@ def nonresponse_duration(mat, pressure_sensor_indexes, time_step = 1, _type = "p
         last_fired_sensors = np.ones(sensor_num, dtype = bool)
         pressure_v = np.zeros(len(pressure_sensor_indexes), dtype = np.uint16)
         ret = np.zeros(mat.shape[1], dtype = np.uint16)
-
+   
         for (i, sd) in enumerate(mat):
             if print_progress_bar:
                 utils.print_progress_bar(mat.shape[0] - 1, i, "Extract fall features.", step = 100000)
