@@ -2320,6 +2320,8 @@ def original_metrics(y_true, y_pred, threshold = 5, use_fixed_alarm = False, ala
         The number of predicted labels that is not overlapped with any true label intervals.
     mean_alarm_length : float
         The mean length of predicted label interval.
+    precision : float
+        The rate of true positive predictions among all positive predictions.
         
     Notes
     -----
@@ -2361,9 +2363,11 @@ def original_metrics(y_true, y_pred, threshold = 5, use_fixed_alarm = False, ala
                 break
         if not overlap:
             false_alarm += 1
+
+    precision = (len(pred_intervals) - false_alarm) / len(pred_intervals)
  
     mean_alarm_length = sum([x[1] - x[0] for x in pred_intervals]) / len(pred_intervals)
-    return (sensitivity, false_alarm, mean_alarm_length)
+    return (sensitivity, false_alarm, mean_alarm_length, precision)
 
 
 def print_decision_path(dt, data, marge_rules=True):
